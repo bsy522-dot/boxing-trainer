@@ -1,0 +1,17 @@
+{
+  "name": "Boxing Trainer",
+  "short_name": "Boxing",
+  "description": "복싱 트레이닝 앱",
+  "start_url": "./boxing-trainer-v2.html",
+  "display": "standalone",
+  "background_color": "#1a1a2e",
+  "theme_color": "#FF4444",
+  "icons": [
+    {
+      "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231a1a2e'/%3E%3Cellipse cx='32' cy='30' rx='16' ry='14' fill='%23FF4444'/%3E%3Cellipse cx='32' cy='30' rx='13' ry='11' fill='none' stroke='%23FF6666' stroke-width='1.5'/%3E%3Crect x='38' y='38' width='8' height='12' rx='4' fill='%23CC2222'/%3E%3C/svg%3E",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
