@@ -1,0 +1,1063 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>3D Boxing Trainer</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;600;700;900&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#08080c;--panel:rgba(14,14,20,0.94);--accent:#e63946;--accent2:#ff6b35;
+  --text:#f0f0f0;--dim:#6a6a7e;--border:rgba(255,255,255,0.07);--glow:rgba(230,57,70,0.35);
+}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;overflow:hidden;height:100vh;width:100vw}
+#cv{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
+canvas{display:block}
+
+.hud{position:fixed;z-index:100;pointer-events:none}
+.hud>*{pointer-events:auto}
+
+/* Top */
+.top{top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:linear-gradient(180deg,rgba(0,0,0,0.85) 0%,transparent 100%)}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:3px;color:var(--accent);text-shadow:0 0 15px var(--glow)}
+.logo small{color:var(--dim);font-size:14px;letter-spacing:1px;margin-left:6px}
+.move-title{text-align:center;flex:1}
+.move-title .lbl{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:2px}
+.move-title .name{font-family:'Bebas Neue',sans-serif;font-size:32px;letter-spacing:2px;text-shadow:0 0 20px var(--glow)}
+
+.spd{display:flex;align-items:center;gap:8px;background:var(--panel);padding:6px 14px;border-radius:24px;border:1px solid var(--border)}
+.spd label{font-size:10px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.spd input[type=range]{-webkit-appearance:none;width:90px;height:3px;background:var(--border);border-radius:2px;outline:none}
+.spd input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:14px;height:14px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 8px var(--glow)}
+.spd .v{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--accent);min-width:36px;text-align:center}
+
+/* Left */
+.left{top:62px;left:0;bottom:70px;width:270px;overflow-y:auto;padding:12px;scrollbar-width:thin;scrollbar-color:var(--accent) transparent}
+.sec{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:2px;margin:14px 0 6px;padding-bottom:3px;border-bottom:1px solid var(--border)}
+.pt{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:2px;color:var(--accent);margin-bottom:2px}
+.ps{font-size:10px;color:var(--dim);margin-bottom:12px}
+
+.mb{display:block;width:100%;padding:8px 12px;margin-bottom:3px;background:var(--panel);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:12px;cursor:pointer;text-align:left;transition:all .2s;position:relative}
+.mb:hover{border-color:var(--accent);background:rgba(230,57,70,.08);transform:translateX(3px)}
+.mb.on{border-color:var(--accent);background:rgba(230,57,70,.12);box-shadow:0 0 15px rgba(230,57,70,.15)}
+.mb .n{font-family:'Bebas Neue',sans-serif;font-size:15px;color:var(--accent);margin-right:6px}
+.mb .k{display:block;font-size:10px;color:var(--dim);margin-top:1px;margin-left:22px}
+
+/* Right */
+.right{top:62px;right:0;width:250px;padding:12px}
+.card{background:var(--panel);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:10px;backdrop-filter:blur(8px)}
+.card h3{font-family:'Bebas Neue',sans-serif;font-size:14px;letter-spacing:2px;color:var(--accent);margin-bottom:6px}
+.card p{font-size:11px;line-height:1.6;color:var(--dim)}
+.kl{list-style:none;padding:0}
+.kl li{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--dim);padding:3px 0}
+.kl .k{display:inline-block;min-width:22px;padding:2px 5px;background:rgba(255,255,255,.07);border-radius:3px;text-align:center;font-size:10px;color:var(--text);font-family:monospace}
+
+/* Bottom */
+.bot{bottom:0;left:0;right:0;display:flex;align-items:center;justify-content:center;padding:14px;gap:10px;background:linear-gradient(0deg,rgba(0,0,0,.85) 0%,transparent 100%)}
+.cb{padding:8px 16px;background:var(--panel);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:12px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:5px}
+.cb:hover{border-color:var(--accent);background:rgba(230,57,70,.12)}
+.cb.pri{background:var(--accent);border-color:var(--accent);font-weight:600}
+.cb.pri:hover{background:#c1303c;box-shadow:0 0 15px var(--glow)}
+.cb svg{width:14px;height:14px}
+
+/* Sequence */
+.seq{bottom:62px;left:50%;transform:translateX(-50%);display:none;gap:5px;padding:6px 14px;background:var(--panel);border:1px solid var(--border);border-radius:24px;backdrop-filter:blur(8px)}
+.seq.show{display:flex}
+.ss{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--dim);border:1px solid var(--border);transition:all .3s}
+.ss.on{color:#fff;background:var(--accent);border-color:var(--accent);box-shadow:0 0 12px var(--glow);transform:scale(1.12)}
+.ss.dn{color:var(--accent);border-color:rgba(230,57,70,.4)}
+
+/* Technique overlay */
+.tech-overlay{position:fixed;bottom:120px;left:50%;transform:translateX(-50%);z-index:100;
+  font-size:11px;color:var(--dim);text-align:center;max-width:500px;
+  background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:8px 14px;
+  opacity:0;transition:opacity .3s;pointer-events:none}
+.tech-overlay.show{opacity:1}
+
+@media(max-width:900px){.left{width:210px}.right{display:none}}
+@media(max-width:600px){.left{display:none}.top{padding:8px 12px}.logo{font-size:20px}.move-title .name{font-size:22px}}
+</style>
+</head>
+<body>
+
+<div id="cv"></div>
+
+<div class="hud top">
+  <div class="logo">BOXING<small>TRAINER 3D</small></div>
+  <div class="move-title">
+    <div class="lbl">현재 동작</div>
+    <div class="name" id="mName">ORTHODOX GUARD</div>
+  </div>
+  <div class="spd">
+    <label>속도</label>
+    <input type="range" id="spdR" min="0.1" max="2" step="0.1" value="1">
+    <div class="v" id="spdV">1.0x</div>
+  </div>
+</div>
+
+<div class="hud left">
+  <div class="pt">PUNCHES & COMBOS</div>
+  <div class="ps">동작을 선택하세요</div>
+  <div class="sec">기본 펀치 Basic Punches</div>
+  <div id="pBasic"></div>
+  <div class="sec">콤비네이션 Combinations</div>
+  <div id="pCombo"></div>
+  <div class="sec">풋워크 & 디펜스 Footwork</div>
+  <div id="pFoot"></div>
+</div>
+
+<div class="hud right">
+  <div class="card" id="infoCard">
+    <h3>동작 설명</h3>
+    <p id="mDesc">왼쪽에서 동작을 선택하세요. 마우스 드래그로 360° 회전, 스크롤로 줌, Space로 재생합니다.</p>
+  </div>
+  <div class="card">
+    <h3>CONTROLS</h3>
+    <ul class="kl">
+      <li><span class="k">드래그</span> 360° 회전</li>
+      <li><span class="k">스크롤</span> 줌 인/아웃</li>
+      <li><span class="k">Space</span> 재생/정지</li>
+      <li><span class="k">R</span> 시점 리셋</li>
+      <li><span class="k">←→</span> 스텝 이동</li>
+    </ul>
+  </div>
+</div>
+
+<div class="hud seq" id="seqD"></div>
+
+<div class="tech-overlay" id="techOv"></div>
+
+<div class="hud bot">
+  <button class="cb" onclick="resetView()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 4v6h6M23 20v-6h-6"/><path d="M20.49 9A9 9 0 005.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 013.51 15"/></svg>리셋</button>
+  <button class="cb" onclick="prevStep()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="19 20 9 12 19 4"/><line x1="5" y1="19" x2="5" y2="5"/></svg></button>
+  <button class="cb pri" id="playBtn" onclick="togglePlay()"><svg id="plI" viewBox="0 0 24 24" fill="currentColor"><polygon points="5 3 19 12 5 21"/></svg><svg id="paI" viewBox="0 0 24 24" fill="currentColor" style="display:none"><rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/></svg><span id="plT">재생</span></button>
+  <button class="cb" onclick="nextStep()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="5 4 15 12 5 20"/><line x1="19" y1="5" x2="19" y2="19"/></svg></button>
+  <button class="cb" id="mirBtn" onclick="toggleMirror()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v18M8 6L4 12l4 6M16 6l4 6-4 6"/></svg>사우스포</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// =====================================================
+// DATA - moves, combos, footwork
+// =====================================================
+const MOVES = {
+  basic: [
+    { id:'jab', name:'JAB', kr:'잽 (앞손 직권)', num:'1',
+      desc:'가장 기본적인 펀치. 앞손을 직선으로 빠르게 뻗습니다. 어깨를 턱 보호선까지 올리고, 뒷손은 반드시 턱 옆에 유지. 파워보다 속도와 거리 측정이 목적입니다.',
+      tech:'앞손 직선 신전 → 어깨 전방 회전 → 뒷손 턱 보호 유지 → 빠른 리턴',
+      seq:['jab'] },
+    { id:'cross', name:'CROSS', kr:'크로스 (뒷손 직권)', num:'2',
+      desc:'뒷발 피벗 → 힙 회전 → 어깨 회전 → 팔꿈치 신전의 키네틱 체인으로 파워를 생성합니다. 뒷발에서 시작된 힘이 지면에서 주먹까지 전달됩니다.',
+      tech:'뒷발 피벗(힐 아웃) → 힙·어깨 회전 → 팔꿈치 피스톤 신전 → 앞손 턱 보호',
+      seq:['cross'] },
+    { id:'lead_hook', name:'LEAD HOOK', kr:'리드 훅 (앞손 훅)', num:'3',
+      desc:'팔꿈치를 90도로 유지하고 수평 아크로 회전하는 펀치. 앞발 피벗과 힙·몸통 회전으로 파워를 만듭니다. 상대 측면(관자놀이, 턱)을 공략합니다.',
+      tech:'앞팔 90° 유지 → 앞발 피벗 → 힙·몸통 회전 → 수평 아크 → 뒷손 턱 보호',
+      seq:['lead_hook'] },
+    { id:'rear_hook', name:'REAR HOOK', kr:'리어 훅 (뒷손 훅)', num:'4',
+      desc:'뒷손 훅. 뒷발 피벗과 힙 회전으로 강력한 측면 공격. 리드 훅보다 짧은 거리에서 더 큰 파워를 발휘합니다.',
+      tech:'뒷팔 90° → 뒷발 피벗 → 힙·몸통 역회전 → 수평 아크',
+      seq:['rear_hook'] },
+    { id:'lead_upper', name:'LEAD UPPERCUT', kr:'리드 어퍼컷 (앞손)', num:'5',
+      desc:'무릎을 굽혀 3/4 스쿼트 자세에서 앞손을 90도로 아래에서 위로 올리는 펀치. 다리와 몸통의 수직 힘을 주먹에 전달합니다.',
+      tech:'무릎 굽힘(3/4 스쿼트) → 앞팔 90° 드롭 → 다리 드라이브 + 몸통 회전 → 수직 상승',
+      seq:['lead_upper'] },
+    { id:'rear_upper', name:'REAR UPPERCUT', kr:'리어 어퍼컷 (뒷손)', num:'6',
+      desc:'가장 강력한 어퍼컷. 뒷발 피벗 + 힙 회전 + 다리 드라이브의 폭발적 결합. 상대의 가드 아래에서 턱을 노리는 KO 펀치.',
+      tech:'3/4 스쿼트 → 뒷팔 90° 드롭 → 뒷발 피벗 + 힙 회전 → 다리 폭발 드라이브',
+      seq:['rear_upper'] },
+  ],
+  combo: [
+    { id:'c12', name:'1-2', kr:'잽 → 크로스', num:'1-2',
+      desc:'가장 기본적인 콤비네이션. 잽으로 거리 확인 + 상대 가드를 건드린 후, 크로스로 파워샷을 연결합니다.',
+      seq:['jab','cross'] },
+    { id:'c123', name:'1-2-3', kr:'잽 → 크로스 → 훅', num:'1-2-3',
+      desc:'클래식 3연타. 직선-직선-곡선으로 상대 가드를 무너뜨립니다. 크로스 후 몸이 자연스럽게 훅 방향으로 로드됩니다.',
+      seq:['jab','cross','lead_hook'] },
+    { id:'c1236', name:'1-2-3-6', kr:'잽 → 크로스 → 훅 → 어퍼', num:'1-2-3-6',
+      desc:'4연타. 직선→직선→측면→하단의 다각도 공격으로 상대 방어를 완전히 무너뜨립니다.',
+      seq:['jab','cross','lead_hook','rear_upper'] },
+    { id:'c1123', name:'1-1-2-3', kr:'더블잽 → 크로스 → 훅', num:'1-1-2-3',
+      desc:'더블 잽으로 리듬과 거리를 만들고, 크로스-훅으로 마무리. 두 번째 잽에 파워를 실어 가드를 흔듭니다.',
+      seq:['jab','jab','cross','lead_hook'] },
+    { id:'c2356', name:'2-3-5-6', kr:'크로스→훅→어퍼→어퍼', num:'2-3-5-6',
+      desc:'접근전 파워 콤보. 크로스로 시작, 훅으로 측면을 치고, 어퍼컷 연타로 가드 아래를 공략합니다.',
+      seq:['cross','lead_hook','lead_upper','rear_upper'] },
+  ],
+  foot: [
+    { id:'step_fwd', name:'STEP FORWARD', kr:'전진 스텝', num:'▲',
+      desc:'앞발 먼저 이동 → 뒷발이 같은 거리만큼 따라옴. 항상 어깨너비 스탠스를 유지하세요. 발이 교차되면 안 됩니다.',
+      seq:['step_fwd'] },
+    { id:'step_back', name:'STEP BACK', kr:'후퇴 스텝', num:'▼',
+      desc:'뒷발 먼저 이동 → 앞발이 따라옴. 상대 공격 사정거리에서 빠져나와 카운터 기회를 만듭니다.',
+      seq:['step_back'] },
+    { id:'lat_left', name:'LATERAL LEFT', kr:'좌측 이동', num:'◀',
+      desc:'왼발 먼저 → 오른발 따라옴. 상대의 뒷손(크로스) 라인에서 벗어나는 핵심 이동입니다.',
+      seq:['lat_left'] },
+    { id:'lat_right', name:'LATERAL RIGHT', kr:'우측 이동', num:'▶',
+      desc:'오른발 먼저 → 왼발 따라옴. 상대의 앞손 라인에서 벗어나 각도를 만듭니다.',
+      seq:['lat_right'] },
+    { id:'slip_l', name:'SLIP LEFT', kr:'슬립 (왼쪽)', num:'SL',
+      desc:'무릎을 굽히며 왼쪽 어깨를 왼쪽 무릎 방향으로 가져가 상체를 이동. 머리가 아니라 다리와 몸통으로 움직입니다.',
+      seq:['slip_l'] },
+    { id:'slip_r', name:'SLIP RIGHT', kr:'슬립 (오른쪽)', num:'SR',
+      desc:'오른쪽 어깨를 오른쪽 무릎 방향으로. 잽을 슬립한 후 크로스 카운터로 연결하는 기본 패턴.',
+      seq:['slip_r'] },
+    { id:'bob_weave', name:'BOB & WEAVE', kr:'밥 앤 위브', num:'BW',
+      desc:'무릎을 깊이 굽혀 U자로 상체를 낮추며 좌우로 흔들어 훅을 회피. 마이크 타이슨의 시그니처.',
+      seq:['bob_weave'] },
+  ]
+};
+
+// =====================================================
+// THREE.JS SETUP
+// =====================================================
+let scene, camera, renderer, clock;
+let B = {}; // boxer parts
+let isPlaying = false, animSpeed = 1;
+let comboSeq = [], comboStep = 0, comboT = 0;
+let stepDur = 1.0;
+let isMirrored = false;
+let currentMove = null;
+
+// Orbit
+let oTheta = 0, oPhi = Math.PI/7, oR = 4.2;
+const oTarget = new THREE.Vector3(0, 1.0, 0);
+let dragging = false, lastM = {x:0,y:0};
+
+function init(){
+  scene = new THREE.Scene();
+  clock = new THREE.Clock();
+  camera = new THREE.PerspectiveCamera(40, innerWidth/innerHeight, 0.1, 100);
+  
+  renderer = new THREE.WebGLRenderer({antialias:true,alpha:true});
+  renderer.setSize(innerWidth,innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.1;
+  document.getElementById('cv').appendChild(renderer.domElement);
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0x404060, 0.5));
+  const dl = new THREE.DirectionalLight(0xffffff,0.9);
+  dl.position.set(3,5,4); dl.castShadow=true; dl.shadow.mapSize.set(1024,1024);
+  scene.add(dl);
+  scene.add(new THREE.DirectionalLight(0x3366aa,0.25).translateX(-3).translateY(3));
+  const rim = new THREE.DirectionalLight(0xe63946,0.4);
+  rim.position.set(0,2,-4); scene.add(rim);
+
+  // Floor
+  const fm = new THREE.MeshStandardMaterial({color:0x16161e,roughness:0.85,metalness:0.15});
+  const fl = new THREE.Mesh(new THREE.PlaneGeometry(14,14), fm);
+  fl.rotation.x=-Math.PI/2; fl.receiveShadow=true; scene.add(fl);
+
+  // Ring circle
+  const rg = new THREE.Mesh(
+    new THREE.RingGeometry(2.6,2.65,64),
+    new THREE.MeshBasicMaterial({color:0xe63946,side:THREE.DoubleSide,transparent:true,opacity:0.2})
+  );
+  rg.rotation.x=-Math.PI/2; rg.position.y=0.005; scene.add(rg);
+
+  const gh = new THREE.GridHelper(14,28,0x1e1e2a,0x121218);
+  gh.position.y=0.003; scene.add(gh);
+
+  buildBoxer();
+  setupControls();
+  buildUI();
+  applyGuard();
+  animate();
+}
+
+// =====================================================
+// BOXER - proportional human figure
+// =====================================================
+function buildBoxer(){
+  const G = new THREE.Group();
+  const skin = new THREE.MeshStandardMaterial({color:0xc8956c,roughness:0.65,metalness:0.05});
+  const body = new THREE.MeshStandardMaterial({color:0x22222e,roughness:0.55,metalness:0.08});
+  const glove = new THREE.MeshStandardMaterial({color:0xcc2233,roughness:0.35,metalness:0.1});
+  const short = new THREE.MeshStandardMaterial({color:0x0f0f1a,roughness:0.7});
+  const shoe = new THREE.MeshStandardMaterial({color:0x0a0a12,roughness:0.5,metalness:0.1});
+  const wrap = new THREE.MeshStandardMaterial({color:0xddddcc,roughness:0.8});
+
+  // ---- ROOT (hips) ----
+  // Orthodox stance: body angled ~45° to opponent
+  // Feet shoulder-width, front foot 45°, back foot 60-70°
+  const root = new THREE.Group();
+  root.position.set(0, 0, 0);
+  G.add(root);
+  B.root = root;
+
+  // ---- PELVIS ----
+  const pelvis = new THREE.Group();
+  pelvis.position.y = 0.92;
+  root.add(pelvis);
+  B.pelvis = pelvis;
+
+  const pelvisM = new THREE.Mesh(new THREE.SphereGeometry(0.17,8,6,0,Math.PI*2,0,Math.PI/2), body);
+  pelvisM.scale.set(1,0.5,0.8);
+  pelvis.add(pelvisM);
+
+  // ---- SPINE / TORSO ----
+  const spine = new THREE.Group();
+  spine.position.y = 0.05;
+  pelvis.add(spine);
+  B.spine = spine;
+
+  // Abdomen
+  const abd = new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.16,0.18,8), skin);
+  abd.position.y = 0.09;
+  spine.add(abd);
+
+  // ---- CHEST ----
+  const chest = new THREE.Group();
+  chest.position.y = 0.22;
+  spine.add(chest);
+  B.chest = chest;
+
+  // Main chest
+  const chestM = new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.15,0.28,8), body);
+  chestM.castShadow = true;
+  chest.add(chestM);
+
+  // Shoulder bulk
+  const shL = new THREE.Mesh(new THREE.SphereGeometry(0.065,8,6), skin);
+  shL.position.set(-0.2,0.1,0); chest.add(shL);
+  const shR = new THREE.Mesh(new THREE.SphereGeometry(0.065,8,6), skin);
+  shR.position.set(0.2,0.1,0); chest.add(shR);
+
+  // ---- NECK ----
+  const nk = new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.06,0.08,8), skin);
+  nk.position.y = 0.18; chest.add(nk);
+
+  // ---- HEAD ----
+  const head = new THREE.Group();
+  head.position.y = 0.28;
+  chest.add(head);
+  B.head = head;
+
+  const headM = new THREE.Mesh(new THREE.SphereGeometry(0.1,12,10), skin);
+  headM.castShadow = true; head.add(headM);
+
+  // Chin (tuck target)
+  const chin = new THREE.Mesh(new THREE.SphereGeometry(0.03,6,4), skin);
+  chin.position.set(0,-0.07,0.06); head.add(chin);
+
+  // Eyes
+  const eG = new THREE.SphereGeometry(0.012,6,6);
+  const eM = new THREE.MeshBasicMaterial({color:0x111111});
+  const eL = new THREE.Mesh(eG,eM); eL.position.set(-0.035,0.02,0.085); head.add(eL);
+  const eR = new THREE.Mesh(eG,eM); eR.position.set(0.035,0.02,0.085); head.add(eR);
+
+  // Nose
+  const nose = new THREE.Mesh(new THREE.CylinderGeometry(0.008,0.015,0.03,5), skin);
+  nose.position.set(0,-0.005,0.095); nose.rotation.x=Math.PI/6; head.add(nose);
+
+  // ---- ARMS ----
+  function makeArm(side){
+    const s = side==='L'?-1:1;
+    const shoulder = new THREE.Group();
+    shoulder.position.set(s*0.22, 0.08, 0);
+    chest.add(shoulder);
+
+    const ua = new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.035,0.24,8), skin);
+    ua.position.y = -0.12; ua.castShadow=true; shoulder.add(ua);
+
+    // Elbow joint
+    const elbow = new THREE.Group();
+    elbow.position.y = -0.24;
+    shoulder.add(elbow);
+
+    const fa = new THREE.Mesh(new THREE.CylinderGeometry(0.035,0.03,0.2,8), skin);
+    fa.position.y = -0.1; fa.castShadow=true; elbow.add(fa);
+
+    // Wrist wrap
+    const wr = new THREE.Mesh(new THREE.CylinderGeometry(0.032,0.032,0.04,8), wrap);
+    wr.position.y = -0.2; elbow.add(wr);
+
+    // Glove
+    const gl = new THREE.Mesh(new THREE.SphereGeometry(0.055,10,8), glove);
+    gl.position.y = -0.24;
+    gl.scale.set(1,1.1,0.9);
+    gl.castShadow=true; elbow.add(gl);
+
+    // Knuckle line on glove
+    const kn = new THREE.Mesh(new THREE.BoxGeometry(0.08,0.02,0.03), new THREE.MeshStandardMaterial({color:0x991122,roughness:0.3}));
+    kn.position.set(0,-0.24,0.04); elbow.add(kn);
+
+    return {shoulder, elbow, glove: gl};
+  }
+
+  const LA = makeArm('L'), RA = makeArm('R');
+  B.lSh = LA.shoulder; B.lEl = LA.elbow; B.lGl = LA.glove;
+  B.rSh = RA.shoulder; B.rEl = RA.elbow; B.rGl = RA.glove;
+
+  // ---- SHORTS ----
+  const shorts = new THREE.Mesh(new THREE.CylinderGeometry(0.17,0.19,0.14,8), short);
+  shorts.position.y = -0.02; pelvis.add(shorts);
+  // Shorts stripe
+  const stripe = new THREE.Mesh(new THREE.CylinderGeometry(0.175,0.195,0.02,8),
+    new THREE.MeshBasicMaterial({color:0xe63946}));
+  stripe.position.y = 0.05; pelvis.add(stripe);
+
+  // ---- LEGS ----
+  function makeLeg(side){
+    const s = side==='L'?-1:1;
+    const hip = new THREE.Group();
+    hip.position.set(s*0.09, -0.1, 0);
+    pelvis.add(hip);
+
+    const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.065,0.055,0.34,8), short);
+    thigh.position.y = -0.17; thigh.castShadow=true; hip.add(thigh);
+
+    const knee = new THREE.Group();
+    knee.position.y = -0.34;
+    hip.add(knee);
+
+    const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.045,0.04,0.34,8), skin);
+    shin.position.y = -0.17; shin.castShadow=true; knee.add(shin);
+
+    const ankle = new THREE.Group();
+    ankle.position.y = -0.36;
+    knee.add(ankle);
+
+    // Boxing boot
+    const boot = new THREE.Mesh(new THREE.BoxGeometry(0.07,0.04,0.14), shoe);
+    boot.position.set(0,-0.01,0.02); ankle.add(boot);
+    // Boot top
+    const bootTop = new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,0.08,8), shoe);
+    bootTop.position.y = 0.03; ankle.add(bootTop);
+
+    return {hip, knee, ankle};
+  }
+
+  const LL = makeLeg('L'), RL = makeLeg('R');
+  B.lHip = LL.hip; B.lKn = LL.knee; B.lAnk = LL.ankle;
+  B.rHip = RL.hip; B.rKn = RL.knee; B.rAnk = RL.ankle;
+
+  scene.add(G);
+  B.group = G;
+}
+
+// =====================================================
+// GUARD POSE - biomechanically accurate orthodox
+// =====================================================
+// Orthodox stance fundamentals:
+// - Left foot forward, right foot back
+// - Body turned ~45° (presenting less target area)
+// - Feet slightly wider than shoulder-width
+// - Front foot at 45° angle, rear foot at 60-70°
+// - Rear heel slightly raised
+// - Knees slightly bent
+// - Weight 50/50
+// - Chin tucked, looking through eyebrows
+// - Rear hand on cheek protecting chin
+// - Lead hand ~7 inches in front of chin
+// - Elbows tucked to protect body
+// - Shoulders aligned toward opponent
+
+const GUARD = {
+  // Root position (feet placement)
+  rootX: 0, rootZ: 0,
+  // Pelvis: slight turn to present side, lowered for bent knees
+  pelvisY: 0.88, pelvisRY: -0.45, // ~45° body angle
+  // Spine: slight forward lean
+  spineRX: 0.08, spineRY: 0, spineRZ: 0,
+  // Chest: turned further for shoulder alignment
+  chestRX: -0.05, chestRY: -0.15, chestRZ: 0,
+  // Head: chin tucked, looking forward through eyebrows
+  headRX: -0.12, headRY: 0.2, headRZ: 0,
+
+  // LEFT ARM (LEAD) - guard position
+  // Lead hand ~7 inches in front of chin, elbow tucked to body
+  lShX: -1.3,   // shoulder forward/down
+  lShY: 0.1,    // slight outward
+  lShZ: 0.6,    // forward
+  lElX: -1.6,   // elbow bent tight
+  lElY: 0.15,
+  lElZ: 0,
+
+  // RIGHT ARM (REAR) - rear hand glued to chin/cheek
+  // Elbow tucked tight to ribs for body protection
+  rShX: -1.5,   // shoulder down tight
+  rShY: -0.05,
+  rShZ: -0.35,
+  rElX: -1.8,   // very tight bend, hand at cheek
+  rElY: -0.1,
+  rElZ: 0,
+
+  // LEFT LEG (LEAD) - forward, foot at 45°
+  lHipX: -0.08,
+  lHipY: 0,
+  lHipZ: 0.08,
+  lKnX: 0.2,   // slight knee bend
+  lKnY: 0,
+  lKnZ: 0,
+  lAnkX: 0,
+
+  // RIGHT LEG (REAR) - back, heel raised, foot at 60-70°
+  rHipX: 0.06,
+  rHipY: 0,
+  rHipZ: -0.06,
+  rKnX: 0.22,  // slight knee bend
+  rKnY: 0,
+  rKnZ: 0,
+  rAnkX: -0.15, // heel raised
+};
+
+function applyGuard(){
+  applyPoseObj(GUARD);
+}
+
+function applyPoseObj(p){
+  const m = isMirrored ? -1 : 1;
+
+  B.root.position.x = (p.rootX||0)*m;
+  B.root.position.z = p.rootZ||0;
+
+  B.pelvis.position.y = p.pelvisY||0.88;
+  B.pelvis.rotation.y = (p.pelvisRY||-0.45)*m;
+
+  B.spine.rotation.x = p.spineRX||0;
+  B.spine.rotation.y = (p.spineRY||0)*m;
+  B.spine.rotation.z = (p.spineRZ||0)*m;
+
+  B.chest.rotation.x = p.chestRX||0;
+  B.chest.rotation.y = (p.chestRY||0)*m;
+  B.chest.rotation.z = (p.chestRZ||0)*m;
+
+  B.head.rotation.x = p.headRX||-0.12;
+  B.head.rotation.y = (p.headRY||0.2)*m;
+  B.head.rotation.z = (p.headRZ||0)*m;
+
+  // Arms (mirror swaps L/R)
+  const lSh = isMirrored ? B.rSh : B.lSh;
+  const lEl = isMirrored ? B.rEl : B.lEl;
+  const rSh = isMirrored ? B.lSh : B.rSh;
+  const rEl = isMirrored ? B.lEl : B.rEl;
+
+  lSh.rotation.set(p.lShX||-1.3, (p.lShY||0)*m, (p.lShZ||0)*m);
+  lEl.rotation.set(p.lElX||-1.6, (p.lElY||0)*m, (p.lElZ||0)*m);
+  rSh.rotation.set(p.rShX||-1.5, (p.rShY||0)*m, (p.rShZ||0)*m);
+  rEl.rotation.set(p.rElX||-1.8, (p.rElY||0)*m, (p.rElZ||0)*m);
+
+  // Legs (mirror swaps L/R)
+  const lH = isMirrored ? B.rHip : B.lHip;
+  const lK = isMirrored ? B.rKn : B.lKn;
+  const lA = isMirrored ? B.rAnk : B.lAnk;
+  const rH = isMirrored ? B.lHip : B.rHip;
+  const rK = isMirrored ? B.lKn : B.rKn;
+  const rA = isMirrored ? B.lAnk : B.rAnk;
+
+  lH.rotation.set(p.lHipX||0, (p.lHipY||0)*m, (p.lHipZ||0)*m);
+  lK.rotation.set(p.lKnX||0.2, (p.lKnY||0)*m, (p.lKnZ||0)*m);
+  if(lA) lA.rotation.x = p.lAnkX||0;
+
+  rH.rotation.set(p.rHipX||0, (p.rHipY||0)*m, (p.rHipZ||0)*m);
+  rK.rotation.set(p.rKnX||0.22, (p.rKnY||0)*m, (p.rKnZ||0)*m);
+  if(rA) rA.rotation.x = p.rAnkX||-0.15;
+}
+
+// =====================================================
+// ANIMATION KEYFRAMES - biomechanically accurate
+// =====================================================
+const KF = {
+  // ---- JAB ----
+  // Lead hand straight extension, shoulder rotation forward
+  // Rear hand STAYS at chin, chin tucked behind lead shoulder
+  jab: [
+    {t:0, p:null}, // guard
+    {t:0.25, p:{ // Wind-up: slight pull back
+      pelvisRY:-0.35,
+      lShX:-1.5, lShZ:0.4, lElX:-1.7
+    }},
+    {t:0.5, p:{ // Extension: lead hand straight out
+      pelvisRY:-0.2,
+      chestRY:0.05,
+      spineRY:0.15,
+      // Lead arm fully extended forward
+      lShX:-0.3, lShY:0.2, lShZ:0.8,
+      lElX:-0.2, lElY:0.1,
+      // REAR HAND STAYS AT CHIN - critical
+      rShX:-1.5, rShY:-0.05, rShZ:-0.35,
+      rElX:-1.8,
+      // Lead shoulder up to protect chin
+      headRY:0.1
+    }},
+    {t:0.75, p:{ // Retract
+      lShX:-0.8, lShZ:0.6, lElX:-1.0
+    }},
+    {t:1, p:null}
+  ],
+
+  // ---- CROSS ----
+  // Rear foot pivot → hip rotation → shoulder rotation → elbow extension
+  // Lead hand stays at chin
+  cross: [
+    {t:0, p:null},
+    {t:0.2, p:{ // Load: weight shifts to rear
+      pelvisRY:-0.55,
+      rShX:-1.6, rShZ:-0.5, rElX:-1.6,
+      rKnX:0.3, // deeper knee bend
+    }},
+    {t:0.5, p:{ // Full extension with hip rotation
+      pelvisRY:0.1, // hips rotate through
+      spineRY:0.3,
+      chestRY:0.2,
+      // Rear arm FULLY extended straight
+      rShX:-0.2, rShY:-0.25, rShZ:-0.7,
+      rElX:-0.15, rElY:-0.05,
+      // Rear leg pivots (heel out)
+      rHipY:0.15, rKnX:0.15, rAnkX:-0.25,
+      // Lead hand STAYS protecting chin
+      lShX:-1.4, lElX:-1.7,
+      headRY:-0.1
+    }},
+    {t:0.75, p:{
+      pelvisRY:-0.25,
+      rShX:-1.0, rElX:-1.2,
+    }},
+    {t:1, p:null}
+  ],
+
+  // ---- LEAD HOOK ----
+  // Elbow stays 90°, horizontal arc, lead foot pivot + torso rotation
+  lead_hook: [
+    {t:0, p:null},
+    {t:0.2, p:{ // Chamber: arm comes to 90°
+      pelvisRY:-0.55,
+      lShX:-0.9, lShY:0.3, lShZ:0.9,
+      lElX:-1.55, lElY:0.2,
+      lKnX:0.25, // load lead leg
+    }},
+    {t:0.5, p:{ // Swing through: torso rotates, 90° arm swings
+      pelvisRY:-0.1,
+      spineRY:0.3,
+      chestRY:0.25,
+      // Lead arm: elbow at 90°, swings horizontally
+      lShX:-0.7, lShY:0.7, lShZ:0.2,
+      lElX:-1.55, lElY:0.4,
+      // Lead foot pivots
+      lHipY:0.1,
+      // Rear hand AT CHIN
+      rShX:-1.5, rElX:-1.8,
+      headRY:-0.05
+    }},
+    {t:0.75, p:{
+      lShX:-1.0, lShY:0.4, lShZ:0.5,
+      lElX:-1.6,
+    }},
+    {t:1, p:null}
+  ],
+
+  // ---- REAR HOOK ----
+  rear_hook: [
+    {t:0, p:null},
+    {t:0.2, p:{
+      pelvisRY:-0.3,
+      rShX:-0.9, rShY:-0.3, rShZ:-0.9,
+      rElX:-1.55, rElY:-0.2,
+      rKnX:0.25,
+    }},
+    {t:0.5, p:{
+      pelvisRY:-0.6,
+      spineRY:-0.2,
+      chestRY:-0.2,
+      rShX:-0.7, rShY:-0.7, rShZ:-0.2,
+      rElX:-1.55, rElY:-0.4,
+      rHipY:-0.1,
+      lShX:-1.3, lElX:-1.6,
+      headRY:0.3
+    }},
+    {t:1, p:null}
+  ],
+
+  // ---- LEAD UPPERCUT ----
+  // Drop into 3/4 squat, drop lead arm 90° from body, drive upward with legs
+  lead_upper: [
+    {t:0, p:null},
+    {t:0.25, p:{ // Squat + arm drop
+      pelvisY:0.78, // lower center of mass
+      pelvisRY:-0.3,
+      lShX:-0.5, lShY:0.15, lShZ:0.3,
+      lElX:-1.55,
+      lKnX:0.45, rKnX:0.4, // deep knee bend
+      spineRX:0.12,
+    }},
+    {t:0.55, p:{ // Drive up: legs extend, fist rises vertically
+      pelvisY:0.92,
+      pelvisRY:-0.2,
+      spineRY:0.15,
+      // Lead arm drives UP, elbow stays bent
+      lShX:-2.0, lShY:0.2, lShZ:0.4,
+      lElX:-1.4,
+      lKnX:0.12, rKnX:0.15, // legs extend
+      rShX:-1.5, rElX:-1.8, // rear hand chin
+    }},
+    {t:1, p:null}
+  ],
+
+  // ---- REAR UPPERCUT ----
+  rear_upper: [
+    {t:0, p:null},
+    {t:0.25, p:{
+      pelvisY:0.76,
+      pelvisRY:-0.55,
+      rShX:-0.5, rShY:-0.15, rShZ:-0.3,
+      rElX:-1.55,
+      lKnX:0.4, rKnX:0.5,
+      spineRX:0.12,
+    }},
+    {t:0.55, p:{
+      pelvisY:0.93,
+      pelvisRY:-0.15,
+      spineRY:-0.15,
+      chestRY:-0.1,
+      rShX:-2.1, rShY:-0.2, rShZ:-0.4,
+      rElX:-1.4,
+      rHipY:0.1, rAnkX:-0.25,
+      lKnX:0.12, rKnX:0.12,
+      lShX:-1.3, lElX:-1.6,
+    }},
+    {t:1, p:null}
+  ],
+
+  // ---- FOOTWORK ----
+  step_fwd: [
+    {t:0, p:null},
+    {t:0.3, p:{ rootZ:0.1, lHipX:-0.15, lKnX:0.15 }},
+    {t:0.6, p:{ rootZ:0.22, lHipX:-0.08 }},
+    {t:1.0, p:{ rootZ:0.35 }}
+  ],
+  step_back: [
+    {t:0, p:null},
+    {t:0.3, p:{ rootZ:-0.1, rHipX:0.12, rKnX:0.18 }},
+    {t:0.6, p:{ rootZ:-0.22 }},
+    {t:1.0, p:{ rootZ:-0.35 }}
+  ],
+  lat_left: [
+    {t:0, p:null},
+    {t:0.3, p:{ rootX:-0.12 }},
+    {t:0.6, p:{ rootX:-0.25 }},
+    {t:1.0, p:{ rootX:-0.35 }}
+  ],
+  lat_right: [
+    {t:0, p:null},
+    {t:0.3, p:{ rootX:0.12 }},
+    {t:0.6, p:{ rootX:0.25 }},
+    {t:1.0, p:{ rootX:0.35 }}
+  ],
+  // SLIP LEFT: bend knees, left shoulder to left knee
+  slip_l: [
+    {t:0, p:null},
+    {t:0.35, p:{
+      pelvisY:0.78,
+      spineRZ:0.35,
+      chestRZ:0.15,
+      spineRX:0.1,
+      lKnX:0.5, rKnX:0.3,
+      headRZ:0.1,
+    }},
+    {t:0.65, p:{
+      pelvisY:0.75,
+      spineRZ:0.4,
+      chestRZ:0.2,
+      spineRX:0.12,
+      lKnX:0.55, rKnX:0.35,
+    }},
+    {t:1, p:null}
+  ],
+  // SLIP RIGHT
+  slip_r: [
+    {t:0, p:null},
+    {t:0.35, p:{
+      pelvisY:0.78,
+      spineRZ:-0.35,
+      chestRZ:-0.15,
+      spineRX:0.1,
+      lKnX:0.3, rKnX:0.5,
+      headRZ:-0.1,
+    }},
+    {t:0.65, p:{
+      pelvisY:0.75,
+      spineRZ:-0.4,
+      chestRZ:-0.2,
+      spineRX:0.12,
+      lKnX:0.35, rKnX:0.55,
+    }},
+    {t:1, p:null}
+  ],
+  // BOB & WEAVE: U-shape motion under hooks
+  bob_weave: [
+    {t:0, p:null},
+    {t:0.15, p:{
+      pelvisY:0.8, spineRZ:0.2, spineRX:0.08,
+      lKnX:0.45, rKnX:0.35,
+    }},
+    {t:0.35, p:{
+      pelvisY:0.68, spineRX:0.2, spineRZ:0.05,
+      lKnX:0.65, rKnX:0.55,
+      headRX:-0.2,
+    }},
+    {t:0.55, p:{
+      pelvisY:0.72, spineRZ:-0.2, spineRX:0.15,
+      lKnX:0.55, rKnX:0.5,
+    }},
+    {t:0.75, p:{
+      pelvisY:0.82, spineRZ:-0.1,
+      lKnX:0.35, rKnX:0.35,
+    }},
+    {t:1, p:null}
+  ],
+};
+
+// =====================================================
+// INTERPOLATION
+// =====================================================
+function smooth(t){ return t*t*(3-2*t); }
+function lrp(a,b,t){ return a+(b-a)*t; }
+
+function getPoseAt(kframes, t){
+  let k0=kframes[0], k1=kframes[kframes.length-1];
+  for(let i=0;i<kframes.length-1;i++){
+    if(t>=kframes[i].t && t<=kframes[i+1].t){
+      k0=kframes[i]; k1=kframes[i+1]; break;
+    }
+  }
+  const range = k1.t-k0.t;
+  const lt = range>0 ? (t-k0.t)/range : 0;
+  const e = smooth(lt);
+
+  const p0 = k0.p ? {...GUARD,...k0.p} : {...GUARD};
+  const p1 = k1.p ? {...GUARD,...k1.p} : {...GUARD};
+
+  const result = {};
+  const keys = new Set([...Object.keys(p0),...Object.keys(p1)]);
+  for(const k of keys){
+    const a = p0[k]!==undefined ? p0[k] : (GUARD[k]||0);
+    const b = p1[k]!==undefined ? p1[k] : (GUARD[k]||0);
+    result[k] = lrp(a,b,e);
+  }
+  return result;
+}
+
+// =====================================================
+// ANIMATION LOOP
+// =====================================================
+function animate(){
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+
+  if(isPlaying && comboSeq.length>0){
+    comboT += dt * animSpeed;
+    const st = comboT / stepDur;
+
+    if(st>=1.0){
+      comboT=0;
+      comboStep++;
+      if(comboStep>=comboSeq.length) comboStep=0;
+      updateSeqUI();
+    }
+
+    const moveId = comboSeq[comboStep];
+    const kf = KF[moveId];
+    if(kf){
+      const pose = getPoseAt(kf, Math.min(st,1.0));
+      applyPoseObj(pose);
+    }
+  }
+
+  // Update camera orbit
+  camera.position.x = oTarget.x + oR * Math.sin(oPhi) * Math.sin(oTheta);
+  camera.position.y = oTarget.y + oR * Math.cos(oPhi);
+  camera.position.z = oTarget.z + oR * Math.sin(oPhi) * Math.cos(oTheta);
+  camera.lookAt(oTarget);
+
+  renderer.render(scene,camera);
+}
+
+// =====================================================
+// CONTROLS
+// =====================================================
+function setupControls(){
+  const el = renderer.domElement;
+  el.addEventListener('mousedown',e=>{dragging=true;lastM={x:e.clientX,y:e.clientY}});
+  el.addEventListener('mousemove',e=>{
+    if(!dragging)return;
+    oTheta-=(e.clientX-lastM.x)*0.007;
+    oPhi=Math.max(0.05,Math.min(Math.PI/2.1,oPhi+(e.clientY-lastM.y)*0.007));
+    lastM={x:e.clientX,y:e.clientY};
+  });
+  el.addEventListener('mouseup',()=>dragging=false);
+  el.addEventListener('mouseleave',()=>dragging=false);
+  el.addEventListener('wheel',e=>{oR=Math.max(1.8,Math.min(10,oR+e.deltaY*0.004));e.preventDefault()},{passive:false});
+
+  let lT=null,lTD=null;
+  el.addEventListener('touchstart',e=>{
+    if(e.touches.length===1)lT={x:e.touches[0].clientX,y:e.touches[0].clientY};
+    else if(e.touches.length===2){
+      const dx=e.touches[0].clientX-e.touches[1].clientX;
+      const dy=e.touches[0].clientY-e.touches[1].clientY;
+      lTD=Math.sqrt(dx*dx+dy*dy);
+    }
+  });
+  el.addEventListener('touchmove',e=>{
+    e.preventDefault();
+    if(e.touches.length===1&&lT){
+      oTheta-=(e.touches[0].clientX-lT.x)*0.007;
+      oPhi=Math.max(0.05,Math.min(Math.PI/2.1,oPhi+(e.touches[0].clientY-lT.y)*0.007));
+      lT={x:e.touches[0].clientX,y:e.touches[0].clientY};
+    }else if(e.touches.length===2&&lTD){
+      const dx=e.touches[0].clientX-e.touches[1].clientX;
+      const dy=e.touches[0].clientY-e.touches[1].clientY;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      oR=Math.max(1.8,Math.min(10,oR-(d-lTD)*0.015));
+      lTD=d;
+    }
+  },{passive:false});
+  el.addEventListener('touchend',()=>{lT=null;lTD=null});
+
+  document.addEventListener('keydown',e=>{
+    if(e.code==='Space'){e.preventDefault();togglePlay()}
+    else if(e.code==='KeyR')resetView();
+    else if(e.code==='ArrowRight')nextStep();
+    else if(e.code==='ArrowLeft')prevStep();
+  });
+}
+
+// =====================================================
+// UI
+// =====================================================
+function buildUI(){
+  const allGroups = [
+    {data:MOVES.basic, el:'pBasic'},
+    {data:MOVES.combo, el:'pCombo'},
+    {data:MOVES.foot, el:'pFoot'},
+  ];
+  allGroups.forEach(g=>{
+    const div = document.getElementById(g.el);
+    g.data.forEach(m=>{
+      div.innerHTML += `<button class="mb" data-id="${m.id}" onclick="selectById('${m.id}')"><span class="n">${m.num}</span>${m.name}<span class="k">${m.kr}</span></button>`;
+    });
+  });
+
+  document.getElementById('spdR').addEventListener('input',e=>{
+    animSpeed=parseFloat(e.target.value);
+    document.getElementById('spdV').textContent=animSpeed.toFixed(1)+'x';
+  });
+}
+
+function findMove(id){
+  return [...MOVES.basic,...MOVES.combo,...MOVES.foot].find(m=>m.id===id);
+}
+
+function selectById(id){ selectMove(findMove(id)); }
+
+function selectMove(move){
+  if(!move)return;
+  currentMove=move;
+
+  document.querySelectorAll('.mb').forEach(b=>b.classList.remove('on'));
+  const ab = document.querySelector(`.mb[data-id="${move.id}"]`);
+  if(ab)ab.classList.add('on');
+
+  document.getElementById('mName').textContent = move.name;
+  document.getElementById('mDesc').textContent = move.desc;
+
+  // Show technique overlay briefly
+  if(move.tech){
+    const ov = document.getElementById('techOv');
+    ov.textContent = move.tech;
+    ov.classList.add('show');
+    setTimeout(()=>ov.classList.remove('show'), 4000);
+  }
+
+  comboSeq = move.seq;
+  comboStep = 0;
+  comboT = 0;
+
+  // Sequence display
+  const sd = document.getElementById('seqD');
+  if(comboSeq.length>1){
+    sd.classList.add('show');
+    sd.innerHTML = comboSeq.map((s,i)=>{
+      const md = findMove(s) || [...MOVES.basic].find(x=>x.id===s);
+      const n = md ? md.num : (i+1);
+      return `<div class="ss ${i===0?'on':''}" data-i="${i}">${n}</div>`;
+    }).join('');
+  }else{
+    sd.classList.remove('show');
+  }
+
+  // Reset to guard
+  applyGuard();
+  B.root.position.x=0; B.root.position.z=0;
+
+  isPlaying=false;
+  document.getElementById('plI').style.display='block';
+  document.getElementById('paI').style.display='none';
+  document.getElementById('plT').textContent='재생';
+}
+
+function updateSeqUI(){
+  document.querySelectorAll('.ss').forEach((el,i)=>{
+    el.classList.remove('on','dn');
+    if(i===comboStep) el.classList.add('on');
+    else if(i<comboStep) el.classList.add('dn');
+  });
+}
+
+function togglePlay(){
+  isPlaying=!isPlaying;
+  document.getElementById('plI').style.display=isPlaying?'none':'block';
+  document.getElementById('paI').style.display=isPlaying?'block':'none';
+  document.getElementById('plT').textContent=isPlaying?'정지':'재생';
+  if(isPlaying){comboT=0;comboStep=0;updateSeqUI()}
+}
+
+function resetView(){
+  oTheta=0;oPhi=Math.PI/7;oR=4.2;
+  isPlaying=false;comboT=0;comboStep=0;
+  applyGuard();
+  B.root.position.x=0; B.root.position.z=0;
+  document.getElementById('plI').style.display='block';
+  document.getElementById('paI').style.display='none';
+  document.getElementById('plT').textContent='재생';
+  updateSeqUI();
+}
+
+function nextStep(){
+  if(comboSeq.length>1){
+    comboStep=(comboStep+1)%comboSeq.length;
+    comboT=0; updateSeqUI();
+  }
+}
+function prevStep(){
+  if(comboSeq.length>1){
+    comboStep=(comboStep-1+comboSeq.length)%comboSeq.length;
+    comboT=0; updateSeqUI();
+  }
+}
+function toggleMirror(){
+  isMirrored=!isMirrored;
+  const btn=document.getElementById('mirBtn');
+  btn.style.borderColor=isMirrored?'var(--accent)':'';
+  btn.style.background=isMirrored?'rgba(230,57,70,.15)':'';
+  applyGuard();
+}
+
+window.addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+});
+
+// Start
+init();
+</script>
+</body>
+</html>
