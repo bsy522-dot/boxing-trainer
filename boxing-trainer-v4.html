@@ -1,0 +1,1758 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Boxing Trainer V4 - Career Mode</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a10;--panel:rgba(14,14,22,.95);--accent:#e63946;--accent2:#ff6b35;--text:#f0f0f0;--dim:#6a6a7e;--border:rgba(255,255,255,.08);--green:#22c55e;--yellow:#eab308;--blue:#3b82f6;--gold:#ffd700}
+html,body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-serif;overflow:hidden;height:100vh;width:100vw;touch-action:none;user-select:none}
+canvas{display:block}
+#gc{position:fixed;top:0;left:0;width:100%;height:100%}
+.overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:10;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(10,10,16,.92);backdrop-filter:blur(8px)}
+.overlay.hidden{display:none}
+.menu-title{font-size:48px;font-weight:900;letter-spacing:6px;color:var(--accent);text-shadow:0 0 30px rgba(230,57,70,.5);margin-bottom:8px}
+.menu-sub{font-size:14px;color:var(--dim);margin-bottom:30px;letter-spacing:2px}
+.menu-btn{display:block;width:280px;padding:14px 20px;margin:6px auto;background:var(--panel);border:2px solid var(--border);border-radius:10px;color:var(--text);font-size:16px;font-weight:600;cursor:pointer;transition:all .2s;text-align:left;letter-spacing:1px}
+.menu-btn:hover{border-color:var(--accent);background:rgba(230,57,70,.1);transform:translateX(4px)}
+.menu-btn .icon{display:inline-block;width:30px;font-size:20px}
+.menu-btn .sub{display:block;font-size:11px;color:var(--dim);margin-top:2px;font-weight:400}
+.menu-btn.locked{opacity:.4;pointer-events:none}
+.back-btn{position:fixed;top:15px;left:15px;z-index:100;padding:8px 16px;background:var(--panel);border:1px solid var(--border);border-radius:8px;color:var(--dim);font-size:13px;cursor:pointer;transition:all .2s}
+.back-btn:hover{border-color:var(--accent);color:var(--text)}
+.back-btn.hidden{display:none}
+.stats-bar{display:flex;gap:8px;margin:8px 0;flex-wrap:wrap;justify-content:center}
+.stat-pill{padding:4px 12px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:20px;font-size:11px;color:var(--dim)}
+.stat-pill b{color:var(--accent);margin-left:4px}
+.opponent-card{width:320px;padding:16px;background:var(--panel);border:2px solid var(--border);border-radius:12px;margin:8px;text-align:center;cursor:pointer;transition:all .2s}
+.opponent-card:hover{border-color:var(--accent);transform:scale(1.02)}
+.opponent-card.locked{opacity:.35;pointer-events:none}
+.opponent-card .name{font-size:20px;font-weight:800;color:var(--accent);letter-spacing:2px}
+.opponent-card .style{font-size:12px;color:var(--dim);margin:4px 0}
+.opponent-card .record{font-size:11px;color:var(--yellow)}
+.opp-stats{display:flex;gap:4px;justify-content:center;margin-top:8px}
+.opp-stat{font-size:10px;padding:2px 8px;background:rgba(255,255,255,.04);border-radius:10px;color:var(--dim)}
+.belt-display{text-align:center;margin:10px 0}
+.belt-display .belt{font-size:28px;font-weight:900;letter-spacing:3px}
+.belt-display .belt.regional{color:#cd7f32}
+.belt-display .belt.national{color:#c0c0c0}
+.belt-display .belt.continental{color:var(--gold)}
+.belt-display .belt.world{color:var(--accent);text-shadow:0 0 20px var(--accent)}
+.fight-result{position:fixed;top:0;left:0;width:100%;height:100%;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.85);backdrop-filter:blur(10px)}
+.fight-result.hidden{display:none}
+.fight-result .result-text{font-size:64px;font-weight:900;letter-spacing:8px;text-shadow:0 0 40px currentColor}
+.fight-result .result-text.win{color:var(--green)}
+.fight-result .result-text.lose{color:var(--accent)}
+.fight-result .result-text.ko{color:var(--gold)}
+.result-stats{margin:20px 0;text-align:center}
+.result-stats div{font-size:14px;color:var(--dim);margin:4px 0}
+.result-stats b{color:var(--text)}
+.train-game{position:fixed;top:0;left:0;width:100%;height:100%;z-index:50}
+.train-game.hidden{display:none}
+.hud-top{position:fixed;top:0;left:0;right:0;z-index:20;display:flex;align-items:center;justify-content:space-between;padding:8px 16px;background:linear-gradient(180deg,rgba(0,0,0,.9),transparent);pointer-events:none}
+.hud-top>*{pointer-events:auto}
+.hud-top .round-info{font-size:14px;font-weight:700;letter-spacing:2px}
+.hud-top .timer{font-size:28px;font-weight:900;letter-spacing:3px;color:var(--accent)}
+.hp-bar-wrap{display:flex;align-items:center;gap:8px;margin:0 10px}
+.hp-bar{width:180px;height:14px;background:rgba(255,255,255,.08);border-radius:7px;overflow:hidden;position:relative}
+.hp-bar .fill{height:100%;border-radius:7px;transition:width .3s}
+.hp-bar .fill.player{background:linear-gradient(90deg,var(--green),#4ade80)}
+.hp-bar .fill.opp{background:linear-gradient(90deg,var(--accent),#f87171)}
+.hp-label{font-size:11px;font-weight:700;min-width:40px}
+.stamina-bar{width:120px;height:6px;background:rgba(255,255,255,.06);border-radius:3px;overflow:hidden}
+.stamina-bar .fill{height:100%;background:var(--yellow);border-radius:3px;transition:width .2s}
+.combo-popup{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:30;font-size:48px;font-weight:900;color:var(--accent2);text-shadow:0 0 20px rgba(255,107,53,.6);pointer-events:none;opacity:0;transition:opacity .3s}
+.controls-hint{position:fixed;bottom:8px;left:50%;transform:translateX(-50%);z-index:20;font-size:10px;color:var(--dim);text-align:center;background:var(--panel);padding:6px 16px;border-radius:20px;border:1px solid var(--border)}
+.touch-zones{position:fixed;bottom:0;left:0;right:0;height:40%;z-index:15;display:none;pointer-events:auto}
+@media(pointer:coarse){.touch-zones{display:flex}}
+.touch-zone{flex:1;display:flex;align-items:center;justify-content:center;font-size:12px;color:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.05)}
+.level-up{position:fixed;top:0;left:0;width:100%;height:100%;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.9)}
+.level-up.hidden{display:none}
+.level-up h2{font-size:36px;color:var(--gold);margin-bottom:20px;letter-spacing:4px}
+.stat-alloc{display:flex;flex-direction:column;gap:10px;margin:15px 0}
+.stat-alloc-row{display:flex;align-items:center;gap:12px;font-size:14px}
+.stat-alloc-row .sname{width:80px;text-align:right;color:var(--dim)}
+.stat-alloc-row .sval{width:30px;text-align:center;font-weight:700;color:var(--accent)}
+.alloc-btn{width:32px;height:32px;border-radius:50%;background:var(--panel);border:2px solid var(--border);color:var(--text);font-size:18px;cursor:pointer;transition:all .2s}
+.alloc-btn:hover{border-color:var(--accent);background:rgba(230,57,70,.15)}
+.alloc-btn:disabled{opacity:.3;cursor:default}
+.confirm-btn{padding:12px 40px;background:var(--accent);border:none;border-radius:8px;color:#fff;font-size:16px;font-weight:700;cursor:pointer;margin-top:20px;letter-spacing:2px;transition:all .2s}
+.confirm-btn:hover{background:#c1303c;box-shadow:0 0 20px rgba(230,57,70,.4)}
+.confirm-btn:disabled{opacity:.4;cursor:default}
+.train-result{position:fixed;top:0;left:0;width:100%;height:100%;z-index:200;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.88)}
+.train-result.hidden{display:none}
+.train-result h2{font-size:28px;color:var(--gold);margin-bottom:10px}
+.train-result .detail{font-size:14px;color:var(--dim);margin:4px 0}
+.train-result .detail b{color:var(--text)}
+.career-list{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;max-width:700px;padding:10px;max-height:60vh;overflow-y:auto}
+.fight-history{max-width:400px;max-height:50vh;overflow-y:auto;margin:10px 0}
+.fh-row{display:flex;justify-content:space-between;padding:6px 12px;font-size:12px;border-bottom:1px solid var(--border)}
+.fh-row .w{color:var(--green)}
+.fh-row .l{color:var(--accent)}
+.rest-screen{position:fixed;top:0;left:0;width:100%;height:100%;z-index:25;display:flex;flex-direction:column;align-items:center;justify-content:center;background:rgba(0,0,0,.7);backdrop-filter:blur(4px)}
+.rest-screen.hidden{display:none}
+.rest-screen h2{font-size:32px;color:var(--yellow);margin-bottom:10px}
+.rest-screen .timer{font-size:48px;font-weight:900;color:var(--text)}
+.ko-overlay{position:fixed;top:0;left:0;width:100%;height:100%;z-index:30;pointer-events:none;opacity:0;transition:opacity .5s}
+.ko-overlay.show{opacity:1}
+</style>
+</head>
+<body>
+<canvas id="gc"></canvas>
+
+<!-- MAIN MENU -->
+<div class="overlay" id="mainMenu">
+<div class="menu-title">BOXING</div>
+<div class="menu-sub">TRAINER V4 — CAREER MODE</div>
+<div id="playerInfo" style="margin-bottom:15px"></div>
+<button class="menu-btn" onclick="showCareer()"><span class="icon">🥊</span> 커리어 모드<span class="sub">랭킹을 올려 챔피언에 도전하세요</span></button>
+<button class="menu-btn" onclick="showTraining()"><span class="icon">🏋️</span> 트레이닝<span class="sub">스피드백, 헤비백, 줄넘기, 스파링</span></button>
+<button class="menu-btn" onclick="showRecords()"><span class="icon">📊</span> 전적 / 스탯<span class="sub">파이트 기록과 능력치 확인</span></button>
+<button class="menu-btn" onclick="quickFight()"><span class="icon">⚡</span> 퀵 매치<span class="sub">랜덤 상대와 즉시 대전</span></button>
+<button class="menu-btn" onclick="resetAll()" style="border-color:rgba(230,57,70,.3)"><span class="icon">🔄</span> 데이터 초기화<span class="sub">모든 진행 상황을 리셋합니다</span></button>
+</div>
+
+<!-- CAREER SELECT -->
+<div class="overlay hidden" id="careerMenu">
+<div class="menu-title" style="font-size:32px">커리어 모드</div>
+<div id="beltInfo" class="belt-display"></div>
+<div id="careerRecord" style="font-size:13px;color:var(--dim);margin:8px 0"></div>
+<div class="career-list" id="opponentList"></div>
+</div>
+
+<!-- TRAINING SELECT -->
+<div class="overlay hidden" id="trainingMenu">
+<div class="menu-title" style="font-size:32px">트레이닝</div>
+<div class="menu-sub">능력치를 올려 더 강해지세요</div>
+<div id="trainStats" class="stats-bar"></div>
+<button class="menu-btn" onclick="startTraining('speedbag')"><span class="icon">🎯</span> 스피드백<span class="sub">리듬에 맞춰 탭! 스피드 향상</span></button>
+<button class="menu-btn" onclick="startTraining('heavybag')"><span class="icon">🥊</span> 헤비백<span class="sub">콤보 연습! 파워 향상</span></button>
+<button class="menu-btn" onclick="startTraining('jumprope')"><span class="icon">🏃</span> 줄넘기<span class="sub">타이밍 게임! 스태미나 향상</span></button>
+<button class="menu-btn" onclick="startTraining('sparring')"><span class="icon">🤼</span> 스파링<span class="sub">AI와 연습! 방어력 향상</span></button>
+</div>
+
+<!-- RECORDS -->
+<div class="overlay hidden" id="recordsMenu">
+<div class="menu-title" style="font-size:32px">전적 / 스탯</div>
+<div id="recordStats" class="stats-bar"></div>
+<div id="recordSummary" style="margin:15px 0;text-align:center"></div>
+<div class="fight-history" id="fightHistory"></div>
+</div>
+
+<!-- FIGHT HUD -->
+<div class="hud-top hidden" id="fightHud">
+<div>
+<div class="hp-bar-wrap"><span class="hp-label" style="color:var(--green)" id="playerNameHud">플레이어</span><div class="hp-bar"><div class="fill player" id="phpBar" style="width:100%"></div></div></div>
+<div style="display:flex;align-items:center;gap:6px;margin-top:4px"><span style="font-size:9px;color:var(--dim)">스태미나</span><div class="stamina-bar"><div class="fill" id="staminaBar" style="width:100%"></div></div></div>
+</div>
+<div style="text-align:center">
+<div class="round-info" id="roundInfo">ROUND 1</div>
+<div class="timer" id="fightTimer">3:00</div>
+</div>
+<div style="text-align:right">
+<div class="hp-bar-wrap"><div class="hp-bar"><div class="fill opp" id="ohpBar" style="width:100%"></div></div><span class="hp-label" style="color:var(--accent)" id="oppNameHud">상대</span></div>
+</div>
+</div>
+
+<div class="combo-popup" id="comboPopup"></div>
+<div class="controls-hint hidden" id="controlsHint">1/J=잽 2/K=크로스 3/L=훅 4/;=어퍼 | Q=슬립좌 E=슬립우 S=덕 | A=하이가드 D=로우가드</div>
+<div class="rest-screen hidden" id="restScreen"><h2>휴식</h2><div class="timer" id="restTimer">60</div><div style="font-size:13px;color:var(--dim);margin-top:10px">체력이 회복됩니다...</div></div>
+<div class="fight-result hidden" id="fightResult"></div>
+<div class="level-up hidden" id="levelUp"></div>
+<div class="train-result hidden" id="trainResult"></div>
+<div class="ko-overlay" id="koOverlay"></div>
+<button class="back-btn hidden" id="backBtn" onclick="goBack()">← 뒤로</button>
+
+<div class="touch-zones hidden" id="touchZones">
+<div class="touch-zone" data-action="slipL">슬립←</div>
+<div class="touch-zone" data-action="jab">잽</div>
+<div class="touch-zone" data-action="cross">크로스</div>
+<div class="touch-zone" data-action="slipR">슬립→</div>
+</div>
+
+<script>
+// ============================================================
+// BOXING TRAINER V4 — Complete Career Mode
+// ============================================================
+const $ = id => document.getElementById(id);
+const CV = $('gc');
+const ctx = CV.getContext('2d');
+let W, H;
+
+// ==================== AUDIO ====================
+let audioCtx = null;
+function aud() { if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)(); return audioCtx; }
+
+function playPunch(type) {
+  const a = aud(), t = a.currentTime;
+  const o = a.createOscillator(), g = a.createGain(), f = a.createBiquadFilter();
+  f.type = 'lowpass'; f.frequency.value = type === 'heavy' ? 200 : type === 'hook' ? 350 : 500;
+  const n = a.createBufferSource();
+  const buf = a.createBuffer(1, a.sampleRate * 0.15, a.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * Math.exp(-i / (a.sampleRate * 0.03));
+  n.buffer = buf;
+  const ng = a.createGain();
+  ng.gain.setValueAtTime(type === 'heavy' ? 0.6 : 0.4, t);
+  ng.gain.exponentialDecayTo && ng.gain.exponentialDecayTo(0.01, t + 0.12);
+  ng.gain.setValueAtTime(type === 'heavy' ? 0.6 : 0.4, t);
+  ng.gain.linearRampToValueAtTime(0, t + 0.12);
+  n.connect(ng).connect(f).connect(a.destination);
+  o.frequency.value = type === 'heavy' ? 80 : type === 'hook' ? 120 : 180;
+  g.gain.setValueAtTime(0.3, t);
+  g.gain.linearRampToValueAtTime(0, t + 0.1);
+  o.connect(g).connect(a.destination);
+  o.start(t); o.stop(t + 0.1);
+  n.start(t); n.stop(t + 0.15);
+}
+
+function playBell() {
+  const a = aud(), t = a.currentTime;
+  const o = a.createOscillator(), g = a.createGain();
+  o.frequency.value = 800; o.type = 'sine';
+  g.gain.setValueAtTime(0.4, t);
+  g.gain.exponentialRampToValueAtTime(0.01, t + 1.5);
+  o.connect(g).connect(a.destination);
+  o.start(t); o.stop(t + 1.5);
+  const o2 = a.createOscillator(), g2 = a.createGain();
+  o2.frequency.value = 1200; o2.type = 'sine';
+  g2.gain.setValueAtTime(0.2, t);
+  g2.gain.exponentialRampToValueAtTime(0.01, t + 1.2);
+  o2.connect(g2).connect(a.destination);
+  o2.start(t); o2.stop(t + 1.2);
+}
+
+function playCrowd(intensity) {
+  const a = aud(), t = a.currentTime;
+  const buf = a.createBuffer(1, a.sampleRate * 0.5, a.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * 0.08 * intensity * Math.sin(i / (a.sampleRate * 0.1));
+  const n = a.createBufferSource(); n.buffer = buf;
+  const f = a.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 600; f.Q.value = 0.5;
+  const g = a.createGain(); g.gain.setValueAtTime(0.15 * intensity, t); g.gain.linearRampToValueAtTime(0, t + 0.5);
+  n.connect(f).connect(g).connect(a.destination);
+  n.start(t); n.stop(t + 0.5);
+}
+
+function playWhiff() {
+  const a = aud(), t = a.currentTime;
+  const buf = a.createBuffer(1, a.sampleRate * 0.08, a.sampleRate);
+  const d = buf.getChannelData(0);
+  for (let i = 0; i < d.length; i++) d[i] = (Math.random() * 2 - 1) * 0.15 * Math.exp(-i / (a.sampleRate * 0.02));
+  const n = a.createBufferSource(); n.buffer = buf;
+  const f = a.createBiquadFilter(); f.type = 'highpass'; f.frequency.value = 2000;
+  const g = a.createGain(); g.gain.setValueAtTime(0.1, t); g.gain.linearRampToValueAtTime(0, t + 0.08);
+  n.connect(f).connect(g).connect(a.destination); n.start(t); n.stop(t + 0.08);
+}
+
+function playStep() {
+  const a = aud(), t = a.currentTime;
+  const o = a.createOscillator(), g = a.createGain();
+  o.frequency.value = 60 + Math.random() * 40; o.type = 'sine';
+  g.gain.setValueAtTime(0.08, t); g.gain.linearRampToValueAtTime(0, t + 0.06);
+  o.connect(g).connect(a.destination); o.start(t); o.stop(t + 0.06);
+}
+
+// ==================== GAME DATA ====================
+const OPPONENTS = [
+  { name: '김초보', nameEn: 'KIM', style: '초보 파이터', desc: '느리고 예측 가능', speed: 20, power: 15, stamina: 30, defense: 15, chin: 40, pattern: 'beginner', belt: '' },
+  { name: '박잽마스터', nameEn: 'PARK', style: '잽 파이터', desc: '빠른 잽을 연속으로', speed: 35, power: 20, stamina: 40, defense: 25, chin: 45, pattern: 'jabber', belt: '' },
+  { name: '이파워', nameEn: 'LEE', style: '파워 펀처', desc: '한방이 강력', speed: 25, power: 50, stamina: 35, defense: 20, chin: 50, pattern: 'power', belt: 'regional' },
+  { name: '최카운터', nameEn: 'CHOI', style: '카운터 펀처', desc: '방어 후 반격', speed: 40, power: 35, stamina: 45, defense: 45, chin: 45, pattern: 'counter', belt: '' },
+  { name: '정스위처', nameEn: 'JUNG', style: '스위치 히터', desc: '예측 불가 패턴', speed: 45, power: 40, stamina: 50, defense: 35, chin: 50, pattern: 'switch', belt: 'national' },
+  { name: '한콤보', nameEn: 'HAN', style: '콤보 파이터', desc: '연속 콤보 공격', speed: 50, power: 45, stamina: 55, defense: 40, chin: 55, pattern: 'combo', belt: '' },
+  { name: '강바디', nameEn: 'KANG', style: '인파이터', desc: '접근전 전문가', speed: 35, power: 55, stamina: 60, defense: 50, chin: 65, pattern: 'infighter', belt: 'continental' },
+  { name: '윤디펜스', nameEn: 'YUN', style: '디펜시브', desc: '철벽 방어', speed: 55, power: 45, stamina: 65, defense: 65, chin: 60, pattern: 'defensive', belt: '' },
+  { name: '서매트릭스', nameEn: 'SEO', style: '아웃복서', desc: '거리 조절의 달인', speed: 65, power: 50, stamina: 60, defense: 55, chin: 55, pattern: 'outboxer', belt: '' },
+  { name: '홍챔피언', nameEn: 'HONG', style: '올라운더', desc: '모든 것이 완벽', speed: 70, power: 65, stamina: 70, defense: 60, chin: 70, pattern: 'champion', belt: 'world' },
+];
+
+const BELT_NAMES = { '': '없음', regional: '지역 챔피언', national: '전국 챔피언', continental: '대륙 챔피언', world: '세계 챔피언' };
+const BELT_ORDER = ['', 'regional', 'national', 'continental', 'world'];
+
+function defaultSave() {
+  return {
+    stats: { speed: 20, power: 20, stamina: 30, defense: 15, chin: 30 },
+    level: 1, xp: 0, xpNext: 100,
+    record: { wins: 0, losses: 0, kos: 0, koLosses: 0 },
+    belt: '',
+    unlockedOpponents: 1,
+    fightHistory: [],
+    trainCount: { speedbag: 0, heavybag: 0, jumprope: 0, sparring: 0 }
+  };
+}
+
+let save = defaultSave();
+
+function loadSave() {
+  try {
+    const d = localStorage.getItem('boxingV4');
+    if (d) save = { ...defaultSave(), ...JSON.parse(d) };
+  } catch (e) { save = defaultSave(); }
+}
+
+function saveSave() { localStorage.setItem('boxingV4', JSON.stringify(save)); }
+
+function resetAll() {
+  if (confirm('모든 진행 데이터를 초기화하시겠습니까?')) {
+    localStorage.removeItem('boxingV4');
+    save = defaultSave();
+    showMain();
+  }
+}
+
+// ==================== SCREENS ====================
+let currentScreen = 'main';
+let currentFight = null;
+let currentTraining = null;
+
+function hideAll() {
+  ['mainMenu', 'careerMenu', 'trainingMenu', 'recordsMenu', 'fightHud', 'controlsHint', 'fightResult', 'levelUp', 'trainResult', 'restScreen', 'touchZones'].forEach(id => {
+    const el = $(id);
+    if (el) el.classList.add('hidden');
+  });
+  $('backBtn').classList.add('hidden');
+}
+
+function showMain() {
+  hideAll();
+  currentScreen = 'main';
+  currentFight = null;
+  currentTraining = null;
+  $('mainMenu').classList.remove('hidden');
+  updatePlayerInfo();
+}
+
+function updatePlayerInfo() {
+  const s = save;
+  const beltText = s.belt ? BELT_NAMES[s.belt] : '';
+  $('playerInfo').innerHTML = `
+    <div style="font-size:13px;color:var(--dim)">Lv.${s.level} ${beltText ? '| 🏆 ' + beltText : ''} | 전적: ${s.record.wins}승 ${s.record.losses}패 (KO ${s.record.kos})</div>
+    <div class="stats-bar">
+      <span class="stat-pill">SPD<b>${s.stats.speed}</b></span>
+      <span class="stat-pill">PWR<b>${s.stats.power}</b></span>
+      <span class="stat-pill">STA<b>${s.stats.stamina}</b></span>
+      <span class="stat-pill">DEF<b>${s.stats.defense}</b></span>
+      <span class="stat-pill">CHN<b>${s.stats.chin}</b></span>
+    </div>`;
+}
+
+function showCareer() {
+  hideAll();
+  currentScreen = 'career';
+  $('careerMenu').classList.remove('hidden');
+  $('backBtn').classList.remove('hidden');
+
+  const bIdx = BELT_ORDER.indexOf(save.belt);
+  const bClass = save.belt || '';
+  $('beltInfo').innerHTML = save.belt
+    ? `<div class="belt ${bClass}">${BELT_NAMES[save.belt].toUpperCase()}</div>`
+    : `<div style="font-size:14px;color:var(--dim)">아직 벨트가 없습니다</div>`;
+  $('careerRecord').textContent = `전적: ${save.record.wins}승 ${save.record.losses}패 | KO승: ${save.record.kos} | KO패: ${save.record.koLosses}`;
+
+  let html = '';
+  OPPONENTS.forEach((o, i) => {
+    const locked = i >= save.unlockedOpponents;
+    html += `<div class="opponent-card ${locked ? 'locked' : ''}" onclick="startCareerFight(${i})">
+      <div class="name">${locked ? '???' : o.name}</div>
+      <div class="style">${locked ? '미해금' : o.style}</div>
+      <div class="record">${locked ? '' : o.desc}</div>
+      <div class="opp-stats">
+        <span class="opp-stat">SPD ${locked ? '?' : o.speed}</span>
+        <span class="opp-stat">PWR ${locked ? '?' : o.power}</span>
+        <span class="opp-stat">DEF ${locked ? '?' : o.defense}</span>
+      </div>
+      ${o.belt && !locked ? `<div style="margin-top:6px;font-size:11px;color:var(--gold)">🏆 ${BELT_NAMES[o.belt]}</div>` : ''}
+    </div>`;
+  });
+  $('opponentList').innerHTML = html;
+}
+
+function showTraining() {
+  hideAll();
+  currentScreen = 'training';
+  $('trainingMenu').classList.remove('hidden');
+  $('backBtn').classList.remove('hidden');
+  $('trainStats').innerHTML = `
+    <span class="stat-pill">SPD<b>${save.stats.speed}</b></span>
+    <span class="stat-pill">PWR<b>${save.stats.power}</b></span>
+    <span class="stat-pill">STA<b>${save.stats.stamina}</b></span>
+    <span class="stat-pill">DEF<b>${save.stats.defense}</b></span>`;
+}
+
+function showRecords() {
+  hideAll();
+  currentScreen = 'records';
+  $('recordsMenu').classList.remove('hidden');
+  $('backBtn').classList.remove('hidden');
+  $('recordStats').innerHTML = `
+    <span class="stat-pill">레벨<b>${save.level}</b></span>
+    <span class="stat-pill">XP<b>${save.xp}/${save.xpNext}</b></span>
+    <span class="stat-pill">승<b style="color:var(--green)">${save.record.wins}</b></span>
+    <span class="stat-pill">패<b style="color:var(--accent)">${save.record.losses}</b></span>
+    <span class="stat-pill">KO<b style="color:var(--gold)">${save.record.kos}</b></span>`;
+  $('recordSummary').innerHTML = `
+    <div style="font-size:13px;color:var(--dim)">벨트: ${BELT_NAMES[save.belt] || '없음'} | 스피드백: ${save.trainCount.speedbag}회 | 헤비백: ${save.trainCount.heavybag}회 | 줄넘기: ${save.trainCount.jumprope}회</div>`;
+
+  let html = '';
+  (save.fightHistory || []).slice(-20).reverse().forEach(f => {
+    html += `<div class="fh-row"><span>${f.opponent}</span><span class="${f.result === 'win' ? 'w' : 'l'}">${f.result === 'win' ? '승리' : '패배'}${f.ko ? ' (KO)' : ''}</span><span style="color:var(--dim)">${f.rounds || '?'}R</span></div>`;
+  });
+  $('fightHistory').innerHTML = html || '<div style="text-align:center;color:var(--dim);padding:20px">아직 전적이 없습니다</div>';
+}
+
+function goBack() {
+  if (currentScreen === 'career' || currentScreen === 'training' || currentScreen === 'records') showMain();
+  else if (currentScreen === 'fight' || currentScreen === 'train') {
+    if (currentFight && currentFight.active) {
+      if (confirm('경기를 포기하시겠습니까?')) {
+        currentFight.active = false;
+        showMain();
+      }
+    } else if (currentTraining && currentTraining.active) {
+      currentTraining.active = false;
+      showMain();
+    } else showMain();
+  }
+}
+
+function quickFight() {
+  const idx = Math.floor(Math.random() * Math.min(save.unlockedOpponents + 1, OPPONENTS.length));
+  startFight(OPPONENTS[idx], false);
+}
+
+// ==================== FIGHT SYSTEM ====================
+function startCareerFight(idx) { startFight(OPPONENTS[idx], true, idx); }
+
+function startFight(opp, isCareer, oppIdx) {
+  hideAll();
+  currentScreen = 'fight';
+  $('fightHud').classList.remove('hidden');
+  $('controlsHint').classList.remove('hidden');
+  $('backBtn').classList.remove('hidden');
+  if ('ontouchstart' in window) $('touchZones').classList.remove('hidden');
+
+  $('oppNameHud').textContent = opp.name;
+
+  currentFight = {
+    active: true,
+    opp, isCareer, oppIdx,
+    round: 1, maxRounds: 3,
+    timer: 180, // 3 min in seconds
+    phase: 'fight', // fight, rest, ko, result
+    playerHP: 100, playerMaxHP: 100,
+    oppHP: 100, oppMaxHP: 100,
+    stamina: 100, maxStamina: 100,
+    playerAction: null, playerActionTime: 0,
+    oppAction: null, oppActionTime: 0,
+    oppNextAttack: 1 + Math.random() * 2,
+    oppAttackTimer: 1.5 + Math.random(),
+    playerGuard: 'none', // none, high, low
+    playerDodge: null, playerDodgeTime: 0,
+    combo: [], comboTimer: 0, comboCount: 0,
+    counterWindow: false, counterTimer: 0,
+    totalPlayerHits: 0, totalOppHits: 0,
+    totalPlayerDmg: 0, totalOppDmg: 0,
+    totalDodges: 0, totalBlocks: 0,
+    knockdowns: 0, oppKnockdowns: 0,
+    shakeAmount: 0, flashAmount: 0,
+    particles: [],
+    crowdIntensity: 0.2,
+    slowMo: false, slowMoTimer: 0,
+    restTimer: 0,
+    koTimer: 0,
+    // Opponent position for rendering
+    oppX: 0, oppY: 0, oppSway: 0,
+    playerSway: 0,
+    oppHitAnim: 0, playerHitAnim: 0,
+    oppPunchAnim: 0, playerPunchAnim: 0, playerPunchType: null, oppPunchType: null,
+  };
+  $('roundInfo').textContent = 'ROUND 1';
+  $('fightTimer').textContent = '3:00';
+  updateFightHUD();
+  playBell();
+}
+
+function updateFightHUD() {
+  if (!currentFight) return;
+  const f = currentFight;
+  $('phpBar').style.width = Math.max(0, f.playerHP / f.playerMaxHP * 100) + '%';
+  $('ohpBar').style.width = Math.max(0, f.oppHP / f.oppMaxHP * 100) + '%';
+  $('staminaBar').style.width = Math.max(0, f.stamina / f.maxStamina * 100) + '%';
+  const m = Math.floor(f.timer / 60);
+  const s = Math.floor(f.timer % 60);
+  $('fightTimer').textContent = `${m}:${s.toString().padStart(2, '0')}`;
+  $('roundInfo').textContent = `ROUND ${f.round}`;
+
+  // Color HP bars by remaining
+  const php = f.playerHP / f.playerMaxHP;
+  $('phpBar').style.background = php > 0.5 ? '' : php > 0.25 ? 'var(--yellow)' : 'var(--accent)';
+}
+
+function playerPunch(type) {
+  const f = currentFight;
+  if (!f || !f.active || f.phase !== 'fight') return;
+  if (f.playerActionTime > 0) return;
+
+  const staminaCost = { jab: 5, cross: 8, hook: 10, uppercut: 12 };
+  const cost = staminaCost[type] || 8;
+  if (f.stamina < cost) return;
+  f.stamina -= cost;
+
+  const speed = save.stats.speed;
+  const power = save.stats.power;
+  const baseDmg = { jab: 4, cross: 7, hook: 9, uppercut: 11 };
+  let dmg = baseDmg[type] * (1 + power / 100);
+
+  // Counter bonus
+  if (f.counterWindow) {
+    dmg *= 2;
+    f.counterWindow = false;
+    showComboText('카운터! x2');
+    playCrowd(0.8);
+  }
+
+  // Combo system
+  const now = performance.now();
+  if (now - f.comboTimer < 1200) {
+    f.combo.push(type);
+    const chain = f.combo.join('-');
+    // Bonus combos
+    if (chain.includes('jab-cross-hook')) { dmg *= 1.5; showComboText('잽-크로스-훅!'); f.combo = []; }
+    else if (chain.includes('jab-jab-cross')) { dmg *= 1.3; showComboText('더블잽-크로스!'); f.combo = []; }
+    else if (chain.includes('jab-cross-uppercut')) { dmg *= 1.4; showComboText('잽-크로스-어퍼!'); f.combo = []; }
+    f.comboCount = f.combo.length;
+  } else {
+    f.combo = [type];
+    f.comboCount = 1;
+  }
+  f.comboTimer = now;
+
+  // Check if opponent dodges/blocks
+  const oppDef = f.opp.defense;
+  const dodgeChance = oppDef / 300;
+  const blockChance = oppDef / 200;
+
+  if (f.oppAction === 'dodge' || (Math.random() < dodgeChance && f.opp.pattern !== 'beginner')) {
+    playWhiff();
+    f.oppAction = null;
+  } else if (Math.random() < blockChance) {
+    dmg *= 0.2;
+    playPunch('light');
+    f.oppHitAnim = 0.15;
+  } else {
+    // Hit!
+    f.oppHP -= dmg;
+    f.totalPlayerHits++;
+    f.totalPlayerDmg += dmg;
+    f.oppHitAnim = 0.3;
+    f.shakeAmount = Math.min(dmg / 3, 8);
+    f.flashAmount = 0.3;
+    playPunch(type === 'hook' || type === 'uppercut' ? 'heavy' : 'light');
+    playCrowd(Math.min(1, f.crowdIntensity + 0.1));
+    f.crowdIntensity = Math.min(1, f.crowdIntensity + 0.05);
+
+    // Add particles
+    for (let i = 0; i < 5; i++) {
+      f.particles.push({
+        x: W / 2 + (Math.random() - 0.5) * 60,
+        y: H * 0.3 + (Math.random() - 0.5) * 40,
+        vx: (Math.random() - 0.5) * 4,
+        vy: -Math.random() * 3 - 1,
+        life: 0.5 + Math.random() * 0.5,
+        color: Math.random() > 0.5 ? '#e63946' : '#ff6b35',
+        size: 2 + Math.random() * 3
+      });
+    }
+
+    // KO check
+    if (f.oppHP <= 0) {
+      f.oppHP = 0;
+      f.oppKnockdowns++;
+      if (f.oppKnockdowns >= 3 || f.oppHP <= -20) {
+        // KO!
+        f.phase = 'ko';
+        f.koTimer = 3;
+        f.slowMo = true;
+        f.slowMoTimer = 2;
+        showComboText('K.O.!!');
+        playCrowd(1);
+      } else {
+        f.oppHP = 15;
+        showComboText('다운!');
+      }
+    }
+  }
+
+  f.playerPunchAnim = 0.3;
+  f.playerPunchType = type;
+  f.playerActionTime = (0.25 - speed / 500);
+}
+
+function playerDodge(dir) {
+  const f = currentFight;
+  if (!f || !f.active || f.phase !== 'fight') return;
+  if (f.playerDodgeTime > 0) return;
+  f.playerDodge = dir;
+  f.playerDodgeTime = 0.4;
+  f.counterWindow = true;
+  f.counterTimer = 0.5;
+  playStep();
+}
+
+function playerGuard(type) {
+  const f = currentFight;
+  if (!f || !f.active || f.phase !== 'fight') return;
+  f.playerGuard = type;
+}
+
+function releaseGuard() {
+  if (currentFight) currentFight.playerGuard = 'none';
+}
+
+function showComboText(text) {
+  const el = $('comboPopup');
+  el.textContent = text;
+  el.style.opacity = '1';
+  el.style.transform = 'translate(-50%,-50%) scale(1.2)';
+  setTimeout(() => {
+    el.style.opacity = '0';
+    el.style.transform = 'translate(-50%,-50%) scale(0.8)';
+  }, 800);
+}
+
+// ==================== OPPONENT AI ====================
+function updateOpponentAI(dt) {
+  const f = currentFight;
+  if (!f || f.phase !== 'fight') return;
+  const opp = f.opp;
+
+  f.oppAttackTimer -= dt;
+  if (f.oppAttackTimer > 0) return;
+
+  // Decide next attack based on pattern
+  const spd = opp.speed / 100;
+  let attackDelay = 1.5 - spd * 0.8;
+  let punchType, targetZone;
+
+  switch (opp.pattern) {
+    case 'beginner':
+      attackDelay = 2.5 - spd * 0.5;
+      punchType = Math.random() > 0.6 ? 'cross' : 'jab';
+      targetZone = 'head';
+      break;
+    case 'jabber':
+      attackDelay = 0.8 - spd * 0.2;
+      punchType = Math.random() > 0.7 ? 'cross' : 'jab';
+      targetZone = 'head';
+      break;
+    case 'power':
+      attackDelay = 2.0 - spd * 0.4;
+      punchType = ['cross', 'hook', 'uppercut'][Math.floor(Math.random() * 3)];
+      targetZone = Math.random() > 0.5 ? 'head' : 'body';
+      break;
+    case 'counter':
+      attackDelay = 1.8;
+      if (f.playerPunchAnim > 0) { punchType = 'cross'; attackDelay = 0.3; }
+      else punchType = 'jab';
+      targetZone = 'head';
+      break;
+    case 'switch':
+      attackDelay = 1.2 - spd * 0.3;
+      punchType = ['jab', 'cross', 'hook', 'uppercut'][Math.floor(Math.random() * 4)];
+      targetZone = Math.random() > 0.5 ? 'head' : 'body';
+      break;
+    case 'combo':
+      attackDelay = 0.4;
+      const comboPatterns = [['jab', 'cross', 'hook'], ['jab', 'jab', 'cross'], ['cross', 'hook', 'uppercut']];
+      const cp = comboPatterns[Math.floor(Math.random() * comboPatterns.length)];
+      punchType = cp[Math.floor(f.oppAttackTimer * -3) % cp.length] || 'jab';
+      targetZone = 'head';
+      break;
+    case 'infighter':
+      attackDelay = 0.7 - spd * 0.15;
+      punchType = ['hook', 'uppercut', 'cross'][Math.floor(Math.random() * 3)];
+      targetZone = Math.random() > 0.4 ? 'body' : 'head';
+      break;
+    case 'defensive':
+      attackDelay = 2.5;
+      punchType = Math.random() > 0.5 ? 'jab' : 'cross';
+      targetZone = 'head';
+      break;
+    case 'outboxer':
+      attackDelay = 1.0 - spd * 0.2;
+      punchType = Math.random() > 0.6 ? 'jab' : Math.random() > 0.5 ? 'cross' : 'hook';
+      targetZone = 'head';
+      break;
+    case 'champion':
+      attackDelay = 0.6 - spd * 0.1;
+      punchType = ['jab', 'cross', 'hook', 'uppercut'][Math.floor(Math.random() * 4)];
+      targetZone = Math.random() > 0.5 ? 'head' : 'body';
+      break;
+    default:
+      punchType = 'jab';
+      targetZone = 'head';
+  }
+
+  f.oppAttackTimer = Math.max(0.3, attackDelay + Math.random() * 0.5);
+
+  // Execute opponent punch
+  const baseDmg = { jab: 3, cross: 6, hook: 8, uppercut: 10 };
+  let dmg = (baseDmg[punchType] || 5) * (1 + opp.power / 100);
+  const def = save.stats.defense;
+
+  // Check player dodge
+  if (f.playerDodgeTime > 0.1) {
+    const dodgeMatch = (punchType === 'hook' && f.playerDodge === 'duck') ||
+      ((punchType === 'jab' || punchType === 'cross') && (f.playerDodge === 'slipL' || f.playerDodge === 'slipR'));
+    if (dodgeMatch || f.playerDodge) {
+      f.totalDodges++;
+      playWhiff();
+      f.oppPunchAnim = 0.3;
+      f.oppPunchType = punchType;
+      return;
+    }
+  }
+
+  // Check player guard
+  if (f.playerGuard === 'high' && targetZone === 'head') {
+    dmg *= 0.15;
+    f.totalBlocks++;
+    playPunch('light');
+  } else if (f.playerGuard === 'low' && targetZone === 'body') {
+    dmg *= 0.15;
+    f.totalBlocks++;
+    playPunch('light');
+  } else if (f.playerGuard !== 'none') {
+    dmg *= 0.6;
+    playPunch('light');
+  }
+
+  // Defense stat reduction
+  dmg *= (1 - def / 200);
+  // Chin check
+  const chinBonus = save.stats.chin / 100;
+  dmg *= (1 - chinBonus * 0.3);
+
+  f.playerHP -= dmg;
+  f.totalOppHits++;
+  f.totalOppDmg += dmg;
+  f.playerHitAnim = 0.3;
+  f.shakeAmount = Math.min(dmg / 4, 6);
+  playPunch(punchType === 'hook' || punchType === 'uppercut' ? 'heavy' : 'light');
+
+  f.oppPunchAnim = 0.3;
+  f.oppPunchType = punchType;
+
+  // Add blood/sweat particles
+  for (let i = 0; i < 3; i++) {
+    f.particles.push({
+      x: W / 2 + (Math.random() - 0.5) * 40,
+      y: H * 0.45 + (Math.random() - 0.5) * 30,
+      vx: (Math.random() - 0.5) * 3,
+      vy: -Math.random() * 2,
+      life: 0.4 + Math.random() * 0.3,
+      color: Math.random() > 0.7 ? '#e63946' : '#aabbcc',
+      size: 1 + Math.random() * 2
+    });
+  }
+
+  // Player knockdown
+  if (f.playerHP <= 0) {
+    f.playerHP = 0;
+    f.knockdowns++;
+    if (f.knockdowns >= 3) {
+      f.phase = 'ko';
+      f.koTimer = 3;
+      f.slowMo = true;
+      f.slowMoTimer = 2;
+      showComboText('다운...');
+    } else {
+      f.playerHP = 10;
+      showComboText('다운!');
+    }
+  }
+}
+
+// ==================== FIGHT UPDATE ====================
+function updateFight(dt) {
+  const f = currentFight;
+  if (!f || !f.active) return;
+
+  if (f.slowMo) {
+    f.slowMoTimer -= dt;
+    dt *= 0.2;
+    if (f.slowMoTimer <= 0) f.slowMo = false;
+  }
+
+  if (f.phase === 'fight') {
+    f.timer -= dt;
+    if (f.timer <= 0) {
+      f.timer = 0;
+      // End of round
+      if (f.round >= f.maxRounds) {
+        endFight();
+        return;
+      }
+      f.phase = 'rest';
+      f.restTimer = 10;
+      $('restScreen').classList.remove('hidden');
+      playBell();
+      return;
+    }
+
+    // Update timings
+    f.playerActionTime = Math.max(0, f.playerActionTime - dt);
+    f.playerDodgeTime = Math.max(0, f.playerDodgeTime - dt);
+    f.playerPunchAnim = Math.max(0, f.playerPunchAnim - dt);
+    f.oppPunchAnim = Math.max(0, f.oppPunchAnim - dt);
+    f.playerHitAnim = Math.max(0, f.playerHitAnim - dt);
+    f.oppHitAnim = Math.max(0, f.oppHitAnim - dt);
+    f.counterTimer -= dt;
+    if (f.counterTimer <= 0) f.counterWindow = false;
+
+    // Stamina regen
+    f.stamina = Math.min(f.maxStamina, f.stamina + (8 + save.stats.stamina / 10) * dt);
+    // Crowd decay
+    f.crowdIntensity = Math.max(0.1, f.crowdIntensity - 0.02 * dt);
+
+    // Shake/flash decay
+    f.shakeAmount *= Math.pow(0.05, dt);
+    f.flashAmount *= Math.pow(0.01, dt);
+
+    // Opponent sway
+    f.oppSway = Math.sin(performance.now() / 800) * 5;
+    f.playerSway = Math.sin(performance.now() / 1000 + 1) * 3;
+
+    // Particles
+    f.particles.forEach(p => {
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 5 * dt;
+      p.life -= dt;
+    });
+    f.particles = f.particles.filter(p => p.life > 0);
+
+    // Opponent AI
+    updateOpponentAI(dt);
+    updateFightHUD();
+  } else if (f.phase === 'rest') {
+    f.restTimer -= dt;
+    $('restTimer').textContent = Math.ceil(f.restTimer);
+    // Recover HP
+    f.playerHP = Math.min(f.playerMaxHP, f.playerHP + 15 * dt);
+    f.oppHP = Math.min(f.oppMaxHP, f.oppHP + 10 * dt);
+    f.stamina = f.maxStamina;
+
+    if (f.restTimer <= 0) {
+      f.round++;
+      f.timer = 180;
+      f.phase = 'fight';
+      $('restScreen').classList.add('hidden');
+      playBell();
+    }
+  } else if (f.phase === 'ko') {
+    f.koTimer -= dt;
+    if (f.koTimer <= 0) {
+      endFight();
+    }
+  }
+}
+
+function endFight() {
+  const f = currentFight;
+  f.active = false;
+  f.phase = 'result';
+
+  const playerWin = f.oppHP <= 0 || f.playerHP > f.oppHP;
+  const isKO = f.oppHP <= 0 || f.playerHP <= 0;
+
+  const result = playerWin ? 'win' : 'lose';
+
+  // Update record
+  if (playerWin) {
+    save.record.wins++;
+    if (isKO && f.oppHP <= 0) save.record.kos++;
+  } else {
+    save.record.losses++;
+    if (isKO && f.playerHP <= 0) save.record.koLosses++;
+  }
+
+  // XP
+  const xpGain = playerWin ? 50 + (f.isCareer ? f.oppIdx * 10 : 20) : 15;
+  save.xp += xpGain;
+
+  // Belt check
+  if (playerWin && f.isCareer && f.opp.belt) {
+    const oppBeltIdx = BELT_ORDER.indexOf(f.opp.belt);
+    const myBeltIdx = BELT_ORDER.indexOf(save.belt);
+    if (oppBeltIdx > myBeltIdx) save.belt = f.opp.belt;
+  }
+
+  // Unlock next
+  if (playerWin && f.isCareer && f.oppIdx !== undefined) {
+    save.unlockedOpponents = Math.max(save.unlockedOpponents, f.oppIdx + 2);
+  }
+
+  // Fight history
+  save.fightHistory.push({
+    opponent: f.opp.name,
+    result,
+    ko: isKO,
+    rounds: f.round,
+    playerDmg: Math.round(f.totalPlayerDmg),
+    oppDmg: Math.round(f.totalOppDmg)
+  });
+
+  saveSave();
+
+  // Show result
+  $('fightResult').classList.remove('hidden');
+  $('fightResult').innerHTML = `
+    <div class="result-text ${playerWin ? (isKO && f.oppHP <= 0 ? 'ko' : 'win') : 'lose'}">
+      ${playerWin ? (isKO && f.oppHP <= 0 ? 'K.O. 승리!' : '판정 승리!') : (isKO ? 'K.O. 패배...' : '판정 패배...')}
+    </div>
+    <div class="result-stats">
+      <div>상대: <b>${f.opp.name}</b></div>
+      <div>라운드: <b>${f.round}/${f.maxRounds}</b></div>
+      <div>클린 히트: <b>${f.totalPlayerHits}</b> | 피격: <b>${f.totalOppHits}</b></div>
+      <div>총 데미지: <b>${Math.round(f.totalPlayerDmg)}</b> | 피해: <b>${Math.round(f.totalOppDmg)}</b></div>
+      <div>회피: <b>${f.totalDodges}</b> | 블록: <b>${f.totalBlocks}</b></div>
+      <div style="color:var(--gold);margin-top:8px">XP +${xpGain}</div>
+      ${f.opp.belt && playerWin ? `<div style="color:var(--gold);font-size:18px;margin-top:8px">🏆 ${BELT_NAMES[f.opp.belt]} 획득!</div>` : ''}
+    </div>
+    <button class="confirm-btn" onclick="afterFight()">확인</button>
+  `;
+
+  playCrowd(playerWin ? 1 : 0.3);
+  if (playerWin) playBell();
+}
+
+function afterFight() {
+  $('fightResult').classList.add('hidden');
+  // Check level up
+  if (save.xp >= save.xpNext) {
+    save.xp -= save.xpNext;
+    save.level++;
+    save.xpNext = Math.floor(save.xpNext * 1.3);
+    showLevelUp();
+  } else {
+    saveSave();
+    showMain();
+  }
+}
+
+function showLevelUp() {
+  $('levelUp').classList.remove('hidden');
+  let points = 3;
+  const alloc = { speed: 0, power: 0, stamina: 0, defense: 0, chin: 0 };
+
+  function render() {
+    $('levelUp').innerHTML = `
+      <h2>LEVEL UP! Lv.${save.level}</h2>
+      <div style="font-size:14px;color:var(--dim);margin-bottom:10px">포인트 ${points}개를 배분하세요</div>
+      <div class="stat-alloc">
+        ${['speed', 'power', 'stamina', 'defense', 'chin'].map(s => `
+          <div class="stat-alloc-row">
+            <span class="sname">${{ speed: '스피드', power: '파워', stamina: '스태미나', defense: '방어력', chin: '턱' }[s]}</span>
+            <span class="sval">${save.stats[s]}</span>
+            <button class="alloc-btn" onclick="allocStat('${s}')" ${points <= 0 ? 'disabled' : ''}>+</button>
+            <span style="color:var(--green);font-size:12px">${alloc[s] > 0 ? '+' + alloc[s] : ''}</span>
+          </div>
+        `).join('')}
+      </div>
+      <button class="confirm-btn" onclick="confirmLevelUp()" ${points > 0 ? 'disabled' : ''}>확인 (${points} 남음)</button>
+    `;
+
+    // expose to window
+    window.allocStat = function (s) {
+      if (points <= 0) return;
+      save.stats[s] += 2;
+      alloc[s] += 2;
+      points--;
+      render();
+    };
+    window.confirmLevelUp = function () {
+      if (points > 0) return;
+      $('levelUp').classList.add('hidden');
+      saveSave();
+      showMain();
+    };
+  }
+  render();
+}
+
+// ==================== TRAINING MINI-GAMES ====================
+function startTraining(type) {
+  hideAll();
+  currentScreen = 'train';
+  $('backBtn').classList.remove('hidden');
+
+  currentTraining = {
+    type, active: true,
+    timer: 30,
+    score: 0,
+    hits: 0, misses: 0,
+    // Speed bag
+    sbPhase: 0, sbTarget: 0, sbHit: false,
+    // Heavy bag
+    hbCombo: [], hbTarget: [], hbIdx: 0,
+    // Jump rope
+    jrPhase: 0, jrSpeed: 2, jrJumping: false, jrY: 0,
+    // Sparring
+    spHP: 100, spOppHP: 100, spAction: null, spActionTime: 0
+  };
+
+  if (type === 'heavybag') {
+    const combos = [['jab', 'cross'], ['jab', 'cross', 'hook'], ['jab', 'jab', 'cross'], ['hook', 'uppercut']];
+    currentTraining.hbTarget = combos[Math.floor(Math.random() * combos.length)];
+  }
+}
+
+function updateTraining(dt) {
+  const t = currentTraining;
+  if (!t || !t.active) return;
+
+  t.timer -= dt;
+  if (t.timer <= 0) {
+    endTraining();
+    return;
+  }
+
+  if (t.type === 'speedbag') {
+    t.sbPhase += dt * 3;
+    t.sbTarget = Math.sin(t.sbPhase) > 0.7 ? 1 : 0;
+  } else if (t.type === 'jumprope') {
+    t.jrPhase += dt * t.jrSpeed;
+    if (t.jrJumping) {
+      t.jrY = Math.sin(t.jrPhase * Math.PI) * 30;
+      if (t.jrPhase >= 1) { t.jrJumping = false; t.jrPhase = 0; }
+    }
+    const ropeY = Math.sin(t.jrPhase * Math.PI * 2);
+    // Auto-check: if rope is at bottom and player isn't jumping
+    if (ropeY < -0.8 && !t.jrJumping && t.jrPhase > 0.2) {
+      // Miss only counted at specific intervals
+    }
+  }
+
+  if (t.spActionTime > 0) t.spActionTime -= dt;
+}
+
+function trainingInput(action) {
+  const t = currentTraining;
+  if (!t || !t.active) return;
+
+  if (t.type === 'speedbag') {
+    if (t.sbTarget) {
+      t.score += 10;
+      t.hits++;
+      t.sbHit = true;
+      setTimeout(() => { if (t) t.sbHit = false; }, 100);
+      playPunch('light');
+    } else {
+      t.misses++;
+    }
+  } else if (t.type === 'heavybag') {
+    const expected = t.hbTarget[t.hbIdx];
+    if (action === expected) {
+      t.score += 15;
+      t.hits++;
+      t.hbIdx++;
+      playPunch(action === 'hook' || action === 'uppercut' ? 'heavy' : 'light');
+      if (t.hbIdx >= t.hbTarget.length) {
+        t.score += 30; // Combo bonus
+        t.hbIdx = 0;
+        const combos = [['jab', 'cross'], ['jab', 'cross', 'hook'], ['jab', 'jab', 'cross'], ['hook', 'uppercut'], ['jab', 'cross', 'hook', 'uppercut']];
+        t.hbTarget = combos[Math.floor(Math.random() * combos.length)];
+        showComboText('콤보 완성!');
+      }
+    } else {
+      t.misses++;
+      t.hbIdx = 0;
+    }
+  } else if (t.type === 'jumprope') {
+    if (!t.jrJumping) {
+      t.jrJumping = true;
+      t.jrPhase = 0;
+      t.score += 5;
+      t.hits++;
+      playStep();
+    }
+  } else if (t.type === 'sparring') {
+    if (t.spActionTime > 0) return;
+    t.spOppHP -= 5 + Math.random() * 5;
+    t.score += 10;
+    t.hits++;
+    t.spActionTime = 0.3;
+    playPunch('light');
+    if (t.spOppHP <= 0) { t.spOppHP = 100; t.score += 50; showComboText('다운!'); }
+  }
+}
+
+function endTraining() {
+  const t = currentTraining;
+  t.active = false;
+
+  const statMap = { speedbag: 'speed', heavybag: 'power', jumprope: 'stamina', sparring: 'defense' };
+  const stat = statMap[t.type];
+  const gain = Math.max(1, Math.floor(t.score / 50));
+  save.stats[stat] = Math.min(99, save.stats[stat] + gain);
+  save.trainCount[t.type] = (save.trainCount[t.type] || 0) + 1;
+  save.xp += Math.floor(t.score / 5);
+  saveSave();
+
+  const nameMap = { speedbag: '스피드백', heavybag: '헤비백', jumprope: '줄넘기', sparring: '스파링' };
+  $('trainResult').classList.remove('hidden');
+  $('trainResult').innerHTML = `
+    <h2>${nameMap[t.type]} 완료!</h2>
+    <div class="detail">점수: <b>${t.score}</b></div>
+    <div class="detail">히트: <b>${t.hits}</b> | 미스: <b>${t.misses}</b></div>
+    <div class="detail" style="color:var(--green);margin-top:10px">${{ speed: '스피드', power: '파워', stamina: '스태미나', defense: '방어력' }[stat]} +${gain}</div>
+    <div class="detail" style="color:var(--gold)">XP +${Math.floor(t.score / 5)}</div>
+    <button class="confirm-btn" onclick="afterTraining()">확인</button>
+  `;
+  playBell();
+}
+
+function afterTraining() {
+  $('trainResult').classList.add('hidden');
+  if (save.xp >= save.xpNext) {
+    save.xp -= save.xpNext;
+    save.level++;
+    save.xpNext = Math.floor(save.xpNext * 1.3);
+    showLevelUp();
+  } else {
+    showMain();
+  }
+}
+
+// ==================== RENDERING ====================
+function resize() {
+  W = CV.width = window.innerWidth;
+  H = CV.height = window.innerHeight;
+}
+
+// Draw boxing ring (pseudo-3D)
+function drawRing() {
+  const cx = W / 2, cy = H * 0.65;
+  const rw = Math.min(W * 0.8, 600), rh = rw * 0.4;
+
+  // Ring floor
+  ctx.save();
+  ctx.fillStyle = '#1a1520';
+  ctx.beginPath();
+  ctx.moveTo(cx - rw / 2, cy);
+  ctx.lineTo(cx + rw / 2, cy);
+  ctx.lineTo(cx + rw / 2 * 0.7, cy - rh);
+  ctx.lineTo(cx - rw / 2 * 0.7, cy - rh);
+  ctx.closePath();
+  ctx.fill();
+
+  // Ring mat
+  ctx.fillStyle = '#2a1a28';
+  ctx.beginPath();
+  ctx.moveTo(cx - rw / 2 * 0.95, cy - 5);
+  ctx.lineTo(cx + rw / 2 * 0.95, cy - 5);
+  ctx.lineTo(cx + rw / 2 * 0.65, cy - rh + 5);
+  ctx.lineTo(cx - rw / 2 * 0.65, cy - rh + 5);
+  ctx.closePath();
+  ctx.fill();
+
+  // Ring center circle
+  ctx.strokeStyle = 'rgba(230,57,70,0.15)';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  ctx.ellipse(cx, cy - rh * 0.45, rw * 0.15, rh * 0.12, 0, 0, Math.PI * 2);
+  ctx.stroke();
+
+  // Corner posts
+  const corners = [
+    { x: cx - rw / 2, y: cy },
+    { x: cx + rw / 2, y: cy },
+    { x: cx - rw / 2 * 0.7, y: cy - rh },
+    { x: cx + rw / 2 * 0.7, y: cy - rh }
+  ];
+  const postH = 60;
+
+  corners.forEach((c, i) => {
+    ctx.fillStyle = i < 2 ? '#e63946' : '#3b82f6';
+    ctx.fillRect(c.x - 4, c.y - postH, 8, postH);
+    ctx.fillStyle = '#ddd';
+    ctx.beginPath();
+    ctx.arc(c.x, c.y - postH, 5, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  // Ropes (3 levels)
+  for (let r = 0; r < 3; r++) {
+    const ry = postH * (0.3 + r * 0.25);
+    ctx.strokeStyle = `rgba(255,255,255,${0.15 - r * 0.03})`;
+    ctx.lineWidth = 2 - r * 0.3;
+    // Front ropes
+    ctx.beginPath();
+    ctx.moveTo(corners[0].x, corners[0].y - ry);
+    ctx.lineTo(corners[1].x, corners[1].y - ry);
+    ctx.stroke();
+    // Back ropes
+    ctx.beginPath();
+    ctx.moveTo(corners[2].x, corners[2].y - ry * 0.7);
+    ctx.lineTo(corners[3].x, corners[3].y - ry * 0.7);
+    ctx.stroke();
+    // Side ropes
+    ctx.beginPath();
+    ctx.moveTo(corners[0].x, corners[0].y - ry);
+    ctx.lineTo(corners[2].x, corners[2].y - ry * 0.7);
+    ctx.stroke();
+    ctx.beginPath();
+    ctx.moveTo(corners[1].x, corners[1].y - ry);
+    ctx.lineTo(corners[3].x, corners[3].y - ry * 0.7);
+    ctx.stroke();
+  }
+
+  // Crowd silhouettes (background)
+  ctx.fillStyle = 'rgba(20,15,25,0.9)';
+  for (let i = 0; i < 40; i++) {
+    const px = (i / 40) * W;
+    const py = cy - rh - 20 - Math.random() * 30;
+    const s = 8 + Math.random() * 6;
+    ctx.beginPath();
+    ctx.arc(px, py, s, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.fillRect(px - s * 0.4, py + s, s * 0.8, s * 1.2);
+  }
+  ctx.restore();
+}
+
+// Draw boxer figure
+function drawBoxer(x, y, scale, color, gloveColor, state, isOpponent) {
+  ctx.save();
+  ctx.translate(x, y);
+  ctx.scale(scale, scale);
+
+  const hitOffset = state.hitAnim > 0 ? (isOpponent ? 1 : -1) * state.hitAnim * 30 : 0;
+  const swayX = state.sway || 0;
+  ctx.translate(hitOffset + swayX, 0);
+
+  // Dodge animation
+  if (state.dodge === 'slipL') ctx.translate(-20, 5);
+  else if (state.dodge === 'slipR') ctx.translate(20, 5);
+  else if (state.dodge === 'duck') ctx.translate(0, 25);
+
+  const guardShift = state.guard === 'high' ? -3 : state.guard === 'low' ? 5 : 0;
+
+  // Legs
+  ctx.fillStyle = '#111';
+  ctx.fillRect(-15, 40, 12, 45); // left leg
+  ctx.fillRect(5, 40, 12, 45); // right leg
+  // Shoes
+  ctx.fillStyle = '#1a1a2e';
+  ctx.fillRect(-17, 82, 16, 8);
+  ctx.fillRect(3, 82, 16, 8);
+  // Shorts
+  ctx.fillStyle = color;
+  ctx.fillRect(-18, 30, 38, 18);
+  // Shorts stripe
+  ctx.fillStyle = gloveColor;
+  ctx.fillRect(-18, 30, 38, 3);
+
+  // Torso
+  ctx.fillStyle = '#c8956c';
+  ctx.beginPath();
+  ctx.moveTo(-14, 30);
+  ctx.lineTo(14, 30);
+  ctx.lineTo(18, -5);
+  ctx.lineTo(-18, -5);
+  ctx.closePath();
+  ctx.fill();
+
+  // Abs lines
+  ctx.strokeStyle = 'rgba(0,0,0,0.15)';
+  ctx.lineWidth = 1;
+  for (let i = 0; i < 3; i++) {
+    ctx.beginPath();
+    ctx.moveTo(-8, 5 + i * 10);
+    ctx.lineTo(8, 5 + i * 10);
+    ctx.stroke();
+  }
+  ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(0, 30); ctx.stroke();
+
+  // Arms and gloves
+  const punchAnim = state.punchAnim || 0;
+  const punchType = state.punchType;
+  const isJab = punchType === 'jab';
+  const isCross = punchType === 'cross';
+  const isHook = punchType === 'hook';
+  const isUpper = punchType === 'uppercut';
+
+  // Left arm
+  let lArmX = -22, lArmY = 0 + guardShift;
+  let lGloveX = -25, lGloveY = -10 + guardShift;
+  if (punchAnim > 0 && isJab && !isOpponent) {
+    lGloveX = -20; lGloveY = -35 - punchAnim * 40;
+  }
+  if (punchAnim > 0 && isJab && isOpponent) {
+    lGloveX = -15; lGloveY = 10 + punchAnim * 50;
+  }
+  if (punchAnim > 0 && isHook && !isOpponent) {
+    lGloveX = -35 + punchAnim * 30; lGloveY = -15;
+  }
+
+  ctx.fillStyle = '#c8956c';
+  ctx.fillRect(lArmX, lArmY, 8, 30);
+  ctx.fillStyle = gloveColor;
+  ctx.beginPath();
+  ctx.arc(lGloveX, lGloveY, 10, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Right arm
+  let rArmX = 14, rArmY = 0 + guardShift;
+  let rGloveX = 25, rGloveY = -10 + guardShift;
+  if (punchAnim > 0 && isCross && !isOpponent) {
+    rGloveX = 15; rGloveY = -35 - punchAnim * 45;
+  }
+  if (punchAnim > 0 && isCross && isOpponent) {
+    rGloveX = 10; rGloveY = 10 + punchAnim * 50;
+  }
+  if (punchAnim > 0 && isUpper && !isOpponent) {
+    rGloveY = -20 - punchAnim * 40;
+  }
+  if (punchAnim > 0 && isUpper && isOpponent) {
+    rGloveY = 5 + punchAnim * 45;
+  }
+  if (punchAnim > 0 && isHook && isOpponent) {
+    rGloveX = 35 - punchAnim * 30; rGloveY = -5;
+  }
+
+  // Guard position adjustments
+  if (state.guard === 'high') {
+    if (!(punchAnim > 0)) { lGloveY = -18; rGloveY = -18; lGloveX = -15; rGloveX = 15; }
+  } else if (state.guard === 'low') {
+    if (!(punchAnim > 0)) { lGloveY = 10; rGloveY = 10; lGloveX = -15; rGloveX = 15; }
+  }
+
+  ctx.fillStyle = '#c8956c';
+  ctx.fillRect(rArmX, rArmY, 8, 30);
+  ctx.fillStyle = gloveColor;
+  ctx.beginPath();
+  ctx.arc(rGloveX, rGloveY, 10, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Glove lacing
+  ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(lGloveX - 3, lGloveY - 3); ctx.lineTo(lGloveX + 3, lGloveY + 3); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(rGloveX - 3, rGloveY - 3); ctx.lineTo(rGloveX + 3, rGloveY + 3); ctx.stroke();
+
+  // Head
+  const headY = -22 + (state.hitAnim > 0 ? state.hitAnim * 8 : 0);
+  ctx.fillStyle = '#c8956c';
+  ctx.beginPath();
+  ctx.arc(0, headY, 14, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Hair
+  ctx.fillStyle = '#1a1a1a';
+  ctx.beginPath();
+  ctx.arc(0, headY - 5, 14, -Math.PI, 0);
+  ctx.fill();
+
+  // Eyes
+  ctx.fillStyle = '#111';
+  ctx.beginPath(); ctx.arc(-5, headY - 2, 2, 0, Math.PI * 2); ctx.fill();
+  ctx.beginPath(); ctx.arc(5, headY - 2, 2, 0, Math.PI * 2); ctx.fill();
+
+  // Mouth
+  if (state.hitAnim > 0) {
+    ctx.beginPath(); ctx.arc(0, headY + 5, 4, 0, Math.PI); ctx.stroke();
+  } else {
+    ctx.fillRect(-3, headY + 4, 6, 2);
+  }
+
+  // Mouthguard
+  ctx.fillStyle = isOpponent ? '#3b82f6' : '#e63946';
+  ctx.fillRect(-4, headY + 6, 8, 2);
+
+  ctx.restore();
+}
+
+function drawFightScene() {
+  const f = currentFight;
+  if (!f) return;
+
+  ctx.save();
+
+  // Camera shake
+  if (f.shakeAmount > 0.5) {
+    ctx.translate(
+      (Math.random() - 0.5) * f.shakeAmount * 2,
+      (Math.random() - 0.5) * f.shakeAmount * 2
+    );
+  }
+
+  // Draw ring
+  drawRing();
+
+  // Spotlight
+  const grad = ctx.createRadialGradient(W / 2, H * 0.3, 50, W / 2, H * 0.3, 400);
+  grad.addColorStop(0, 'rgba(255,255,200,0.03)');
+  grad.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Draw opponent (back, smaller)
+  const oppState = {
+    hitAnim: f.oppHitAnim,
+    punchAnim: f.oppPunchAnim,
+    punchType: f.oppPunchType,
+    sway: f.oppSway,
+    guard: 'none',
+    dodge: null
+  };
+  drawBoxer(W / 2, H * 0.32, 0.9, '#1a1a2e', '#3b82f6', oppState, true);
+
+  // Draw player (front, larger)
+  const playerState = {
+    hitAnim: f.playerHitAnim,
+    punchAnim: f.playerPunchAnim,
+    punchType: f.playerPunchType,
+    sway: f.playerSway,
+    guard: f.playerGuard,
+    dodge: f.playerDodgeTime > 0.1 ? f.playerDodge : null
+  };
+  drawBoxer(W / 2, H * 0.58, 1.3, '#111', '#e63946', playerState, false);
+
+  // Particles
+  f.particles.forEach(p => {
+    ctx.globalAlpha = p.life;
+    ctx.fillStyle = p.color;
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+
+  // Flash overlay
+  if (f.flashAmount > 0.05) {
+    ctx.fillStyle = `rgba(230,57,70,${f.flashAmount * 0.3})`;
+    ctx.fillRect(0, 0, W, H);
+  }
+
+  ctx.restore();
+}
+
+function drawTrainingScene() {
+  const t = currentTraining;
+  if (!t || !t.active) return;
+
+  ctx.fillStyle = '#0a0a10';
+  ctx.fillRect(0, 0, W, H);
+
+  // Timer bar
+  ctx.fillStyle = 'rgba(255,255,255,0.05)';
+  ctx.fillRect(0, 0, W, 4);
+  ctx.fillStyle = 'var(--accent)';
+  ctx.fillRect(0, 0, W * (t.timer / 30), 4);
+  ctx.fillStyle = '#e63946';
+  ctx.fillRect(0, 0, W * (t.timer / 30), 4);
+
+  // Score
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 24px sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(`점수: ${t.score}`, W / 2, 40);
+  ctx.font = '14px sans-serif';
+  ctx.fillStyle = '#6a6a7e';
+  ctx.fillText(`${Math.ceil(t.timer)}초 남음`, W / 2, 60);
+
+  if (t.type === 'speedbag') {
+    // Speed bag visual
+    const cx = W / 2, cy = H / 2 - 30;
+    // Mount
+    ctx.fillStyle = '#333';
+    ctx.fillRect(cx - 40, cy - 80, 80, 10);
+    // Swivel
+    ctx.fillStyle = '#555';
+    ctx.fillRect(cx - 3, cy - 70, 6, 20);
+    // Bag
+    const bagSwing = t.sbHit ? Math.sin(performance.now() / 30) * 15 : Math.sin(performance.now() / 200) * 3;
+    ctx.save();
+    ctx.translate(cx + bagSwing, cy - 30);
+    ctx.fillStyle = t.sbTarget ? '#e63946' : '#8b4513';
+    ctx.beginPath();
+    ctx.ellipse(0, 0, 18, 25, 0, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(-8, -10); ctx.lineTo(8, -10); ctx.stroke();
+    ctx.restore();
+
+    // Target indicator
+    ctx.fillStyle = t.sbTarget ? '#22c55e' : '#333';
+    ctx.font = 'bold 20px sans-serif';
+    ctx.fillText(t.sbTarget ? '지금! 탭하세요!' : '대기...', cx, cy + 60);
+
+    // Instruction
+    ctx.fillStyle = '#6a6a7e';
+    ctx.font = '13px sans-serif';
+    ctx.fillText('초록색일 때 아무 키나 누르세요 (1/2/3/4 또는 탭)', cx, H - 40);
+
+  } else if (t.type === 'heavybag') {
+    // Heavy bag
+    const cx = W / 2, cy = H / 2 - 20;
+    // Chain
+    ctx.strokeStyle = '#555';
+    ctx.lineWidth = 3;
+    ctx.beginPath(); ctx.moveTo(cx, 80); ctx.lineTo(cx, cy - 60); ctx.stroke();
+    // Bag
+    ctx.fillStyle = '#8b4513';
+    ctx.beginPath();
+    ctx.roundRect(cx - 30, cy - 60, 60, 120, 10);
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+    ctx.stroke();
+    // Logo
+    ctx.fillStyle = 'rgba(230,57,70,0.4)';
+    ctx.font = 'bold 16px sans-serif';
+    ctx.fillText('V4', cx, cy);
+
+    // Combo target
+    const nameMap = { jab: '잽(1)', cross: '크로스(2)', hook: '훅(3)', uppercut: '어퍼(4)' };
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.fillText('콤보 입력:', cx, cy + 90);
+
+    t.hbTarget.forEach((p, i) => {
+      ctx.fillStyle = i < t.hbIdx ? '#22c55e' : i === t.hbIdx ? '#e63946' : '#555';
+      ctx.font = `bold ${i === t.hbIdx ? 20 : 16}px sans-serif`;
+      ctx.fillText(nameMap[p], cx - (t.hbTarget.length - 1) * 40 + i * 80, cy + 130);
+    });
+
+  } else if (t.type === 'jumprope') {
+    const cx = W / 2, cy = H / 2 + 20;
+    // Character
+    const jumpY = t.jrJumping ? -t.jrY : 0;
+    ctx.fillStyle = '#c8956c';
+    ctx.beginPath(); ctx.arc(cx, cy - 50 + jumpY, 12, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#111';
+    ctx.fillRect(cx - 8, cy - 35 + jumpY, 16, 30);
+    ctx.fillRect(cx - 10, cy - 5 + jumpY, 8, 25);
+    ctx.fillRect(cx + 2, cy - 5 + jumpY, 8, 25);
+
+    // Rope
+    const ropeAngle = performance.now() / (500 / t.jrSpeed);
+    const ropeY = Math.sin(ropeAngle) * 30;
+    ctx.strokeStyle = '#e63946';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(cx - 30, cy - 20 + jumpY);
+    ctx.quadraticCurveTo(cx, cy + 20 + ropeY, cx + 30, cy - 20 + jumpY);
+    ctx.stroke();
+
+    // Ground
+    ctx.fillStyle = '#222';
+    ctx.fillRect(cx - 60, cy + 25, 120, 4);
+
+    ctx.fillStyle = '#fff';
+    ctx.font = 'bold 18px sans-serif';
+    ctx.fillText('스페이스바로 점프! (또는 탭)', cx, cy + 70);
+    t.jrSpeed = Math.min(6, 2 + t.score / 100);
+
+  } else if (t.type === 'sparring') {
+    drawRing();
+    // Simple opponent
+    const oppState = { hitAnim: 0, punchAnim: 0, punchType: null, sway: Math.sin(performance.now() / 600) * 5, guard: 'none', dodge: null };
+    drawBoxer(W / 2, H * 0.35, 0.8, '#1a1a2e', '#3b82f6', oppState, true);
+
+    // HP bars
+    ctx.fillStyle = 'rgba(255,255,255,0.1)';
+    ctx.fillRect(W / 2 - 80, H * 0.2, 160, 10);
+    ctx.fillStyle = '#e63946';
+    ctx.fillRect(W / 2 - 80, H * 0.2, 160 * (t.spOppHP / 100), 10);
+
+    ctx.fillStyle = '#fff';
+    ctx.font = '14px sans-serif';
+    ctx.fillText('1=잽 2=크로스 3=훅 4=어퍼', W / 2, H - 40);
+  }
+}
+
+// ==================== MAIN MENU BACKGROUND ====================
+function drawMenuBg() {
+  // Dark gradient bg
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, '#0a0a10');
+  grad.addColorStop(0.5, '#12101a');
+  grad.addColorStop(1, '#0a0a10');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+
+  // Animated ring ropes in background
+  const t = performance.now() / 3000;
+  ctx.globalAlpha = 0.1;
+  for (let i = 0; i < 5; i++) {
+    ctx.strokeStyle = i % 2 === 0 ? '#e63946' : '#3b82f6';
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    for (let x = 0; x < W; x += 10) {
+      ctx.lineTo(x, H / 2 + Math.sin(x / 100 + t + i) * (50 + i * 20));
+    }
+    ctx.stroke();
+  }
+  ctx.globalAlpha = 1;
+
+  // Spotlight
+  const sg = ctx.createRadialGradient(W / 2, H / 3, 0, W / 2, H / 3, 300);
+  sg.addColorStop(0, 'rgba(230,57,70,0.05)');
+  sg.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = sg;
+  ctx.fillRect(0, 0, W, H);
+}
+
+// ==================== INPUT ====================
+const keys = {};
+document.addEventListener('keydown', e => {
+  if (keys[e.code]) return;
+  keys[e.code] = true;
+  handleInput(e.code, 'down');
+});
+document.addEventListener('keyup', e => {
+  keys[e.code] = false;
+  handleInput(e.code, 'up');
+});
+
+function handleInput(code, dir) {
+  if (currentScreen === 'fight' && currentFight && currentFight.active && currentFight.phase === 'fight') {
+    if (dir === 'down') {
+      switch (code) {
+        case 'Digit1': case 'KeyJ': playerPunch('jab'); break;
+        case 'Digit2': case 'KeyK': playerPunch('cross'); break;
+        case 'Digit3': case 'KeyL': playerPunch('hook'); break;
+        case 'Digit4': case 'Semicolon': playerPunch('uppercut'); break;
+        case 'KeyQ': playerDodge('slipL'); break;
+        case 'KeyE': playerDodge('slipR'); break;
+        case 'KeyS': playerDodge('duck'); break;
+        case 'KeyA': playerGuard('high'); break;
+        case 'KeyD': playerGuard('low'); break;
+      }
+    }
+    if (dir === 'up') {
+      if (code === 'KeyA' || code === 'KeyD') releaseGuard();
+    }
+  }
+  if (currentScreen === 'train' && currentTraining && currentTraining.active && dir === 'down') {
+    if (currentTraining.type === 'speedbag' || currentTraining.type === 'jumprope') {
+      if (['Digit1', 'Digit2', 'Digit3', 'Digit4', 'Space', 'KeyJ', 'KeyK', 'KeyL'].includes(code)) {
+        trainingInput('any');
+      }
+    } else if (currentTraining.type === 'heavybag' || currentTraining.type === 'sparring') {
+      switch (code) {
+        case 'Digit1': case 'KeyJ': trainingInput('jab'); break;
+        case 'Digit2': case 'KeyK': trainingInput('cross'); break;
+        case 'Digit3': case 'KeyL': trainingInput('hook'); break;
+        case 'Digit4': case 'Semicolon': trainingInput('uppercut'); break;
+      }
+    }
+  }
+}
+
+// Touch controls
+let touchStartX = 0, touchStartY = 0, touchStartTime = 0;
+document.addEventListener('touchstart', e => {
+  if (e.target.closest('.overlay, .menu-btn, .confirm-btn, .alloc-btn, .back-btn, .opponent-card')) return;
+  touchStartX = e.touches[0].clientX;
+  touchStartY = e.touches[0].clientY;
+  touchStartTime = performance.now();
+
+  // Touch zones for fight
+  if (currentScreen === 'fight' && currentFight && currentFight.active) {
+    const x = e.touches[0].clientX;
+    const y = e.touches[0].clientY;
+    const zone = x / W;
+    if (y > H * 0.5) {
+      // Bottom half - punch zones
+      if (zone < 0.25) playerPunch('jab');
+      else if (zone < 0.5) playerPunch('cross');
+      else if (zone < 0.75) playerPunch('hook');
+      else playerPunch('uppercut');
+    } else {
+      // Top half - guard
+      if (zone < 0.5) playerGuard('high');
+      else playerGuard('low');
+    }
+  }
+  if (currentScreen === 'train' && currentTraining && currentTraining.active) {
+    const zone = e.touches[0].clientX / W;
+    if (currentTraining.type === 'speedbag' || currentTraining.type === 'jumprope') {
+      trainingInput('any');
+    } else {
+      if (zone < 0.25) trainingInput('jab');
+      else if (zone < 0.5) trainingInput('cross');
+      else if (zone < 0.75) trainingInput('hook');
+      else trainingInput('uppercut');
+    }
+  }
+}, { passive: true });
+
+document.addEventListener('touchend', e => {
+  releaseGuard();
+  const dx = e.changedTouches[0].clientX - touchStartX;
+  const dy = e.changedTouches[0].clientY - touchStartY;
+  const dt = performance.now() - touchStartTime;
+  if (dt < 300 && currentScreen === 'fight') {
+    if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) {
+      playerDodge(dx < 0 ? 'slipL' : 'slipR');
+    } else if (dy > 50) {
+      playerDodge('duck');
+    }
+  }
+}, { passive: true });
+
+// ==================== MAIN LOOP ====================
+let lastTime = 0;
+
+function gameLoop(time) {
+  const dt = Math.min((time - lastTime) / 1000, 0.05);
+  lastTime = time;
+
+  ctx.clearRect(0, 0, W, H);
+
+  if (currentScreen === 'main' || currentScreen === 'career' || currentScreen === 'training' || currentScreen === 'records') {
+    drawMenuBg();
+  } else if (currentScreen === 'fight') {
+    ctx.fillStyle = '#0a0a10';
+    ctx.fillRect(0, 0, W, H);
+    updateFight(dt);
+    drawFightScene();
+  } else if (currentScreen === 'train') {
+    updateTraining(dt);
+    drawTrainingScene();
+  }
+
+  requestAnimationFrame(gameLoop);
+}
+
+// ==================== INIT ====================
+function init() {
+  resize();
+  loadSave();
+  showMain();
+  requestAnimationFrame(gameLoop);
+}
+
+window.addEventListener('resize', resize);
+window.addEventListener('load', init);
+
+// Context menu / roundRect polyfill
+CanvasRenderingContext2D.prototype.roundRect = CanvasRenderingContext2D.prototype.roundRect || function (x, y, w, h, r) {
+  if (typeof r === 'number') r = [r, r, r, r];
+  this.beginPath();
+  this.moveTo(x + r[0], y);
+  this.arcTo(x + w, y, x + w, y + h, r[1]);
+  this.arcTo(x + w, y + h, x, y + h, r[2]);
+  this.arcTo(x, y + h, x, y, r[3]);
+  this.arcTo(x, y, x + w, y, r[0]);
+  this.closePath();
+};
+</script>
+</body>
+</html>

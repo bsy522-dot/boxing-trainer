@@ -1,0 +1,2442 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>3D Boxing Trainer V3</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+KR:wght@300;400;600;700;900&display=swap');
+
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#08080c;--panel:rgba(14,14,20,0.94);--accent:#e63946;--accent2:#ff6b35;
+  --text:#f0f0f0;--dim:#6a6a7e;--border:rgba(255,255,255,0.07);--glow:rgba(230,57,70,0.35);
+  --green:#22c55e;--yellow:#eab308;--blue:#3b82f6;--purple:#a855f7;
+}
+html,body{background:var(--bg);color:var(--text);font-family:'Noto Sans KR',sans-serif;overflow:hidden;height:100vh;width:100vw;touch-action:none}
+#cv{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
+canvas{display:block}
+
+.hud{position:fixed;z-index:100;pointer-events:none}
+.hud>*{pointer-events:auto}
+
+/* Top bar */
+.top{top:0;left:0;right:0;display:flex;align-items:center;justify-content:space-between;padding:10px 20px;background:linear-gradient(180deg,rgba(0,0,0,0.9) 0%,transparent 100%);z-index:200}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:3px;color:var(--accent);text-shadow:0 0 15px var(--glow);white-space:nowrap}
+.logo small{color:var(--dim);font-size:12px;letter-spacing:1px;margin-left:4px}
+
+.top-center{display:flex;align-items:center;gap:4px;flex:1;justify-content:center;overflow-x:auto}
+.tab-btn{padding:6px 14px;background:var(--panel);border:1px solid var(--border);border-radius:20px;color:var(--dim);font-size:11px;cursor:pointer;transition:all .2s;white-space:nowrap;font-family:'Noto Sans KR',sans-serif}
+.tab-btn:hover{border-color:var(--accent);color:var(--text)}
+.tab-btn.on{border-color:var(--accent);background:rgba(230,57,70,.15);color:var(--text);font-weight:600}
+
+.top-right{display:flex;align-items:center;gap:6px}
+.icon-btn{width:32px;height:32px;border-radius:50%;background:var(--panel);border:1px solid var(--border);color:var(--dim);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:14px;transition:all .2s}
+.icon-btn:hover{border-color:var(--accent);color:var(--text)}
+.icon-btn.on{border-color:var(--accent);color:var(--accent);background:rgba(230,57,70,.15)}
+
+/* Panels */
+.left{top:50px;left:0;bottom:60px;width:260px;overflow-y:auto;padding:10px;scrollbar-width:thin;scrollbar-color:var(--accent) transparent;z-index:100}
+.right{top:50px;right:0;width:240px;padding:10px;bottom:60px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:var(--accent) transparent;z-index:100}
+
+.sec{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:2px;margin:12px 0 4px;padding-bottom:2px;border-bottom:1px solid var(--border)}
+.pt{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--accent);margin-bottom:2px}
+.ps{font-size:10px;color:var(--dim);margin-bottom:8px}
+
+.mb{display:block;width:100%;padding:7px 10px;margin-bottom:2px;background:var(--panel);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:11px;cursor:pointer;text-align:left;transition:all .2s}
+.mb:hover{border-color:var(--accent);background:rgba(230,57,70,.08);transform:translateX(2px)}
+.mb.on{border-color:var(--accent);background:rgba(230,57,70,.12);box-shadow:0 0 10px rgba(230,57,70,.15)}
+.mb .n{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--accent);margin-right:5px}
+.mb .k{display:block;font-size:9px;color:var(--dim);margin-top:1px;margin-left:20px}
+
+.card{background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:10px;margin-bottom:8px;backdrop-filter:blur(8px)}
+.card h3{font-family:'Bebas Neue',sans-serif;font-size:13px;letter-spacing:2px;color:var(--accent);margin-bottom:4px}
+.card p{font-size:10px;line-height:1.5;color:var(--dim)}
+.kl{list-style:none;padding:0}
+.kl li{display:flex;align-items:center;gap:5px;font-size:10px;color:var(--dim);padding:2px 0}
+.kl .k{display:inline-block;min-width:20px;padding:1px 4px;background:rgba(255,255,255,.07);border-radius:3px;text-align:center;font-size:9px;color:var(--text);font-family:monospace}
+
+/* Bottom */
+.bot{bottom:0;left:0;right:0;display:flex;align-items:center;justify-content:center;padding:10px;gap:6px;background:linear-gradient(0deg,rgba(0,0,0,.9) 0%,transparent 100%);z-index:200}
+.cb{padding:6px 12px;background:var(--panel);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'Noto Sans KR',sans-serif;font-size:11px;cursor:pointer;transition:all .2s;display:flex;align-items:center;gap:4px}
+.cb:hover{border-color:var(--accent);background:rgba(230,57,70,.12)}
+.cb.pri{background:var(--accent);border-color:var(--accent);font-weight:600}
+.cb.pri:hover{background:#c1303c;box-shadow:0 0 12px var(--glow)}
+.cb svg{width:13px;height:13px}
+
+/* Sequence dots */
+.seq{bottom:55px;left:50%;transform:translateX(-50%);display:none;gap:4px;padding:5px 12px;background:var(--panel);border:1px solid var(--border);border-radius:20px;backdrop-filter:blur(8px);z-index:150}
+.seq.show{display:flex}
+.ss{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:12px;color:var(--dim);border:1px solid var(--border);transition:all .3s}
+.ss.on{color:#fff;background:var(--accent);border-color:var(--accent);box-shadow:0 0 10px var(--glow);transform:scale(1.1)}
+.ss.dn{color:var(--accent);border-color:rgba(230,57,70,.4)}
+
+.tech-overlay{position:fixed;bottom:100px;left:50%;transform:translateX(-50%);z-index:150;
+  font-size:10px;color:var(--dim);text-align:center;max-width:450px;
+  background:var(--panel);border:1px solid var(--border);border-radius:8px;padding:6px 12px;
+  opacity:0;transition:opacity .3s;pointer-events:none}
+.tech-overlay.show{opacity:1}
+
+/* Speed control */
+.spd{display:flex;align-items:center;gap:6px;background:var(--panel);padding:4px 10px;border-radius:20px;border:1px solid var(--border)}
+.spd label{font-size:9px;color:var(--dim);text-transform:uppercase;letter-spacing:1px}
+.spd input[type=range]{-webkit-appearance:none;width:70px;height:2px;background:var(--border);border-radius:2px;outline:none}
+.spd input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;border-radius:50%;background:var(--accent);cursor:pointer;box-shadow:0 0 6px var(--glow)}
+.spd .v{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--accent);min-width:30px;text-align:center}
+
+/* Mode panels (hidden by default) */
+.mode-panel{display:none}
+.mode-panel.active{display:block}
+
+/* ==================== CAMERA PIP ==================== */
+#cameraPip{position:fixed;bottom:70px;right:10px;width:240px;height:180px;background:#000;border:2px solid var(--accent);border-radius:10px;z-index:300;overflow:hidden;display:none;cursor:move;resize:both}
+#cameraPip video{width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+#cameraPip canvas{position:absolute;top:0;left:0;width:100%;height:100%;transform:scaleX(-1)}
+#cameraPip .pip-close{position:absolute;top:4px;right:4px;width:20px;height:20px;background:rgba(0,0,0,.7);border-radius:50%;color:#fff;font-size:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;z-index:2}
+#cameraPip .accuracy-badge{position:absolute;bottom:4px;left:50%;transform:translateX(-50%);padding:2px 10px;border-radius:10px;font-size:12px;font-weight:700;z-index:2}
+
+/* ==================== RHYTHM GAME ==================== */
+#rhythmCanvas{position:fixed;top:50px;left:260px;right:240px;bottom:60px;z-index:50;display:none;background:rgba(8,8,12,.95)}
+#rhythmCanvas canvas{width:100%;height:100%}
+
+/* ==================== SPARRING ==================== */
+.health-bar-container{position:fixed;top:55px;left:50%;transform:translateX(-50%);z-index:180;display:none;gap:20px;align-items:center;padding:6px 16px;background:var(--panel);border:1px solid var(--border);border-radius:8px}
+.health-bar-container.show{display:flex}
+.hb-label{font-size:10px;color:var(--dim);font-family:'Bebas Neue',sans-serif;letter-spacing:1px}
+.hb-outer{width:140px;height:10px;background:rgba(255,255,255,.05);border-radius:5px;overflow:hidden}
+.hb-inner{height:100%;border-radius:5px;transition:width .3s}
+.hb-player .hb-inner{background:var(--green)}
+.hb-opponent .hb-inner{background:var(--accent)}
+.hb-vs{font-family:'Bebas Neue',sans-serif;font-size:16px;color:var(--accent)}
+
+/* ==================== PROGRAM ==================== */
+.prog-calendar{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;margin-top:6px}
+.prog-day{width:100%;aspect-ratio:1;border-radius:3px;background:rgba(255,255,255,.03);border:1px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:8px;color:var(--dim)}
+.prog-day.done{background:rgba(230,57,70,.2);border-color:var(--accent);color:var(--accent)}
+.prog-day.today{border-color:var(--green);color:var(--green)}
+
+/* ==================== STATS ==================== */
+.stat-row{display:flex;justify-content:space-between;align-items:center;padding:4px 0;border-bottom:1px solid var(--border)}
+.stat-row .label{font-size:10px;color:var(--dim)}
+.stat-row .value{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--accent)}
+.bar-chart{display:flex;align-items:flex-end;gap:2px;height:60px;margin-top:6px}
+.bar-chart .bar{flex:1;background:var(--accent);border-radius:2px 2px 0 0;min-height:2px;transition:height .3s;position:relative}
+.bar-chart .bar .bar-label{position:absolute;bottom:-14px;left:50%;transform:translateX(-50%);font-size:7px;color:var(--dim);white-space:nowrap}
+
+/* ==================== TIMER ==================== */
+.round-timer{position:fixed;top:85px;left:50%;transform:translateX(-50%);z-index:180;display:none;text-align:center;padding:8px 20px;background:var(--panel);border:1px solid var(--border);border-radius:8px}
+.round-timer.show{display:block}
+.round-timer .rt-round{font-family:'Bebas Neue',sans-serif;font-size:14px;color:var(--accent);letter-spacing:2px}
+.round-timer .rt-time{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:3px}
+.round-timer .rt-phase{font-size:10px;color:var(--dim)}
+
+/* Combo display for rhythm */
+.combo-display{position:fixed;top:50%;right:250px;transform:translateY(-50%);z-index:180;text-align:center;pointer-events:none;display:none}
+.combo-display .combo-num{font-family:'Bebas Neue',sans-serif;font-size:60px;color:var(--accent);text-shadow:0 0 20px var(--glow);line-height:1}
+.combo-display .combo-label{font-size:10px;color:var(--dim);letter-spacing:2px}
+.combo-display .combo-msg{font-size:14px;font-weight:700;margin-top:2px}
+.combo-display.fire .combo-num{color:var(--accent2);text-shadow:0 0 30px rgba(255,107,53,.6)}
+
+/* Scoring popup */
+.score-popup{position:fixed;z-index:200;pointer-events:none;font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;animation:scorePop .6s ease-out forwards}
+@keyframes scorePop{0%{opacity:1;transform:translateY(0) scale(1)}100%{opacity:0;transform:translateY(-40px) scale(1.3)}}
+
+/* Select/Button styles */
+select,input[type=number]{background:var(--panel);border:1px solid var(--border);border-radius:4px;color:var(--text);padding:4px 6px;font-size:10px;font-family:'Noto Sans KR',sans-serif;outline:none}
+select:focus,input[type=number]:focus{border-color:var(--accent)}
+
+.btn-sm{padding:4px 10px;background:var(--panel);border:1px solid var(--border);border-radius:4px;color:var(--text);font-size:10px;cursor:pointer;font-family:'Noto Sans KR',sans-serif;transition:all .2s}
+.btn-sm:hover{border-color:var(--accent);background:rgba(230,57,70,.1)}
+.btn-sm.active{background:var(--accent);border-color:var(--accent)}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(230,57,70,.3);border-radius:2px}
+
+@media(max-width:900px){.left{width:200px}.right{display:none}#rhythmCanvas{right:0}}
+@media(max-width:600px){.left{display:none}.top{padding:6px 10px}.logo{font-size:18px}#rhythmCanvas{left:0}}
+</style>
+</head>
+<body>
+
+<div id="cv"></div>
+
+<!-- ==================== TOP BAR ==================== -->
+<div class="hud top">
+  <div class="logo">BOXING<small>TRAINER V3</small></div>
+  <div class="top-center">
+    <button class="tab-btn on" data-tab="free" onclick="switchTab('free')">자유연습</button>
+    <button class="tab-btn" data-tab="program" onclick="switchTab('program')">프로그램</button>
+    <button class="tab-btn" data-tab="rhythm" onclick="switchTab('rhythm')">리듬콤보</button>
+    <button class="tab-btn" data-tab="sparring" onclick="switchTab('sparring')">AI스파링</button>
+  </div>
+  <div class="top-right">
+    <div class="icon-btn" id="btnVoice" onclick="toggleVoice()" title="음성 코칭">🎙</div>
+    <div class="icon-btn" id="btnCam" onclick="toggleCamera()" title="카메라">📷</div>
+    <div class="icon-btn" id="btnStats" onclick="toggleStatsPanel()" title="통계">📊</div>
+    <div class="spd">
+      <label>속도</label>
+      <input type="range" id="spdR" min="0.1" max="2" step="0.1" value="1">
+      <div class="v" id="spdV">1.0x</div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== LEFT PANEL ==================== -->
+<div class="hud left" id="leftPanel">
+  <!-- FREE MODE -->
+  <div class="mode-panel active" id="panel-free">
+    <div class="pt">PUNCHES & COMBOS</div>
+    <div class="ps">동작을 선택하세요</div>
+    <div class="sec">기본 펀치 Basic Punches</div>
+    <div id="pBasic"></div>
+    <div class="sec">콤비네이션 Combinations</div>
+    <div id="pCombo"></div>
+    <div class="sec">풋워크 & 디펜스 Footwork</div>
+    <div id="pFoot"></div>
+  </div>
+
+  <!-- PROGRAM MODE -->
+  <div class="mode-panel" id="panel-program">
+    <div class="pt">12주 프로그램</div>
+    <div class="ps">난이도를 선택하세요</div>
+    <div style="display:flex;gap:4px;margin-bottom:8px">
+      <button class="btn-sm active" onclick="setProgramLevel(0)">초급</button>
+      <button class="btn-sm" onclick="setProgramLevel(1)">중급</button>
+      <button class="btn-sm" onclick="setProgramLevel(2)">고급</button>
+    </div>
+    <div class="sec" id="progLevelLabel">초급 BEGINNER</div>
+    <div id="progWeeks"></div>
+    <div class="sec">진행 캘린더</div>
+    <div class="prog-calendar" id="progCalendar"></div>
+  </div>
+
+  <!-- RHYTHM MODE -->
+  <div class="mode-panel" id="panel-rhythm">
+    <div class="pt">리듬 콤보</div>
+    <div class="ps">리듬에 맞춰 펀치!</div>
+    <div class="sec">BPM 선택</div>
+    <div style="display:flex;gap:4px;margin-bottom:8px;flex-wrap:wrap">
+      <button class="btn-sm" onclick="setRhythmBPM(100)">100</button>
+      <button class="btn-sm active" onclick="setRhythmBPM(120)">120</button>
+      <button class="btn-sm" onclick="setRhythmBPM(140)">140</button>
+      <button class="btn-sm" onclick="setRhythmBPM(160)">160</button>
+    </div>
+    <div class="sec">패턴</div>
+    <div id="rhythmPatterns"></div>
+    <div class="sec">입력 방법</div>
+    <div class="card">
+      <p>키보드: 1=잽 2=크로스 3=훅 4=어퍼</p>
+      <p>카메라: AI가 펀치 동작 감지</p>
+    </div>
+    <div class="sec">현재 점수</div>
+    <div class="card" id="rhythmScoreCard">
+      <div class="stat-row"><span class="label">점수</span><span class="value" id="rScore">0</span></div>
+      <div class="stat-row"><span class="label">콤보</span><span class="value" id="rCombo">0</span></div>
+      <div class="stat-row"><span class="label">정확도</span><span class="value" id="rAccuracy">0%</span></div>
+    </div>
+  </div>
+
+  <!-- SPARRING MODE -->
+  <div class="mode-panel" id="panel-sparring">
+    <div class="pt">AI 스파링</div>
+    <div class="ps">상대와 대결!</div>
+    <div class="sec">난이도</div>
+    <div style="display:flex;gap:4px;margin-bottom:8px">
+      <button class="btn-sm active" onclick="setSparDifficulty(0)">이지</button>
+      <button class="btn-sm" onclick="setSparDifficulty(1)">미디엄</button>
+      <button class="btn-sm" onclick="setSparDifficulty(2)">하드</button>
+    </div>
+    <div class="sec">조작법</div>
+    <div class="card">
+      <ul class="kl">
+        <li><span class="k">1</span> 잽</li>
+        <li><span class="k">2</span> 크로스</li>
+        <li><span class="k">3</span> 훅</li>
+        <li><span class="k">4</span> 어퍼컷</li>
+        <li><span class="k">Q</span> 슬립 왼쪽</li>
+        <li><span class="k">E</span> 슬립 오른쪽</li>
+        <li><span class="k">W</span> 밥&위브</li>
+      </ul>
+    </div>
+    <div class="sec">전적</div>
+    <div class="card" id="sparRecord">
+      <div class="stat-row"><span class="label">라운드</span><span class="value" id="sparRound">-</span></div>
+      <div class="stat-row"><span class="label">클린 히트</span><span class="value" id="sparHits">0</span></div>
+      <div class="stat-row"><span class="label">방어 성공</span><span class="value" id="sparDefense">0%</span></div>
+      <div class="stat-row"><span class="label">점수</span><span class="value" id="sparScore">0</span></div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== RIGHT PANEL ==================== -->
+<div class="hud right" id="rightPanel">
+  <!-- Default info -->
+  <div id="rightDefault">
+    <div class="card" id="infoCard">
+      <h3>동작 설명</h3>
+      <p id="mDesc">왼쪽에서 동작을 선택하세요. 마우스 드래그로 360° 회전, 스크롤로 줌.</p>
+    </div>
+    <div class="card">
+      <h3>CONTROLS</h3>
+      <ul class="kl">
+        <li><span class="k">드래그</span> 360° 회전</li>
+        <li><span class="k">스크롤</span> 줌 인/아웃</li>
+        <li><span class="k">Space</span> 재생/정지</li>
+        <li><span class="k">R</span> 시점 리셋</li>
+        <li><span class="k">M</span> 미러 모드</li>
+      </ul>
+    </div>
+  </div>
+  <!-- Stats panel (hidden) -->
+  <div id="rightStats" style="display:none">
+    <div class="card">
+      <h3>칼로리 추적기</h3>
+      <div style="margin:4px 0">
+        <label style="font-size:9px;color:var(--dim)">체중 (kg)</label>
+        <input type="number" id="userWeight" value="70" min="30" max="200" style="width:60px;margin-left:4px" onchange="saveSettings()">
+      </div>
+      <div class="stat-row"><span class="label">오늘 칼로리</span><span class="value" id="todayCal">0</span></div>
+      <div class="stat-row"><span class="label">오늘 펀치</span><span class="value" id="todayPunch">0</span></div>
+      <div class="stat-row"><span class="label">오늘 시간</span><span class="value" id="todayTime">0분</span></div>
+    </div>
+    <div class="card">
+      <h3>주간 칼로리</h3>
+      <div class="bar-chart" id="weeklyChart"></div>
+    </div>
+    <div class="card">
+      <h3>개인 기록</h3>
+      <div class="stat-row"><span class="label">최고 콤보</span><span class="value" id="prCombo">0</span></div>
+      <div class="stat-row"><span class="label">최고 정확도</span><span class="value" id="prAccuracy">0%</span></div>
+      <div class="stat-row"><span class="label">최고 칼로리</span><span class="value" id="prCalorie">0</span></div>
+    </div>
+    <div class="card">
+      <h3>월간 이력</h3>
+      <div class="bar-chart" id="monthlyChart"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Sequence display -->
+<div class="hud seq" id="seqD"></div>
+<div class="tech-overlay" id="techOv"></div>
+
+<!-- Health bars for sparring -->
+<div class="health-bar-container" id="healthBars">
+  <div>
+    <div class="hb-label">PLAYER</div>
+    <div class="hb-outer hb-player"><div class="hb-inner" id="hbPlayer" style="width:100%"></div></div>
+  </div>
+  <div class="hb-vs">VS</div>
+  <div>
+    <div class="hb-label">OPPONENT</div>
+    <div class="hb-outer hb-opponent"><div class="hb-inner" id="hbOpponent" style="width:100%"></div></div>
+  </div>
+</div>
+
+<!-- Round timer -->
+<div class="round-timer" id="roundTimer">
+  <div class="rt-round" id="rtRound">ROUND 1</div>
+  <div class="rt-time" id="rtTime">3:00</div>
+  <div class="rt-phase" id="rtPhase"></div>
+</div>
+
+<!-- Combo display -->
+<div class="combo-display" id="comboDisplay">
+  <div class="combo-num" id="comboNum">0</div>
+  <div class="combo-label">COMBO</div>
+  <div class="combo-msg" id="comboMsg"></div>
+</div>
+
+<!-- Rhythm game canvas -->
+<div id="rhythmCanvas"><canvas id="rhythmCv"></canvas></div>
+
+<!-- Camera PIP -->
+<div id="cameraPip">
+  <video id="camVideo" autoplay playsinline></video>
+  <canvas id="camCanvas"></canvas>
+  <div class="pip-close" onclick="toggleCamera()">X</div>
+  <div class="accuracy-badge" id="accuracyBadge" style="display:none">0%</div>
+</div>
+
+<!-- Bottom controls -->
+<div class="hud bot" id="botBar">
+  <div class="move-title" style="flex:0 0 auto">
+    <div style="font-size:8px;color:var(--dim);text-transform:uppercase;letter-spacing:1px">현재</div>
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px;color:var(--accent)" id="mName">ORTHODOX GUARD</div>
+  </div>
+  <button class="cb" onclick="resetView()">⟲ 리셋</button>
+  <button class="cb" onclick="prevStep()">⏮</button>
+  <button class="cb pri" id="playBtn" onclick="togglePlay()"><span id="plT">▶ 재생</span></button>
+  <button class="cb" onclick="nextStep()">⏭</button>
+  <button class="cb" id="mirBtn" onclick="toggleMirror()">↔ 사우스포</button>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script>
+// =====================================================
+// GLOBAL STATE
+// =====================================================
+let scene, camera, renderer, clock;
+let B = {}, B2 = {}; // boxer parts, opponent parts
+let isPlaying = false, animSpeed = 1;
+let comboSeq = [], comboStep = 0, comboT = 0;
+let stepDur = 1.0;
+let isMirrored = false;
+let currentMove = null;
+let currentTab = 'free';
+
+// Orbit camera
+let oTheta = 0, oPhi = Math.PI/7, oR = 4.2;
+const oTarget = new THREE.Vector3(0, 1.0, 0);
+let dragging = false, lastM = {x:0,y:0};
+
+// Voice
+let voiceEnabled = false;
+let speechSynth = window.speechSynthesis;
+
+// Camera/MediaPipe
+let cameraOn = false;
+let mediapipeReady = false;
+let poseDetector = null;
+let lastLandmarks = null;
+let poseAccuracy = 0;
+
+// Rhythm game
+let rhythmBPM = 120;
+let rhythmActive = false;
+let rhythmNotes = [];
+let rhythmScore = 0;
+let rhythmCombo = 0;
+let rhythmMaxCombo = 0;
+let rhythmHits = 0;
+let rhythmMisses = 0;
+let rhythmCtx = null;
+let rhythmStartTime = 0;
+let rhythmPatternIdx = 0;
+
+// Sparring
+let sparActive = false;
+let sparDifficulty = 0;
+let sparRound = 1;
+let sparTimer = 180;
+let sparPhase = 'idle'; // idle, fight, rest
+let sparPlayerHP = 100;
+let sparOpponentHP = 100;
+let sparPlayerScore = 0;
+let sparCleanHits = 0;
+let sparDefenseTotal = 0;
+let sparDefenseSuccess = 0;
+let sparOpponentAction = null;
+let sparOpeningTimer = 0;
+let sparAttackTimer = 0;
+let sparPlayerAction = null;
+let sparPlayerActionTimer = 0;
+let sparKnockdowns = 0;
+
+// Program
+let programLevel = 0;
+let programData = {};
+
+// Stats / Tracking
+let sessionStart = null;
+let sessionPunches = 0;
+let sessionCalories = 0;
+
+// Audio context
+let audioCtx = null;
+function getAudioCtx(){ if(!audioCtx) audioCtx = new (window.AudioContext||window.webkitAudioContext)(); return audioCtx; }
+
+// =====================================================
+// MOVES DATA (from v2)
+// =====================================================
+const MOVES = {
+  basic: [
+    { id:'jab', name:'JAB', kr:'잽 (앞손 직권)', num:'1',
+      desc:'가장 기본적인 펀치. 앞손을 직선으로 빠르게 뻗습니다.',
+      tech:'앞손 직선 신전 → 어깨 전방 회전 → 뒷손 턱 보호 유지 → 빠른 리턴',
+      seq:['jab'], cal:3 },
+    { id:'cross', name:'CROSS', kr:'크로스 (뒷손 직권)', num:'2',
+      desc:'뒷발 피벗 → 힙 회전 → 어깨 회전 → 팔꿈치 신전의 키네틱 체인.',
+      tech:'뒷발 피벗 → 힙·어깨 회전 → 팔꿈치 피스톤 신전 → 앞손 턱 보호',
+      seq:['cross'], cal:5 },
+    { id:'lead_hook', name:'LEAD HOOK', kr:'리드 훅 (앞손 훅)', num:'3',
+      desc:'팔꿈치 90도 수평 아크. 앞발 피벗과 몸통 회전으로 파워를 생성.',
+      tech:'앞팔 90° 유지 → 앞발 피벗 → 힙·몸통 회전 → 수평 아크',
+      seq:['lead_hook'], cal:6 },
+    { id:'rear_hook', name:'REAR HOOK', kr:'리어 훅 (뒷손 훅)', num:'4',
+      desc:'뒷손 훅. 뒷발 피벗과 힙 회전으로 강력한 측면 공격.',
+      tech:'뒷팔 90° → 뒷발 피벗 → 힙·몸통 역회전 → 수평 아크',
+      seq:['rear_hook'], cal:6 },
+    { id:'lead_upper', name:'LEAD UPPERCUT', kr:'리드 어퍼컷', num:'5',
+      desc:'스쿼트 자세에서 앞손을 아래→위로 올리는 펀치.',
+      tech:'무릎 굽힘 → 앞팔 90° 드롭 → 다리 드라이브 + 몸통 회전',
+      seq:['lead_upper'], cal:7 },
+    { id:'rear_upper', name:'REAR UPPERCUT', kr:'리어 어퍼컷', num:'6',
+      desc:'가장 강력한 어퍼컷. 뒷발 피벗 + 힙 회전 + 다리 드라이브.',
+      tech:'스쿼트 → 뒷팔 90° 드롭 → 뒷발 피벗 + 힙 회전 → 폭발 드라이브',
+      seq:['rear_upper'], cal:7 },
+  ],
+  combo: [
+    { id:'c12', name:'1-2', kr:'잽 → 크로스', num:'1-2', desc:'기본 콤비네이션.', seq:['jab','cross'], cal:8 },
+    { id:'c123', name:'1-2-3', kr:'잽 → 크로스 → 훅', num:'1-2-3', desc:'클래식 3연타.', seq:['jab','cross','lead_hook'], cal:14 },
+    { id:'c1236', name:'1-2-3-6', kr:'잽→크로스→훅→어퍼', num:'1-2-3-6', desc:'4연타 다각도 공격.', seq:['jab','cross','lead_hook','rear_upper'], cal:21 },
+    { id:'c1123', name:'1-1-2-3', kr:'더블잽→크로스→훅', num:'1-1-2-3', desc:'더블 잽으로 리듬 생성.', seq:['jab','jab','cross','lead_hook'], cal:18 },
+    { id:'c2356', name:'2-3-5-6', kr:'크로스→훅→어퍼→어퍼', num:'2-3-5-6', desc:'접근전 파워 콤보.', seq:['cross','lead_hook','lead_upper','rear_upper'], cal:24 },
+  ],
+  foot: [
+    { id:'step_fwd', name:'STEP FORWARD', kr:'전진 스텝', num:'▲', desc:'앞발 먼저 → 뒷발 따라옴.', seq:['step_fwd'], cal:2 },
+    { id:'step_back', name:'STEP BACK', kr:'후퇴 스텝', num:'▼', desc:'뒷발 먼저 → 앞발 따라옴.', seq:['step_back'], cal:2 },
+    { id:'lat_left', name:'LATERAL LEFT', kr:'좌측 이동', num:'◀', desc:'왼발 먼저 → 오른발 따라옴.', seq:['lat_left'], cal:2 },
+    { id:'lat_right', name:'LATERAL RIGHT', kr:'우측 이동', num:'▶', desc:'오른발 먼저 → 왼발 따라옴.', seq:['lat_right'], cal:2 },
+    { id:'slip_l', name:'SLIP LEFT', kr:'슬립 (왼쪽)', num:'SL', desc:'왼쪽으로 상체를 이동해 회피.', seq:['slip_l'], cal:3 },
+    { id:'slip_r', name:'SLIP RIGHT', kr:'슬립 (오른쪽)', num:'SR', desc:'오른쪽으로 슬립.', seq:['slip_r'], cal:3 },
+    { id:'bob_weave', name:'BOB & WEAVE', kr:'밥 앤 위브', num:'BW', desc:'U자로 상체를 낮추며 회피.', seq:['bob_weave'], cal:5 },
+  ]
+};
+
+// =====================================================
+// THREE.JS SETUP
+// =====================================================
+function init(){
+  scene = new THREE.Scene();
+  clock = new THREE.Clock();
+  camera = new THREE.PerspectiveCamera(40, innerWidth/innerHeight, 0.1, 100);
+
+  renderer = new THREE.WebGLRenderer({antialias:true, alpha:true});
+  renderer.setSize(innerWidth, innerHeight);
+  renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+  renderer.shadowMap.enabled = true;
+  renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+  renderer.toneMapping = THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure = 1.1;
+  document.getElementById('cv').appendChild(renderer.domElement);
+
+  // Lights
+  scene.add(new THREE.AmbientLight(0x404060, 0.5));
+  const dl = new THREE.DirectionalLight(0xffffff, 0.9);
+  dl.position.set(3,5,4); dl.castShadow=true; dl.shadow.mapSize.set(1024,1024);
+  scene.add(dl);
+  const fl = new THREE.DirectionalLight(0x3366aa, 0.25);
+  fl.position.set(-3,3,0); scene.add(fl);
+  const rim = new THREE.DirectionalLight(0xe63946, 0.4);
+  rim.position.set(0,2,-4); scene.add(rim);
+
+  // Floor
+  const fm = new THREE.MeshStandardMaterial({color:0x16161e, roughness:0.85, metalness:0.15});
+  const flr = new THREE.Mesh(new THREE.PlaneGeometry(14,14), fm);
+  flr.rotation.x=-Math.PI/2; flr.receiveShadow=true; scene.add(flr);
+
+  // Ring circle
+  const rg = new THREE.Mesh(
+    new THREE.RingGeometry(2.6,2.65,64),
+    new THREE.MeshBasicMaterial({color:0xe63946, side:THREE.DoubleSide, transparent:true, opacity:0.2})
+  );
+  rg.rotation.x=-Math.PI/2; rg.position.y=0.005; scene.add(rg);
+
+  const gh = new THREE.GridHelper(14,28,0x1e1e2a,0x121218);
+  gh.position.y=0.003; scene.add(gh);
+
+  buildBoxer(B, 0xcc2233, 0x22222e, 0);
+  buildBoxer(B2, 0x2233cc, 0x1a1a2e, 0);
+  B2.group.position.z = -1.8;
+  B2.group.rotation.y = Math.PI;
+  B2.group.visible = false;
+
+  setupControls();
+  buildUI();
+  applyGuard(B);
+  applyGuard(B2);
+  loadAllData();
+  startSessionTracking();
+  animate();
+}
+
+// =====================================================
+// BOXER BUILDER (reusable for player & opponent)
+// =====================================================
+function buildBoxer(parts, gloveColor, bodyColor, xOffset){
+  const G = new THREE.Group();
+  G.position.x = xOffset;
+  const skin = new THREE.MeshStandardMaterial({color:0xc8956c, roughness:0.65, metalness:0.05});
+  const body = new THREE.MeshStandardMaterial({color:bodyColor, roughness:0.55, metalness:0.08});
+  const glove = new THREE.MeshStandardMaterial({color:gloveColor, roughness:0.35, metalness:0.1});
+  const short = new THREE.MeshStandardMaterial({color:0x0f0f1a, roughness:0.7});
+  const shoe = new THREE.MeshStandardMaterial({color:0x0a0a12, roughness:0.5, metalness:0.1});
+  const wrap = new THREE.MeshStandardMaterial({color:0xddddcc, roughness:0.8});
+
+  const root = new THREE.Group(); G.add(root); parts.root = root;
+  const pelvis = new THREE.Group(); pelvis.position.y = 0.92; root.add(pelvis); parts.pelvis = pelvis;
+  const pelvisM = new THREE.Mesh(new THREE.SphereGeometry(0.17,8,6,0,Math.PI*2,0,Math.PI/2), body);
+  pelvisM.scale.set(1,0.5,0.8); pelvis.add(pelvisM);
+
+  const spine = new THREE.Group(); spine.position.y = 0.05; pelvis.add(spine); parts.spine = spine;
+  const abd = new THREE.Mesh(new THREE.CylinderGeometry(0.14,0.16,0.18,8), skin);
+  abd.position.y = 0.09; spine.add(abd);
+
+  const chest = new THREE.Group(); chest.position.y = 0.22; spine.add(chest); parts.chest = chest;
+  const chestM = new THREE.Mesh(new THREE.CylinderGeometry(0.18,0.15,0.28,8), body);
+  chestM.castShadow = true; chest.add(chestM);
+  const shL = new THREE.Mesh(new THREE.SphereGeometry(0.065,8,6), skin); shL.position.set(-0.2,0.1,0); chest.add(shL);
+  const shR = new THREE.Mesh(new THREE.SphereGeometry(0.065,8,6), skin); shR.position.set(0.2,0.1,0); chest.add(shR);
+
+  const nk = new THREE.Mesh(new THREE.CylinderGeometry(0.05,0.06,0.08,8), skin);
+  nk.position.y = 0.18; chest.add(nk);
+
+  const head = new THREE.Group(); head.position.y = 0.28; chest.add(head); parts.head = head;
+  const headM = new THREE.Mesh(new THREE.SphereGeometry(0.1,12,10), skin);
+  headM.castShadow = true; head.add(headM);
+  const chin = new THREE.Mesh(new THREE.SphereGeometry(0.03,6,4), skin);
+  chin.position.set(0,-0.07,0.06); head.add(chin);
+
+  const eG = new THREE.SphereGeometry(0.012,6,6);
+  const eM = new THREE.MeshBasicMaterial({color:0x111111});
+  head.add(new THREE.Mesh(eG,eM).translateX(-0.035).translateY(0.02).translateZ(0.085));
+  head.add(new THREE.Mesh(eG,eM).translateX(0.035).translateY(0.02).translateZ(0.085));
+  const nose = new THREE.Mesh(new THREE.CylinderGeometry(0.008,0.015,0.03,5), skin);
+  nose.position.set(0,-0.005,0.095); nose.rotation.x=Math.PI/6; head.add(nose);
+
+  function makeArm(side){
+    const s = side==='L'?-1:1;
+    const shoulder = new THREE.Group(); shoulder.position.set(s*0.22, 0.08, 0); chest.add(shoulder);
+    const ua = new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.035,0.24,8), skin);
+    ua.position.y = -0.12; ua.castShadow=true; shoulder.add(ua);
+    const elbow = new THREE.Group(); elbow.position.y = -0.24; shoulder.add(elbow);
+    const fa = new THREE.Mesh(new THREE.CylinderGeometry(0.035,0.03,0.2,8), skin);
+    fa.position.y = -0.1; fa.castShadow=true; elbow.add(fa);
+    const wr = new THREE.Mesh(new THREE.CylinderGeometry(0.032,0.032,0.04,8), wrap);
+    wr.position.y = -0.2; elbow.add(wr);
+    const gl = new THREE.Mesh(new THREE.SphereGeometry(0.055,10,8), glove);
+    gl.position.y = -0.24; gl.scale.set(1,1.1,0.9); gl.castShadow=true; elbow.add(gl);
+    const kn = new THREE.Mesh(new THREE.BoxGeometry(0.08,0.02,0.03), new THREE.MeshStandardMaterial({color:gloveColor===0xcc2233?0x991122:0x112299, roughness:0.3}));
+    kn.position.set(0,-0.24,0.04); elbow.add(kn);
+    return {shoulder, elbow, glove:gl};
+  }
+  const LA = makeArm('L'), RA = makeArm('R');
+  parts.lSh = LA.shoulder; parts.lEl = LA.elbow; parts.lGl = LA.glove;
+  parts.rSh = RA.shoulder; parts.rEl = RA.elbow; parts.rGl = RA.glove;
+
+  const shorts = new THREE.Mesh(new THREE.CylinderGeometry(0.17,0.19,0.14,8), short);
+  shorts.position.y = -0.02; pelvis.add(shorts);
+  const stripeColor = gloveColor === 0xcc2233 ? 0xe63946 : 0x3b82f6;
+  const stripe = new THREE.Mesh(new THREE.CylinderGeometry(0.175,0.195,0.02,8),
+    new THREE.MeshBasicMaterial({color:stripeColor}));
+  stripe.position.y = 0.05; pelvis.add(stripe);
+
+  function makeLeg(side){
+    const s = side==='L'?-1:1;
+    const hip = new THREE.Group(); hip.position.set(s*0.09, -0.1, 0); pelvis.add(hip);
+    const thigh = new THREE.Mesh(new THREE.CylinderGeometry(0.065,0.055,0.34,8), short);
+    thigh.position.y = -0.17; thigh.castShadow=true; hip.add(thigh);
+    const knee = new THREE.Group(); knee.position.y = -0.34; hip.add(knee);
+    const shin = new THREE.Mesh(new THREE.CylinderGeometry(0.045,0.04,0.34,8), skin);
+    shin.position.y = -0.17; shin.castShadow=true; knee.add(shin);
+    const ankle = new THREE.Group(); ankle.position.y = -0.36; knee.add(ankle);
+    const boot = new THREE.Mesh(new THREE.BoxGeometry(0.07,0.04,0.14), shoe);
+    boot.position.set(0,-0.01,0.02); ankle.add(boot);
+    const bootTop = new THREE.Mesh(new THREE.CylinderGeometry(0.04,0.04,0.08,8), shoe);
+    bootTop.position.y = 0.03; ankle.add(bootTop);
+    return {hip, knee, ankle};
+  }
+  const LL = makeLeg('L'), RL = makeLeg('R');
+  parts.lHip = LL.hip; parts.lKn = LL.knee; parts.lAnk = LL.ankle;
+  parts.rHip = RL.hip; parts.rKn = RL.knee; parts.rAnk = RL.ankle;
+
+  scene.add(G);
+  parts.group = G;
+}
+
+// =====================================================
+// GUARD POSE
+// =====================================================
+const GUARD = {
+  rootX:0, rootZ:0,
+  pelvisY:0.88, pelvisRY:-0.45,
+  spineRX:0.08, spineRY:0, spineRZ:0,
+  chestRX:-0.05, chestRY:-0.15, chestRZ:0,
+  headRX:-0.12, headRY:0.2, headRZ:0,
+  lShX:-1.3, lShY:0.1, lShZ:0.6,
+  lElX:-1.6, lElY:0.15, lElZ:0,
+  rShX:-1.5, rShY:-0.05, rShZ:-0.35,
+  rElX:-1.8, rElY:-0.1, rElZ:0,
+  lHipX:-0.08, lHipY:0, lHipZ:0.08,
+  lKnX:0.2, lKnY:0, lKnZ:0,
+  lAnkX:0,
+  rHipX:0.06, rHipY:0, rHipZ:-0.06,
+  rKnX:0.22, rKnY:0, rKnZ:0,
+  rAnkX:-0.15,
+};
+
+function applyGuard(parts){
+  parts = parts || B;
+  applyPoseObj(GUARD, parts);
+}
+
+function applyPoseObj(p, parts, mirror){
+  parts = parts || B;
+  const m = (mirror !== undefined ? mirror : isMirrored) ? -1 : 1;
+
+  parts.root.position.x = (p.rootX||0)*m;
+  parts.root.position.z = p.rootZ||0;
+  parts.pelvis.position.y = p.pelvisY||0.88;
+  parts.pelvis.rotation.y = (p.pelvisRY||-0.45)*m;
+  parts.spine.rotation.x = p.spineRX||0;
+  parts.spine.rotation.y = (p.spineRY||0)*m;
+  parts.spine.rotation.z = (p.spineRZ||0)*m;
+  parts.chest.rotation.x = p.chestRX||0;
+  parts.chest.rotation.y = (p.chestRY||0)*m;
+  parts.chest.rotation.z = (p.chestRZ||0)*m;
+  parts.head.rotation.x = p.headRX||-0.12;
+  parts.head.rotation.y = (p.headRY||0.2)*m;
+  parts.head.rotation.z = (p.headRZ||0)*m;
+
+  const doMirror = (mirror !== undefined ? mirror : isMirrored);
+  const lSh = doMirror ? parts.rSh : parts.lSh;
+  const lEl = doMirror ? parts.rEl : parts.lEl;
+  const rSh = doMirror ? parts.lSh : parts.rSh;
+  const rEl = doMirror ? parts.lEl : parts.rEl;
+
+  lSh.rotation.set(p.lShX||-1.3, (p.lShY||0)*m, (p.lShZ||0)*m);
+  lEl.rotation.set(p.lElX||-1.6, (p.lElY||0)*m, (p.lElZ||0)*m);
+  rSh.rotation.set(p.rShX||-1.5, (p.rShY||0)*m, (p.rShZ||0)*m);
+  rEl.rotation.set(p.rElX||-1.8, (p.rElY||0)*m, (p.rElZ||0)*m);
+
+  const lH = doMirror ? parts.rHip : parts.lHip;
+  const lK = doMirror ? parts.rKn : parts.lKn;
+  const lA = doMirror ? parts.rAnk : parts.lAnk;
+  const rH = doMirror ? parts.lHip : parts.rHip;
+  const rK = doMirror ? parts.lKn : parts.rKn;
+  const rA = doMirror ? parts.lAnk : parts.rAnk;
+
+  lH.rotation.set(p.lHipX||0, (p.lHipY||0)*m, (p.lHipZ||0)*m);
+  lK.rotation.set(p.lKnX||0.2, (p.lKnY||0)*m, (p.lKnZ||0)*m);
+  if(lA) lA.rotation.x = p.lAnkX||0;
+  rH.rotation.set(p.rHipX||0, (p.rHipY||0)*m, (p.rHipZ||0)*m);
+  rK.rotation.set(p.rKnX||0.22, (p.rKnY||0)*m, (p.rKnZ||0)*m);
+  if(rA) rA.rotation.x = p.rAnkX||-0.15;
+}
+
+// =====================================================
+// KEYFRAMES (from v2)
+// =====================================================
+const KF = {
+  jab: [
+    {t:0, p:null},
+    {t:0.25, p:{pelvisRY:-0.35, lShX:-1.5, lShZ:0.4, lElX:-1.7}},
+    {t:0.5, p:{pelvisRY:-0.2, chestRY:0.05, spineRY:0.15,
+      lShX:-0.3, lShY:0.2, lShZ:0.8, lElX:-0.2, lElY:0.1,
+      rShX:-1.5, rShY:-0.05, rShZ:-0.35, rElX:-1.8, headRY:0.1}},
+    {t:0.75, p:{lShX:-0.8, lShZ:0.6, lElX:-1.0}},
+    {t:1, p:null}
+  ],
+  cross: [
+    {t:0, p:null},
+    {t:0.2, p:{pelvisRY:-0.55, rShX:-1.6, rShZ:-0.5, rElX:-1.6, rKnX:0.3}},
+    {t:0.5, p:{pelvisRY:0.1, spineRY:0.3, chestRY:0.2,
+      rShX:-0.2, rShY:-0.25, rShZ:-0.7, rElX:-0.15, rElY:-0.05,
+      rHipY:0.15, rKnX:0.15, rAnkX:-0.25,
+      lShX:-1.4, lElX:-1.7, headRY:-0.1}},
+    {t:0.75, p:{pelvisRY:-0.25, rShX:-1.0, rElX:-1.2}},
+    {t:1, p:null}
+  ],
+  lead_hook: [
+    {t:0, p:null},
+    {t:0.2, p:{pelvisRY:-0.55, lShX:-0.9, lShY:0.3, lShZ:0.9, lElX:-1.55, lElY:0.2, lKnX:0.25}},
+    {t:0.5, p:{pelvisRY:-0.1, spineRY:0.3, chestRY:0.25,
+      lShX:-0.7, lShY:0.7, lShZ:0.2, lElX:-1.55, lElY:0.4,
+      lHipY:0.1, rShX:-1.5, rElX:-1.8, headRY:-0.05}},
+    {t:0.75, p:{lShX:-1.0, lShY:0.4, lShZ:0.5, lElX:-1.6}},
+    {t:1, p:null}
+  ],
+  rear_hook: [
+    {t:0, p:null},
+    {t:0.2, p:{pelvisRY:-0.3, rShX:-0.9, rShY:-0.3, rShZ:-0.9, rElX:-1.55, rElY:-0.2, rKnX:0.25}},
+    {t:0.5, p:{pelvisRY:-0.6, spineRY:-0.2, chestRY:-0.2,
+      rShX:-0.7, rShY:-0.7, rShZ:-0.2, rElX:-1.55, rElY:-0.4,
+      rHipY:-0.1, lShX:-1.3, lElX:-1.6, headRY:0.3}},
+    {t:1, p:null}
+  ],
+  lead_upper: [
+    {t:0, p:null},
+    {t:0.25, p:{pelvisY:0.78, pelvisRY:-0.3,
+      lShX:-0.5, lShY:0.15, lShZ:0.3, lElX:-1.55,
+      lKnX:0.45, rKnX:0.4, spineRX:0.12}},
+    {t:0.55, p:{pelvisY:0.92, pelvisRY:-0.2, spineRY:0.15,
+      lShX:-2.0, lShY:0.2, lShZ:0.4, lElX:-1.4,
+      lKnX:0.12, rKnX:0.15, rShX:-1.5, rElX:-1.8}},
+    {t:1, p:null}
+  ],
+  rear_upper: [
+    {t:0, p:null},
+    {t:0.25, p:{pelvisY:0.76, pelvisRY:-0.55,
+      rShX:-0.5, rShY:-0.15, rShZ:-0.3, rElX:-1.55,
+      lKnX:0.4, rKnX:0.5, spineRX:0.12}},
+    {t:0.55, p:{pelvisY:0.93, pelvisRY:-0.15, spineRY:-0.15, chestRY:-0.1,
+      rShX:-2.1, rShY:-0.2, rShZ:-0.4, rElX:-1.4,
+      rHipY:0.1, rAnkX:-0.25, lKnX:0.12, rKnX:0.12,
+      lShX:-1.3, lElX:-1.6}},
+    {t:1, p:null}
+  ],
+  step_fwd: [
+    {t:0,p:null},{t:0.3,p:{rootZ:0.1,lHipX:-0.15,lKnX:0.15}},{t:0.6,p:{rootZ:0.22,lHipX:-0.08}},{t:1.0,p:{rootZ:0.35}}
+  ],
+  step_back: [
+    {t:0,p:null},{t:0.3,p:{rootZ:-0.1,rHipX:0.12,rKnX:0.18}},{t:0.6,p:{rootZ:-0.22}},{t:1.0,p:{rootZ:-0.35}}
+  ],
+  lat_left: [{t:0,p:null},{t:0.3,p:{rootX:-0.12}},{t:0.6,p:{rootX:-0.25}},{t:1.0,p:{rootX:-0.35}}],
+  lat_right: [{t:0,p:null},{t:0.3,p:{rootX:0.12}},{t:0.6,p:{rootX:0.25}},{t:1.0,p:{rootX:0.35}}],
+  slip_l: [
+    {t:0,p:null},
+    {t:0.35,p:{pelvisY:0.78, spineRZ:0.35, chestRZ:0.15, spineRX:0.1, lKnX:0.5, rKnX:0.3, headRZ:0.1}},
+    {t:0.65,p:{pelvisY:0.75, spineRZ:0.4, chestRZ:0.2, spineRX:0.12, lKnX:0.55, rKnX:0.35}},
+    {t:1,p:null}
+  ],
+  slip_r: [
+    {t:0,p:null},
+    {t:0.35,p:{pelvisY:0.78, spineRZ:-0.35, chestRZ:-0.15, spineRX:0.1, lKnX:0.3, rKnX:0.5, headRZ:-0.1}},
+    {t:0.65,p:{pelvisY:0.75, spineRZ:-0.4, chestRZ:-0.2, spineRX:0.12, lKnX:0.35, rKnX:0.55}},
+    {t:1,p:null}
+  ],
+  bob_weave: [
+    {t:0,p:null},
+    {t:0.15,p:{pelvisY:0.8, spineRZ:0.2, spineRX:0.08, lKnX:0.45, rKnX:0.35}},
+    {t:0.35,p:{pelvisY:0.68, spineRX:0.2, spineRZ:0.05, lKnX:0.65, rKnX:0.55, headRX:-0.2}},
+    {t:0.55,p:{pelvisY:0.72, spineRZ:-0.2, spineRX:0.15, lKnX:0.55, rKnX:0.5}},
+    {t:0.75,p:{pelvisY:0.82, spineRZ:-0.1, lKnX:0.35, rKnX:0.35}},
+    {t:1,p:null}
+  ],
+};
+
+// =====================================================
+// INTERPOLATION
+// =====================================================
+function smooth(t){ return t*t*(3-2*t); }
+function lrp(a,b,t){ return a+(b-a)*t; }
+
+function getPoseAt(kframes, t){
+  let k0=kframes[0], k1=kframes[kframes.length-1];
+  for(let i=0;i<kframes.length-1;i++){
+    if(t>=kframes[i].t && t<=kframes[i+1].t){ k0=kframes[i]; k1=kframes[i+1]; break; }
+  }
+  const range = k1.t-k0.t;
+  const lt = range>0 ? (t-k0.t)/range : 0;
+  const e = smooth(lt);
+  const p0 = k0.p ? {...GUARD,...k0.p} : {...GUARD};
+  const p1 = k1.p ? {...GUARD,...k1.p} : {...GUARD};
+  const result = {};
+  const keys = new Set([...Object.keys(p0),...Object.keys(p1)]);
+  for(const k of keys){
+    const a = p0[k]!==undefined ? p0[k] : (GUARD[k]||0);
+    const b = p1[k]!==undefined ? p1[k] : (GUARD[k]||0);
+    result[k] = lrp(a,b,e);
+  }
+  return result;
+}
+
+// =====================================================
+// ANIMATION LOOP
+// =====================================================
+function animate(){
+  requestAnimationFrame(animate);
+  const dt = clock.getDelta();
+
+  // Free practice / program animation
+  if(isPlaying && comboSeq.length>0 && currentTab !== 'sparring'){
+    comboT += dt * animSpeed;
+    const st = comboT / stepDur;
+    if(st>=1.0){
+      comboT=0;
+      comboStep++;
+      if(comboStep>=comboSeq.length){ comboStep=0; }
+      updateSeqUI();
+      sessionPunches++;
+    }
+    const moveId = comboSeq[comboStep];
+    const kf = KF[moveId];
+    if(kf){
+      const pose = getPoseAt(kf, Math.min(st,1.0));
+      applyPoseObj(pose, B);
+    }
+  }
+
+  // Sparring update
+  if(sparActive) updateSparring(dt);
+
+  // Rhythm update
+  if(rhythmActive) updateRhythm(dt);
+
+  // Camera orbit
+  camera.position.x = oTarget.x + oR * Math.sin(oPhi) * Math.sin(oTheta);
+  camera.position.y = oTarget.y + oR * Math.cos(oPhi);
+  camera.position.z = oTarget.z + oR * Math.sin(oPhi) * Math.cos(oTheta);
+  camera.lookAt(oTarget);
+
+  renderer.render(scene, camera);
+}
+
+// =====================================================
+// CONTROLS
+// =====================================================
+function setupControls(){
+  const el = renderer.domElement;
+  el.addEventListener('mousedown',e=>{dragging=true;lastM={x:e.clientX,y:e.clientY}});
+  el.addEventListener('mousemove',e=>{
+    if(!dragging)return;
+    oTheta-=(e.clientX-lastM.x)*0.007;
+    oPhi=Math.max(0.05,Math.min(Math.PI/2.1,oPhi+(e.clientY-lastM.y)*0.007));
+    lastM={x:e.clientX,y:e.clientY};
+  });
+  el.addEventListener('mouseup',()=>dragging=false);
+  el.addEventListener('mouseleave',()=>dragging=false);
+  el.addEventListener('wheel',e=>{oR=Math.max(1.8,Math.min(10,oR+e.deltaY*0.004));e.preventDefault()},{passive:false});
+
+  let lT=null,lTD=null;
+  el.addEventListener('touchstart',e=>{
+    if(e.touches.length===1)lT={x:e.touches[0].clientX,y:e.touches[0].clientY};
+    else if(e.touches.length===2){
+      const dx=e.touches[0].clientX-e.touches[1].clientX;
+      const dy=e.touches[0].clientY-e.touches[1].clientY;
+      lTD=Math.sqrt(dx*dx+dy*dy);
+    }
+  });
+  el.addEventListener('touchmove',e=>{
+    e.preventDefault();
+    if(e.touches.length===1&&lT){
+      oTheta-=(e.touches[0].clientX-lT.x)*0.007;
+      oPhi=Math.max(0.05,Math.min(Math.PI/2.1,oPhi+(e.touches[0].clientY-lT.y)*0.007));
+      lT={x:e.touches[0].clientX,y:e.touches[0].clientY};
+    }else if(e.touches.length===2&&lTD){
+      const dx=e.touches[0].clientX-e.touches[1].clientX;
+      const dy=e.touches[0].clientY-e.touches[1].clientY;
+      const d=Math.sqrt(dx*dx+dy*dy);
+      oR=Math.max(1.8,Math.min(10,oR-(d-lTD)*0.015));
+      lTD=d;
+    }
+  },{passive:false});
+  el.addEventListener('touchend',()=>{lT=null;lTD=null});
+
+  document.addEventListener('keydown',e=>{
+    if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT') return;
+
+    if(currentTab==='rhythm' && rhythmActive){
+      if(e.key==='1'){handleRhythmInput('jab');e.preventDefault();return;}
+      if(e.key==='2'){handleRhythmInput('cross');e.preventDefault();return;}
+      if(e.key==='3'){handleRhythmInput('lead_hook');e.preventDefault();return;}
+      if(e.key==='4'){handleRhythmInput('rear_upper');e.preventDefault();return;}
+    }
+
+    if(currentTab==='sparring' && sparActive){
+      if(e.key==='1'){sparPlayerAttack('jab');e.preventDefault();return;}
+      if(e.key==='2'){sparPlayerAttack('cross');e.preventDefault();return;}
+      if(e.key==='3'){sparPlayerAttack('lead_hook');e.preventDefault();return;}
+      if(e.key==='4'){sparPlayerAttack('rear_upper');e.preventDefault();return;}
+      if(e.key==='q'||e.key==='Q'){sparPlayerDefend('slip_l');e.preventDefault();return;}
+      if(e.key==='e'||e.key==='E'){sparPlayerDefend('slip_r');e.preventDefault();return;}
+      if(e.key==='w'||e.key==='W'){sparPlayerDefend('bob_weave');e.preventDefault();return;}
+      return;
+    }
+
+    if(e.code==='Space'){e.preventDefault();togglePlay()}
+    else if(e.code==='KeyR')resetView();
+    else if(e.code==='KeyM')toggleMirror();
+    else if(e.code==='ArrowRight')nextStep();
+    else if(e.code==='ArrowLeft')prevStep();
+  });
+}
+
+// =====================================================
+// UI BUILD
+// =====================================================
+function buildUI(){
+  const allGroups = [
+    {data:MOVES.basic, el:'pBasic'},
+    {data:MOVES.combo, el:'pCombo'},
+    {data:MOVES.foot, el:'pFoot'},
+  ];
+  allGroups.forEach(g=>{
+    const div = document.getElementById(g.el);
+    g.data.forEach(m=>{
+      div.innerHTML += `<button class="mb" data-id="${m.id}" onclick="selectById('${m.id}')"><span class="n">${m.num}</span>${m.name}<span class="k">${m.kr}</span></button>`;
+    });
+  });
+
+  document.getElementById('spdR').addEventListener('input',e=>{
+    animSpeed=parseFloat(e.target.value);
+    document.getElementById('spdV').textContent=animSpeed.toFixed(1)+'x';
+  });
+
+  buildProgramUI();
+  buildRhythmUI();
+
+  // PIP drag
+  makeDraggable(document.getElementById('cameraPip'));
+}
+
+function findMove(id){
+  return [...MOVES.basic,...MOVES.combo,...MOVES.foot].find(m=>m.id===id);
+}
+function selectById(id){ selectMove(findMove(id)); }
+
+function selectMove(move){
+  if(!move)return;
+  currentMove=move;
+  document.querySelectorAll('.mb').forEach(b=>b.classList.remove('on'));
+  const ab = document.querySelector(`.mb[data-id="${move.id}"]`);
+  if(ab)ab.classList.add('on');
+  document.getElementById('mName').textContent = move.name;
+  document.getElementById('mDesc').textContent = move.desc;
+  if(move.tech){
+    const ov = document.getElementById('techOv');
+    ov.textContent = move.tech;
+    ov.classList.add('show');
+    setTimeout(()=>ov.classList.remove('show'), 4000);
+  }
+  comboSeq = move.seq;
+  comboStep = 0; comboT = 0;
+  const sd = document.getElementById('seqD');
+  if(comboSeq.length>1){
+    sd.classList.add('show');
+    sd.innerHTML = comboSeq.map((s,i)=>{
+      const md = findMove(s);
+      const n = md ? md.num : (i+1);
+      return `<div class="ss ${i===0?'on':''}">${n}</div>`;
+    }).join('');
+  }else{ sd.classList.remove('show'); }
+  applyGuard(B); B.root.position.x=0; B.root.position.z=0;
+  isPlaying=false;
+  document.getElementById('plT').textContent='▶ 재생';
+}
+
+function updateSeqUI(){
+  document.querySelectorAll('.ss').forEach((el,i)=>{
+    el.classList.remove('on','dn');
+    if(i===comboStep) el.classList.add('on');
+    else if(i<comboStep) el.classList.add('dn');
+  });
+}
+
+function togglePlay(){
+  if(currentTab==='sparring'){ toggleSparring(); return; }
+  if(currentTab==='rhythm'){ toggleRhythm(); return; }
+  isPlaying=!isPlaying;
+  document.getElementById('plT').textContent=isPlaying?'⏸ 정지':'▶ 재생';
+  if(isPlaying){comboT=0;comboStep=0;updateSeqUI()}
+}
+
+function resetView(){
+  oTheta=0;oPhi=Math.PI/7;oR=4.2;
+  isPlaying=false;comboT=0;comboStep=0;
+  applyGuard(B); B.root.position.x=0; B.root.position.z=0;
+  document.getElementById('plT').textContent='▶ 재생';
+  updateSeqUI();
+}
+
+function nextStep(){
+  if(comboSeq.length>1){ comboStep=(comboStep+1)%comboSeq.length; comboT=0; updateSeqUI(); }
+}
+function prevStep(){
+  if(comboSeq.length>1){ comboStep=(comboStep-1+comboSeq.length)%comboSeq.length; comboT=0; updateSeqUI(); }
+}
+function toggleMirror(){
+  isMirrored=!isMirrored;
+  const btn=document.getElementById('mirBtn');
+  btn.style.borderColor=isMirrored?'var(--accent)':'';
+  btn.style.background=isMirrored?'rgba(230,57,70,.15)':'';
+  applyGuard(B);
+}
+
+// =====================================================
+// TAB SWITCHING
+// =====================================================
+function switchTab(tab){
+  currentTab = tab;
+  document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('on', b.dataset.tab===tab));
+  document.querySelectorAll('.mode-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('panel-'+tab).classList.add('active');
+
+  // Reset states
+  const rc = document.getElementById('rhythmCanvas');
+  const hb = document.getElementById('healthBars');
+  const rt = document.getElementById('roundTimer');
+  const cd = document.getElementById('comboDisplay');
+
+  rc.style.display = 'none';
+  hb.classList.remove('show');
+  rt.classList.remove('show');
+  cd.style.display = 'none';
+
+  if(sparActive) stopSparring();
+  if(rhythmActive) stopRhythm();
+
+  B2.group.visible = false;
+  B.group.visible = true;
+
+  if(tab==='free'){
+    isPlaying = false;
+    document.getElementById('plT').textContent='▶ 재생';
+  }
+  else if(tab==='program'){
+    isPlaying = false;
+    document.getElementById('plT').textContent='▶ 시작';
+  }
+  else if(tab==='rhythm'){
+    document.getElementById('plT').textContent='▶ 시작';
+    rc.style.display = 'block';
+    initRhythmCanvas();
+  }
+  else if(tab==='sparring'){
+    document.getElementById('plT').textContent='▶ 시작';
+    B2.group.visible = true;
+    hb.classList.add('show');
+    rt.classList.add('show');
+  }
+}
+
+// =====================================================
+// VOICE COACHING
+// =====================================================
+function toggleVoice(){
+  voiceEnabled = !voiceEnabled;
+  document.getElementById('btnVoice').classList.toggle('on', voiceEnabled);
+  if(voiceEnabled) speak('음성 코칭을 시작합니다');
+}
+
+function speak(text){
+  if(!voiceEnabled) return;
+  if(speechSynth.speaking) speechSynth.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ko-KR';
+  u.rate = 1.1;
+  u.pitch = 1.0;
+  const voices = speechSynth.getVoices();
+  const koVoice = voices.find(v=>v.lang.startsWith('ko'));
+  if(koVoice) u.voice = koVoice;
+  speechSynth.speak(u);
+}
+
+const PUNCH_VOICE = {
+  jab:'잽!', cross:'크로스!', lead_hook:'훅!', rear_hook:'리어 훅!',
+  lead_upper:'어퍼컷!', rear_upper:'리어 어퍼!',
+  slip_l:'슬립 왼쪽!', slip_r:'슬립 오른쪽!', bob_weave:'밥 앤 위브!'
+};
+
+const ENCOURAGE = ['좋아요!','완벽해요!','더 빠르게!','파이팅!','그렇지!','최고예요!'];
+const CORRECTIONS = ['팔꿈치를 올려주세요','턱을 당기세요','가드를 올려주세요','무릎을 굽혀주세요','허리를 돌려주세요'];
+
+function speakPunch(id){ speak(PUNCH_VOICE[id]||id); }
+function speakEncourage(){ speak(ENCOURAGE[Math.floor(Math.random()*ENCOURAGE.length)]); }
+function speakCorrection(){ speak(CORRECTIONS[Math.floor(Math.random()*CORRECTIONS.length)]); }
+
+// =====================================================
+// AUDIO (Web Audio API - no external files)
+// =====================================================
+function playBell(){
+  const ctx = getAudioCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(800, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(400, ctx.currentTime+0.5);
+  gain.gain.setValueAtTime(0.4, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+1.0);
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.start(ctx.currentTime); osc.stop(ctx.currentTime+1.0);
+}
+
+function playPunchSound(intensity){
+  const ctx = getAudioCtx();
+  const bufferSize = ctx.sampleRate * 0.08;
+  const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for(let i=0;i<bufferSize;i++){
+    data[i] = (Math.random()*2-1)*Math.exp(-i/(bufferSize*0.15));
+  }
+  const source = ctx.createBufferSource();
+  source.buffer = buffer;
+  const gain = ctx.createGain();
+  gain.gain.setValueAtTime((intensity||0.3)*0.5, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.15);
+  const filter = ctx.createBiquadFilter();
+  filter.type='lowpass'; filter.frequency.value=2000;
+  source.connect(filter); filter.connect(gain); gain.connect(ctx.destination);
+  source.start(); source.stop(ctx.currentTime+0.15);
+}
+
+function playHitSound(){
+  const ctx = getAudioCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type='square';
+  osc.frequency.setValueAtTime(200, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(80, ctx.currentTime+0.1);
+  gain.gain.setValueAtTime(0.15, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.12);
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.start(); osc.stop(ctx.currentTime+0.12);
+}
+
+function playMissSound(){
+  const ctx = getAudioCtx();
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type='sawtooth';
+  osc.frequency.setValueAtTime(150, ctx.currentTime);
+  osc.frequency.exponentialRampToValueAtTime(50, ctx.currentTime+0.15);
+  gain.gain.setValueAtTime(0.08, ctx.currentTime);
+  gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+0.15);
+  osc.connect(gain); gain.connect(ctx.destination);
+  osc.start(); osc.stop(ctx.currentTime+0.2);
+}
+
+function playPerfectSound(){
+  const ctx = getAudioCtx();
+  [523.25, 659.25, 783.99].forEach((freq,i)=>{
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type='sine'; osc.frequency.value=freq;
+    gain.gain.setValueAtTime(0.12, ctx.currentTime+i*0.05);
+    gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+i*0.05+0.2);
+    osc.connect(gain); gain.connect(ctx.destination);
+    osc.start(ctx.currentTime+i*0.05); osc.stop(ctx.currentTime+i*0.05+0.2);
+  });
+}
+
+// =====================================================
+// CAMERA / MEDIAPIPE POSE DETECTION
+// =====================================================
+function toggleCamera(){
+  cameraOn = !cameraOn;
+  document.getElementById('btnCam').classList.toggle('on', cameraOn);
+  const pip = document.getElementById('cameraPip');
+  if(cameraOn){
+    pip.style.display='block';
+    startCamera();
+  } else {
+    pip.style.display='none';
+    stopCamera();
+  }
+}
+
+async function startCamera(){
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({video:{facingMode:'user', width:320, height:240}});
+    const video = document.getElementById('camVideo');
+    video.srcObject = stream;
+    await video.play();
+    loadMediaPipe(video);
+  } catch(e){
+    console.warn('Camera not available:', e);
+    speak('카메라를 사용할 수 없습니다');
+    cameraOn = false;
+    document.getElementById('btnCam').classList.remove('on');
+    document.getElementById('cameraPip').style.display='none';
+  }
+}
+
+function stopCamera(){
+  const video = document.getElementById('camVideo');
+  if(video.srcObject){
+    video.srcObject.getTracks().forEach(t=>t.stop());
+    video.srcObject = null;
+  }
+  lastLandmarks = null;
+  poseAccuracy = 0;
+}
+
+function loadMediaPipe(video){
+  // Load MediaPipe Pose from CDN
+  const script1 = document.createElement('script');
+  script1.src = 'https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5/pose.js';
+  script1.onload = ()=>{
+    const script2 = document.createElement('script');
+    script2.src = 'https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils@0.3/camera_utils.js';
+    script2.onload = ()=> initMediaPipe(video);
+    document.head.appendChild(script2);
+  };
+  document.head.appendChild(script1);
+}
+
+function initMediaPipe(video){
+  if(typeof Pose === 'undefined') return;
+  const pose = new Pose({locateFile:(file)=>`https://cdn.jsdelivr.net/npm/@mediapipe/pose@0.5/${file}`});
+  pose.setOptions({
+    modelComplexity: 1,
+    smoothLandmarks: true,
+    enableSegmentation: false,
+    minDetectionConfidence: 0.5,
+    minTrackingConfidence: 0.5,
+  });
+  pose.onResults(onPoseResults);
+  poseDetector = pose;
+
+  const cam = new Camera(video, {
+    onFrame: async ()=>{ if(poseDetector && cameraOn) await poseDetector.send({image:video}); },
+    width:320, height:240
+  });
+  cam.start();
+  mediapipeReady = true;
+}
+
+function onPoseResults(results){
+  if(!results.poseLandmarks) return;
+  lastLandmarks = results.poseLandmarks;
+
+  // Draw on canvas overlay
+  const canvas = document.getElementById('camCanvas');
+  const ctx = canvas.getContext('2d');
+  canvas.width = 320; canvas.height = 240;
+  ctx.clearRect(0,0,320,240);
+
+  // Calculate pose accuracy
+  poseAccuracy = calculatePoseAccuracy(lastLandmarks);
+
+  // Draw landmarks
+  const badJoints = getBadJoints(lastLandmarks);
+  for(let i=0;i<lastLandmarks.length;i++){
+    const lm = lastLandmarks[i];
+    if(lm.visibility < 0.5) continue;
+    const x = lm.x * 320;
+    const y = lm.y * 240;
+    const isBad = badJoints.includes(i);
+    ctx.beginPath();
+    ctx.arc(x, y, isBad?6:3, 0, Math.PI*2);
+    ctx.fillStyle = isBad ? '#e63946' : (poseAccuracy>80?'#22c55e':poseAccuracy>50?'#eab308':'#e63946');
+    ctx.fill();
+    if(isBad){
+      ctx.beginPath();
+      ctx.arc(x, y, 10, 0, Math.PI*2);
+      ctx.strokeStyle = '#e63946';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+    }
+  }
+
+  // Draw connections
+  const connections = [[11,13],[13,15],[12,14],[14,16],[11,12],[11,23],[12,24],[23,24],[23,25],[25,27],[24,26],[26,28]];
+  ctx.strokeStyle = poseAccuracy>80?'rgba(34,197,94,.5)':poseAccuracy>50?'rgba(234,179,8,.5)':'rgba(230,57,70,.5)';
+  ctx.lineWidth = 2;
+  connections.forEach(([a,b])=>{
+    if(lastLandmarks[a].visibility>0.3 && lastLandmarks[b].visibility>0.3){
+      ctx.beginPath();
+      ctx.moveTo(lastLandmarks[a].x*320, lastLandmarks[a].y*240);
+      ctx.lineTo(lastLandmarks[b].x*320, lastLandmarks[b].y*240);
+      ctx.stroke();
+    }
+  });
+
+  // Accuracy badge
+  const badge = document.getElementById('accuracyBadge');
+  badge.style.display='block';
+  badge.textContent = Math.round(poseAccuracy)+'%';
+  badge.style.background = poseAccuracy>80?'rgba(34,197,94,.8)':poseAccuracy>50?'rgba(234,179,8,.8)':'rgba(230,57,70,.8)';
+  badge.style.color = '#fff';
+}
+
+function calculatePoseAccuracy(landmarks){
+  // Compare key joint angles against expected boxing pose angles
+  const angles = [];
+
+  // Left elbow angle (should be ~90-120 for guard)
+  const lElbow = getAngle(landmarks[11], landmarks[13], landmarks[15]);
+  angles.push(Math.max(0, 100 - Math.abs(lElbow - 100)*1.5));
+
+  // Right elbow angle
+  const rElbow = getAngle(landmarks[12], landmarks[14], landmarks[16]);
+  angles.push(Math.max(0, 100 - Math.abs(rElbow - 90)*1.5));
+
+  // Shoulder height symmetry
+  const shoulderDiff = Math.abs(landmarks[11].y - landmarks[12].y);
+  angles.push(Math.max(0, 100 - shoulderDiff*500));
+
+  // Stance width (hips)
+  const hipWidth = Math.abs(landmarks[23].x - landmarks[24].x);
+  angles.push(Math.max(0, Math.min(100, hipWidth*500)));
+
+  // Knee bend
+  const lKnee = getAngle(landmarks[23], landmarks[25], landmarks[27]);
+  angles.push(Math.max(0, 100 - Math.abs(lKnee - 155)*1.0));
+  const rKnee = getAngle(landmarks[24], landmarks[26], landmarks[28]);
+  angles.push(Math.max(0, 100 - Math.abs(rKnee - 155)*1.0));
+
+  // Hands up (wrists above elbows or near chin)
+  const handsUp = (landmarks[15].y < landmarks[11].y && landmarks[16].y < landmarks[12].y) ? 100 :
+                  (landmarks[15].y < landmarks[13].y || landmarks[16].y < landmarks[14].y) ? 60 : 20;
+  angles.push(handsUp);
+
+  return angles.reduce((a,b)=>a+b,0)/angles.length;
+}
+
+function getAngle(a,b,c){
+  const ab = {x:a.x-b.x, y:a.y-b.y, z:(a.z||0)-(b.z||0)};
+  const cb = {x:c.x-b.x, y:c.y-b.y, z:(c.z||0)-(b.z||0)};
+  const dot = ab.x*cb.x + ab.y*cb.y + ab.z*cb.z;
+  const magAB = Math.sqrt(ab.x*ab.x+ab.y*ab.y+ab.z*ab.z);
+  const magCB = Math.sqrt(cb.x*cb.x+cb.y*cb.y+cb.z*cb.z);
+  if(magAB*magCB===0) return 0;
+  return Math.acos(Math.max(-1,Math.min(1,dot/(magAB*magCB))))*180/Math.PI;
+}
+
+function getBadJoints(landmarks){
+  const bad = [];
+  // Check if hands are too low
+  if(landmarks[15].y > landmarks[11].y+0.05) bad.push(15);
+  if(landmarks[16].y > landmarks[12].y+0.05) bad.push(16);
+  // Check if elbows are flared
+  const lElbow = getAngle(landmarks[11], landmarks[13], landmarks[15]);
+  if(lElbow > 150) bad.push(13);
+  const rElbow = getAngle(landmarks[12], landmarks[14], landmarks[16]);
+  if(rElbow > 150) bad.push(14);
+  // Check knee bend
+  const lKnee = getAngle(landmarks[23], landmarks[25], landmarks[27]);
+  if(lKnee > 175) bad.push(25);
+  const rKnee = getAngle(landmarks[24], landmarks[26], landmarks[28]);
+  if(rKnee > 175) bad.push(26);
+  return bad;
+}
+
+// Detect punch motion from landmarks
+function detectPunchFromPose(){
+  if(!lastLandmarks) return null;
+  const lm = lastLandmarks;
+  // Left wrist far forward compared to left shoulder
+  const lWristForward = lm[11].z - lm[15].z;
+  const rWristForward = lm[12].z - lm[16].z;
+  // Left wrist extended (elbow angle large)
+  const lElAngle = getAngle(lm[11], lm[13], lm[15]);
+  const rElAngle = getAngle(lm[12], lm[14], lm[16]);
+
+  // Jab detection (left arm extended forward)
+  if(lElAngle > 140 && lWristForward > 0.1) return 'jab';
+  // Cross detection (right arm extended)
+  if(rElAngle > 140 && rWristForward > 0.1) return 'cross';
+  // Hook detection (elbow ~90, wrist moving laterally)
+  if(lElAngle > 70 && lElAngle < 120 && Math.abs(lm[15].x - lm[11].x) > 0.15) return 'lead_hook';
+  // Uppercut detection (wrist below elbow moving up)
+  if(lm[15].y > lm[13].y && lWristForward > 0.05) return 'lead_upper';
+  if(lm[16].y > lm[14].y && rWristForward > 0.05) return 'rear_upper';
+
+  return null;
+}
+
+// Make element draggable
+function makeDraggable(el){
+  let ox,oy,sx,sy,isDragging=false;
+  el.addEventListener('mousedown',e=>{
+    if(e.target.classList.contains('pip-close')) return;
+    isDragging=true; ox=e.clientX; oy=e.clientY;
+    sx=el.offsetLeft; sy=el.offsetTop;
+    e.preventDefault();
+  });
+  document.addEventListener('mousemove',e=>{
+    if(!isDragging)return;
+    el.style.left=(sx+e.clientX-ox)+'px';
+    el.style.top=(sy+e.clientY-oy)+'px';
+    el.style.right='auto'; el.style.bottom='auto';
+  });
+  document.addEventListener('mouseup',()=>isDragging=false);
+}
+
+// =====================================================
+// TRAINING PROGRAMS (12 weeks)
+// =====================================================
+const PROGRAMS = [
+  { // Beginner
+    name:'초급', label:'초급 BEGINNER',
+    weeks: Array.from({length:4}, (_,w)=>({
+      sessions: Array.from({length:3}, (_,s)=>({
+        phases: [
+          {name:'워밍업', duration:120, moves:['step_fwd','step_back','lat_left','lat_right']},
+          {name:'기술연습', duration:300, moves: w<2?['jab','cross']:['jab','cross','lead_hook']},
+          {name:'콤보', duration:300, moves: w<2?['c12']:['c12','c123']},
+          {name:'컨디셔닝', duration:180, moves:['jab','cross','jab','cross']},
+          {name:'쿨다운', duration:120, moves:['step_back','step_fwd']}
+        ]
+      }))
+    }))
+  },
+  { // Intermediate
+    name:'중급', label:'중급 INTERMEDIATE',
+    weeks: Array.from({length:4}, (_,w)=>({
+      sessions: Array.from({length:3}, (_,s)=>({
+        phases: [
+          {name:'워밍업', duration:120, moves:['step_fwd','step_back','slip_l','slip_r']},
+          {name:'기술연습', duration:300, moves: w<2?['lead_hook','rear_hook','slip_l','slip_r']:['lead_upper','rear_upper','bob_weave']},
+          {name:'콤보', duration:300, moves: w<2?['c123','c1123']:['c1236','c2356']},
+          {name:'컨디셔닝', duration:180, moves:['c123','c1236','c12']},
+          {name:'쿨다운', duration:120, moves:['bob_weave','step_back']}
+        ]
+      }))
+    }))
+  },
+  { // Advanced
+    name:'고급', label:'고급 ADVANCED',
+    weeks: Array.from({length:4}, (_,w)=>({
+      sessions: Array.from({length:3}, (_,s)=>({
+        phases: [
+          {name:'워밍업', duration:120, moves:['bob_weave','slip_l','slip_r','step_fwd']},
+          {name:'기술연습', duration:300, moves:['lead_upper','rear_upper','lead_hook','rear_hook','bob_weave']},
+          {name:'콤보', duration:300, moves:['c1236','c2356','c1123']},
+          {name:'컨디셔닝', duration:180, moves:['c1236','c2356','c1236','c2356']},
+          {name:'쿨다운', duration:120, moves:['step_back','bob_weave']}
+        ]
+      }))
+    }))
+  }
+];
+
+let progSessionTimer = null;
+let progCurrentPhase = 0;
+let progPhaseTimer = 0;
+let progCurrentSession = null;
+
+function buildProgramUI(){
+  renderProgramWeeks();
+  renderProgramCalendar();
+}
+
+function setProgramLevel(lv){
+  programLevel = lv;
+  document.querySelectorAll('#panel-program .btn-sm').forEach((b,i)=>b.classList.toggle('active', i===lv));
+  document.getElementById('progLevelLabel').textContent = PROGRAMS[lv].label;
+  renderProgramWeeks();
+  renderProgramCalendar();
+}
+
+function renderProgramWeeks(){
+  const prog = PROGRAMS[programLevel];
+  const div = document.getElementById('progWeeks');
+  const completed = getCompletedSessions();
+  div.innerHTML = '';
+  prog.weeks.forEach((week,wi)=>{
+    const weekNum = programLevel*4 + wi + 1;
+    div.innerHTML += `<div class="sec">WEEK ${weekNum}</div>`;
+    week.sessions.forEach((sess,si)=>{
+      const key = `${programLevel}-${wi}-${si}`;
+      const done = completed.includes(key);
+      div.innerHTML += `<button class="mb ${done?'on':''}" onclick="startProgramSession(${wi},${si})">
+        <span class="n">D${si+1}</span>${done?'✓ ':''} 세션 ${si+1}
+        <span class="k">${sess.phases.map(p=>p.name).join(' → ')}</span>
+      </button>`;
+    });
+  });
+}
+
+function renderProgramCalendar(){
+  const cal = document.getElementById('progCalendar');
+  const completed = getCompletedSessions();
+  const today = new Date();
+  const dayLabels = ['일','월','화','수','목','금','토'];
+  cal.innerHTML = dayLabels.map(d=>`<div style="font-size:7px;text-align:center;color:var(--dim)">${d}</div>`).join('');
+
+  // Show current month
+  const year = today.getFullYear();
+  const month = today.getMonth();
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+
+  for(let i=0;i<firstDay;i++) cal.innerHTML += '<div class="prog-day"></div>';
+
+  const sessionDates = getSessionDates();
+  for(let d=1;d<=daysInMonth;d++){
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = d === today.getDate();
+    const isDone = sessionDates.includes(dateStr);
+    cal.innerHTML += `<div class="prog-day ${isDone?'done':''} ${isToday?'today':''}">${d}</div>`;
+  }
+}
+
+function startProgramSession(weekIdx, sessIdx){
+  const prog = PROGRAMS[programLevel];
+  progCurrentSession = {level:programLevel, week:weekIdx, sess:sessIdx, data:prog.weeks[weekIdx].sessions[sessIdx]};
+  progCurrentPhase = 0;
+  progPhaseTimer = progCurrentSession.data.phases[0].duration;
+
+  // Set up moves for first phase
+  const phase = progCurrentSession.data.phases[0];
+  const moveId = phase.moves[0];
+  selectById(moveId);
+
+  // Start timer
+  document.getElementById('roundTimer').classList.add('show');
+  speak(phase.name + ' 시작!');
+  playBell();
+
+  isPlaying = true;
+  document.getElementById('plT').textContent='⏸ 정지';
+
+  if(progSessionTimer) clearInterval(progSessionTimer);
+  progSessionTimer = setInterval(updateProgramTimer, 1000);
+  updateProgramTimerDisplay();
+}
+
+function updateProgramTimer(){
+  progPhaseTimer--;
+  if(progPhaseTimer <= 30 && progPhaseTimer === 30) speak('30초 남았습니다');
+  if(progPhaseTimer <= 10 && progPhaseTimer > 0) ; // countdown
+  if(progPhaseTimer <= 0){
+    progCurrentPhase++;
+    if(progCurrentPhase >= progCurrentSession.data.phases.length){
+      // Session complete
+      clearInterval(progSessionTimer);
+      progSessionTimer = null;
+      playBell();
+      speak('세션 완료! 수고하셨습니다!');
+      markSessionComplete(progCurrentSession.level, progCurrentSession.week, progCurrentSession.sess);
+      document.getElementById('roundTimer').classList.remove('show');
+      isPlaying = false;
+      document.getElementById('plT').textContent='▶ 시작';
+      saveSessionStats();
+      renderProgramWeeks();
+      renderProgramCalendar();
+      return;
+    }
+    const phase = progCurrentSession.data.phases[progCurrentPhase];
+    progPhaseTimer = phase.duration;
+    playBell();
+    speak(phase.name + ' 시작!');
+    // Switch to first move of phase
+    const moveId = phase.moves[0];
+    selectById(moveId);
+    comboSeq = phase.moves;
+  } else {
+    // Cycle through moves in current phase
+    const phase = progCurrentSession.data.phases[progCurrentPhase];
+    const moveCycleDur = Math.floor(phase.duration / phase.moves.length);
+    const elapsed = phase.duration - progPhaseTimer;
+    const moveIdx = Math.floor(elapsed / Math.max(moveCycleDur,1)) % phase.moves.length;
+    const moveId = phase.moves[moveIdx];
+    if(findMove(moveId) && currentMove && currentMove.id !== moveId){
+      selectById(moveId);
+      isPlaying = true;
+      speakPunch(moveId);
+    }
+  }
+  updateProgramTimerDisplay();
+}
+
+function updateProgramTimerDisplay(){
+  if(!progCurrentSession) return;
+  const phase = progCurrentSession.data.phases[progCurrentPhase];
+  const m = Math.floor(progPhaseTimer/60);
+  const s = progPhaseTimer%60;
+  document.getElementById('rtRound').textContent = `${PROGRAMS[progCurrentSession.level].name} WEEK ${progCurrentSession.level*4+progCurrentSession.week+1}`;
+  document.getElementById('rtTime').textContent = `${m}:${String(s).padStart(2,'0')}`;
+  document.getElementById('rtPhase').textContent = phase ? phase.name : '';
+}
+
+function getCompletedSessions(){
+  try{ return JSON.parse(localStorage.getItem('boxing_completed_sessions')||'[]'); }catch(e){return [];}
+}
+function markSessionComplete(lv,w,s){
+  const arr = getCompletedSessions();
+  const key = `${lv}-${w}-${s}`;
+  if(!arr.includes(key)) arr.push(key);
+  localStorage.setItem('boxing_completed_sessions', JSON.stringify(arr));
+  // Also save date
+  const dates = getSessionDates();
+  const today = new Date().toISOString().slice(0,10);
+  if(!dates.includes(today)) dates.push(today);
+  localStorage.setItem('boxing_session_dates', JSON.stringify(dates));
+}
+function getSessionDates(){
+  try{ return JSON.parse(localStorage.getItem('boxing_session_dates')||'[]'); }catch(e){return [];}
+}
+
+// =====================================================
+// RHYTHM COMBO TRAINING
+// =====================================================
+const RHYTHM_PATTERNS = [
+  {name:'기본 잽-크로스', bpm:120, notes:[
+    {t:0,type:'jab'},{t:1,type:'cross'},{t:2,type:'jab'},{t:3,type:'cross'},
+    {t:4,type:'jab'},{t:5,type:'cross'},{t:6,type:'jab'},{t:7,type:'cross'},
+    {t:8,type:'jab'},{t:9,type:'cross'},{t:10,type:'lead_hook'},{t:11,type:'cross'},
+    {t:12,type:'jab'},{t:13,type:'cross'},{t:14,type:'jab'},{t:15,type:'cross'},
+  ]},
+  {name:'1-2-3 콤보', bpm:120, notes:[
+    {t:0,type:'jab'},{t:1,type:'cross'},{t:2,type:'lead_hook'},{t:4,type:'jab'},{t:5,type:'cross'},{t:6,type:'lead_hook'},
+    {t:8,type:'jab'},{t:9,type:'cross'},{t:10,type:'lead_hook'},{t:12,type:'jab'},{t:13,type:'cross'},{t:14,type:'lead_hook'},
+  ]},
+  {name:'파워 콤보', bpm:140, notes:[
+    {t:0,type:'jab'},{t:0.75,type:'cross'},{t:1.5,type:'lead_hook'},{t:2.25,type:'rear_upper'},
+    {t:4,type:'jab'},{t:4.75,type:'cross'},{t:5.5,type:'lead_hook'},{t:6.25,type:'rear_upper'},
+    {t:8,type:'cross'},{t:8.75,type:'lead_hook'},{t:9.5,type:'rear_upper'},{t:10.25,type:'jab'},
+    {t:12,type:'jab'},{t:12.5,type:'jab'},{t:13,type:'cross'},{t:13.5,type:'lead_hook'},{t:14,type:'rear_upper'},
+  ]},
+  {name:'속사포', bpm:160, notes:[
+    {t:0,type:'jab'},{t:0.5,type:'jab'},{t:1,type:'cross'},{t:1.5,type:'lead_hook'},
+    {t:2,type:'jab'},{t:2.5,type:'cross'},{t:3,type:'rear_upper'},{t:3.5,type:'jab'},
+    {t:4,type:'cross'},{t:4.5,type:'lead_hook'},{t:5,type:'cross'},{t:5.5,type:'rear_upper'},
+    {t:6,type:'jab'},{t:6.25,type:'jab'},{t:6.5,type:'cross'},{t:6.75,type:'lead_hook'},{t:7,type:'rear_upper'},
+    {t:8,type:'jab'},{t:8.5,type:'cross'},{t:9,type:'jab'},{t:9.5,type:'cross'},
+    {t:10,type:'lead_hook'},{t:10.5,type:'rear_upper'},{t:11,type:'jab'},{t:11.5,type:'cross'},
+  ]},
+  {name:'디펜스 믹스', bpm:100, notes:[
+    {t:0,type:'jab'},{t:1,type:'cross'},{t:2,type:'jab'},{t:3,type:'lead_hook'},
+    {t:4,type:'jab'},{t:5,type:'cross'},{t:6,type:'rear_upper'},{t:7,type:'jab'},
+    {t:8,type:'cross'},{t:9,type:'lead_hook'},{t:10,type:'rear_upper'},{t:11,type:'jab'},
+    {t:12,type:'cross'},{t:13,type:'cross'},{t:14,type:'lead_hook'},{t:15,type:'rear_upper'},
+  ]},
+];
+
+const PUNCH_COLORS = {
+  jab:'#3b82f6', cross:'#e63946', lead_hook:'#22c55e', rear_hook:'#22c55e',
+  lead_upper:'#eab308', rear_upper:'#eab308'
+};
+const PUNCH_LABELS = {jab:'J', cross:'C', lead_hook:'H', rear_hook:'H', lead_upper:'U', rear_upper:'U'};
+
+function buildRhythmUI(){
+  const div = document.getElementById('rhythmPatterns');
+  RHYTHM_PATTERNS.forEach((p,i)=>{
+    div.innerHTML += `<button class="mb ${i===0?'on':''}" data-ridx="${i}" onclick="selectRhythmPattern(${i})">
+      <span class="n">${p.bpm}</span>${p.name}<span class="k">${p.notes.length}노트</span>
+    </button>`;
+  });
+}
+
+function selectRhythmPattern(idx){
+  rhythmPatternIdx = idx;
+  document.querySelectorAll('[data-ridx]').forEach((b,i)=>b.classList.toggle('on', i===idx));
+}
+
+function setRhythmBPM(bpm){
+  rhythmBPM = bpm;
+  document.querySelectorAll('#panel-rhythm .btn-sm').forEach(b=>b.classList.toggle('active', parseInt(b.textContent)===bpm));
+}
+
+function initRhythmCanvas(){
+  const container = document.getElementById('rhythmCanvas');
+  const canvas = document.getElementById('rhythmCv');
+  canvas.width = container.clientWidth;
+  canvas.height = container.clientHeight;
+  rhythmCtx = canvas.getContext('2d');
+  drawRhythmIdle();
+}
+
+function drawRhythmIdle(){
+  if(!rhythmCtx) return;
+  const c = rhythmCtx;
+  const w = c.canvas.width, h = c.canvas.height;
+  c.fillStyle = 'rgba(8,8,12,0.95)';
+  c.fillRect(0,0,w,h);
+
+  // Hit zone
+  const hitY = h - 80;
+  c.strokeStyle = 'rgba(230,57,70,0.3)';
+  c.lineWidth = 2;
+  c.beginPath(); c.moveTo(0,hitY); c.lineTo(w,hitY); c.stroke();
+
+  // Labels
+  const lanes = 4;
+  const laneW = w/lanes;
+  const labels = ['1 잽','2 크로스','3 훅','4 어퍼'];
+  const colors = ['#3b82f6','#e63946','#22c55e','#eab308'];
+  labels.forEach((l,i)=>{
+    c.fillStyle = colors[i];
+    c.font = '14px "Bebas Neue", sans-serif';
+    c.textAlign = 'center';
+    c.fillText(l, laneW*i + laneW/2, hitY+25);
+  });
+
+  c.fillStyle = 'rgba(255,255,255,0.3)';
+  c.font = '20px "Noto Sans KR", sans-serif';
+  c.textAlign = 'center';
+  c.fillText('Space 또는 ▶ 버튼으로 시작', w/2, h/2);
+}
+
+function toggleRhythm(){
+  if(rhythmActive){ stopRhythm(); return; }
+  startRhythm();
+}
+
+function startRhythm(){
+  rhythmActive = true;
+  rhythmScore = 0; rhythmCombo = 0; rhythmMaxCombo = 0;
+  rhythmHits = 0; rhythmMisses = 0;
+  document.getElementById('plT').textContent='⏸ 정지';
+  document.getElementById('comboDisplay').style.display='block';
+
+  const pattern = RHYTHM_PATTERNS[rhythmPatternIdx];
+  const bpm = rhythmBPM;
+  const beatDur = 60/bpm;
+
+  // Generate notes with adjusted timing
+  rhythmNotes = pattern.notes.map(n=>({
+    type: n.type,
+    time: n.t * beatDur,
+    hit: false,
+    missed: false,
+    y: -50
+  }));
+
+  rhythmStartTime = performance.now()/1000;
+  speak('리듬 콤보 시작!');
+  playBell();
+
+  // Pre-announce first punch
+  setTimeout(()=>speakPunch(rhythmNotes[0].type), 300);
+
+  updateRhythmDisplay();
+  requestAnimationFrame(rhythmLoop);
+}
+
+function stopRhythm(){
+  rhythmActive = false;
+  document.getElementById('plT').textContent='▶ 시작';
+  document.getElementById('comboDisplay').style.display='none';
+  drawRhythmIdle();
+  if(rhythmHits + rhythmMisses > 0) saveRhythmSession();
+  speak('리듬 콤보 종료!');
+}
+
+function rhythmLoop(){
+  if(!rhythmActive) return;
+  const now = performance.now()/1000 - rhythmStartTime;
+  const c = rhythmCtx;
+  if(!c) return;
+  const w = c.canvas.width, h = c.canvas.height;
+  const hitY = h - 80;
+  const fallSpeed = 300; // px per second
+  const fallTime = hitY / fallSpeed;
+
+  c.fillStyle = 'rgba(8,8,12,0.95)';
+  c.fillRect(0,0,w,h);
+
+  // Hit zone line
+  c.strokeStyle = 'rgba(230,57,70,0.4)';
+  c.lineWidth = 3;
+  c.beginPath(); c.moveTo(0,hitY-20); c.lineTo(w,hitY-20); c.stroke();
+  c.beginPath(); c.moveTo(0,hitY+20); c.lineTo(w,hitY+20); c.stroke();
+
+  // Glow zone
+  const grad = c.createLinearGradient(0,hitY-20,0,hitY+20);
+  grad.addColorStop(0, 'rgba(230,57,70,0.0)');
+  grad.addColorStop(0.5, 'rgba(230,57,70,0.1)');
+  grad.addColorStop(1, 'rgba(230,57,70,0.0)');
+  c.fillStyle = grad;
+  c.fillRect(0,hitY-20,w,40);
+
+  // Lane labels
+  const lanes = 4;
+  const laneW = w/lanes;
+  const laneTypes = ['jab','cross','lead_hook','rear_upper'];
+  const laneLabels = ['1 잽','2 크로스','3 훅','4 어퍼'];
+  const laneColors = ['#3b82f6','#e63946','#22c55e','#eab308'];
+  laneLabels.forEach((l,i)=>{
+    c.fillStyle = laneColors[i]+'66';
+    c.font = '12px "Bebas Neue", sans-serif';
+    c.textAlign = 'center';
+    c.fillText(l, laneW*i+laneW/2, hitY+40);
+
+    // Lane line
+    if(i>0){
+      c.strokeStyle = 'rgba(255,255,255,0.03)';
+      c.lineWidth = 1;
+      c.beginPath(); c.moveTo(laneW*i, 0); c.lineTo(laneW*i, h); c.stroke();
+    }
+  });
+
+  // Draw notes
+  let allDone = true;
+  rhythmNotes.forEach((note,idx)=>{
+    if(note.hit || note.missed){
+      if(!note.hit && !note.missed) allDone = false;
+      return;
+    }
+    allDone = false;
+
+    const noteTime = note.time;
+    const arrivalTime = noteTime; // when it should reach hit zone
+    const y = hitY - (arrivalTime - now) * fallSpeed;
+    note.y = y;
+
+    // Check if missed (past hit zone)
+    if(y > hitY + 40 && !note.hit){
+      note.missed = true;
+      rhythmMisses++;
+      rhythmCombo = 0;
+      playMissSound();
+      showScorePopup('MISS', '#e63946', w/2, hitY);
+      updateRhythmDisplay();
+      return;
+    }
+
+    if(y < -30) return; // not visible yet
+
+    // Voice call 0.5s before
+    if(!note._voiced && (arrivalTime - now) < 0.5 && (arrivalTime - now) > 0.3){
+      note._voiced = true;
+      speakPunch(note.type);
+    }
+
+    // Determine lane
+    const laneIdx = laneTypes.indexOf(note.type);
+    const x = laneIdx >= 0 ? laneW*laneIdx + laneW/2 : w/2;
+
+    const color = PUNCH_COLORS[note.type] || '#fff';
+
+    // Draw note
+    c.beginPath();
+    c.arc(x, y, 18, 0, Math.PI*2);
+    c.fillStyle = color + '33';
+    c.fill();
+    c.beginPath();
+    c.arc(x, y, 16, 0, Math.PI*2);
+    c.fillStyle = color;
+    c.fill();
+
+    // Label
+    c.fillStyle = '#fff';
+    c.font = 'bold 14px "Bebas Neue", sans-serif';
+    c.textAlign = 'center';
+    c.textBaseline = 'middle';
+    c.fillText(PUNCH_LABELS[note.type]||'?', x, y);
+  });
+
+  // Camera-based input
+  if(cameraOn && mediapipeReady && lastLandmarks){
+    const detected = detectPunchFromPose();
+    if(detected) handleRhythmInput(detected);
+  }
+
+  if(allDone && rhythmNotes.length > 0){
+    stopRhythm();
+  }
+
+  if(rhythmActive) requestAnimationFrame(rhythmLoop);
+}
+
+function handleRhythmInput(type){
+  const hitY = rhythmCtx ? rhythmCtx.canvas.height - 80 : 400;
+  const laneTypes = ['jab','cross','lead_hook','rear_upper'];
+  // Map similar types
+  const typeMap = {rear_hook:'lead_hook', lead_upper:'rear_upper'};
+  const mappedType = typeMap[type] || type;
+
+  // Find closest unhit note of this type near the hit zone
+  let bestNote = null, bestDist = Infinity;
+  rhythmNotes.forEach(note=>{
+    if(note.hit || note.missed) return;
+    const nt = typeMap[note.type] || note.type;
+    if(nt !== mappedType) return;
+    const dist = Math.abs(note.y - hitY);
+    if(dist < 50 && dist < bestDist){
+      bestDist = dist; bestNote = note;
+    }
+  });
+
+  if(bestNote){
+    bestNote.hit = true;
+    sessionPunches++;
+    const dist = Math.abs(bestNote.y - hitY);
+    let points, label, color;
+    if(dist < 15){
+      points = 100; label = 'PERFECT'; color = '#a855f7';
+      playPerfectSound();
+    } else if(dist < 30){
+      points = 70; label = 'GOOD'; color = '#22c55e';
+      playHitSound();
+    } else {
+      points = 40; label = 'OK'; color = '#eab308';
+      playHitSound();
+    }
+    rhythmCombo++;
+    if(rhythmCombo > rhythmMaxCombo) rhythmMaxCombo = rhythmCombo;
+    const multiplier = Math.min(4, 1 + Math.floor(rhythmCombo/5));
+    rhythmScore += points * multiplier;
+    rhythmHits++;
+    showScorePopup(label, color, rhythmCtx.canvas.width/2, hitY-30);
+
+    // Animate boxer
+    const kf = KF[bestNote.type];
+    if(kf){
+      comboSeq = [bestNote.type]; comboStep = 0; comboT = 0;
+      isPlaying = true;
+      setTimeout(()=>{if(currentTab==='rhythm') isPlaying=false;}, 400);
+    }
+
+    if(rhythmCombo > 0 && rhythmCombo % 10 === 0) speakEncourage();
+  } else {
+    playMissSound();
+  }
+  updateRhythmDisplay();
+}
+
+function updateRhythmDisplay(){
+  document.getElementById('rScore').textContent = rhythmScore;
+  document.getElementById('rCombo').textContent = rhythmCombo;
+  const total = rhythmHits + rhythmMisses;
+  document.getElementById('rAccuracy').textContent = total>0 ? Math.round(rhythmHits/total*100)+'%' : '0%';
+
+  const cd = document.getElementById('comboDisplay');
+  document.getElementById('comboNum').textContent = rhythmCombo;
+  const msg = document.getElementById('comboMsg');
+  if(rhythmCombo >= 20){ msg.textContent = '불꽃연타!'; msg.style.color='#ff6b35'; cd.classList.add('fire'); }
+  else if(rhythmCombo >= 10){ msg.textContent = '대단해요!'; msg.style.color='#a855f7'; cd.classList.remove('fire'); }
+  else if(rhythmCombo >= 5){ msg.textContent = '좋아요!'; msg.style.color='#22c55e'; cd.classList.remove('fire'); }
+  else { msg.textContent=''; cd.classList.remove('fire'); }
+}
+
+function updateRhythm(dt){
+  // Handled by rhythmLoop via rAF
+}
+
+function showScorePopup(text, color, x, y){
+  const el = document.createElement('div');
+  el.className = 'score-popup';
+  el.textContent = text;
+  el.style.color = color;
+  el.style.left = x+'px';
+  el.style.top = y+'px';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 600);
+}
+
+function saveRhythmSession(){
+  const total = rhythmHits + rhythmMisses;
+  const acc = total>0 ? Math.round(rhythmHits/total*100) : 0;
+  addWorkoutRecord({
+    type:'rhythm', date:new Date().toISOString(), score:rhythmScore,
+    combo:rhythmMaxCombo, accuracy:acc, punches:rhythmHits,
+    duration:Math.round((performance.now()/1000 - rhythmStartTime)),
+    calories: Math.round(rhythmHits * 0.3)
+  });
+}
+
+// =====================================================
+// AI SPARRING MODE
+// =====================================================
+const SPAR_CONFIG = [
+  {name:'이지', attackInterval:[2.5,4], openingDur:1.5, punchSpeed:0.8, damage:8, telegraphTime:1.0},
+  {name:'미디엄', attackInterval:[1.5,3], openingDur:1.0, punchSpeed:1.2, damage:12, telegraphTime:0.6},
+  {name:'하드', attackInterval:[0.8,2], openingDur:0.6, punchSpeed:1.6, damage:18, telegraphTime:0.3},
+];
+
+let sparTimerInterval = null;
+let sparOpponentAnimT = 0;
+let sparOpponentState = 'idle'; // idle, telegraph, attack, opening, hit, stagger
+let sparStateTimer = 0;
+let sparOpponentMoveId = null;
+let sparCounterWindow = false;
+let sparPlayerCooldown = 0;
+
+function setSparDifficulty(d){
+  sparDifficulty = d;
+  document.querySelectorAll('#panel-sparring .btn-sm').forEach((b,i)=>b.classList.toggle('active',i===d));
+}
+
+function toggleSparring(){
+  if(sparActive){ stopSparring(); return; }
+  startSparring();
+}
+
+function startSparring(){
+  sparActive = true;
+  sparRound = 1;
+  sparTimer = 180;
+  sparPhase = 'fight';
+  sparPlayerHP = 100;
+  sparOpponentHP = 100;
+  sparPlayerScore = 0;
+  sparCleanHits = 0;
+  sparDefenseTotal = 0;
+  sparDefenseSuccess = 0;
+  sparKnockdowns = 0;
+  sparOpponentState = 'idle';
+  sparStateTimer = 1.5;
+  sparPlayerAction = null;
+  sparPlayerActionTimer = 0;
+  sparPlayerCooldown = 0;
+
+  B2.group.visible = true;
+  applyGuard(B2);
+
+  document.getElementById('healthBars').classList.add('show');
+  document.getElementById('roundTimer').classList.add('show');
+  document.getElementById('hbPlayer').style.width = '100%';
+  document.getElementById('hbOpponent').style.width = '100%';
+  document.getElementById('plT').textContent='⏸ 정지';
+
+  playBell();
+  speak(`라운드 ${sparRound} 시작!`);
+
+  if(sparTimerInterval) clearInterval(sparTimerInterval);
+  sparTimerInterval = setInterval(updateSparTimer, 1000);
+  updateSparTimerDisplay();
+}
+
+function stopSparring(){
+  sparActive = false;
+  sparPhase = 'idle';
+  if(sparTimerInterval){ clearInterval(sparTimerInterval); sparTimerInterval=null; }
+  document.getElementById('plT').textContent='▶ 시작';
+  B2.group.visible = false;
+  document.getElementById('healthBars').classList.remove('show');
+  document.getElementById('roundTimer').classList.remove('show');
+  saveSparSession();
+}
+
+function updateSparTimer(){
+  if(sparPhase==='fight'){
+    sparTimer--;
+    if(sparTimer<=30 && sparTimer===30) speak('30초 남았습니다');
+    if(sparTimer<=0){
+      playBell();
+      if(sparRound >= 3){
+        speak('시합 종료!');
+        stopSparring();
+        return;
+      }
+      sparPhase = 'rest';
+      sparTimer = 60;
+      speak('라운드 종료! 휴식');
+    }
+  } else if(sparPhase==='rest'){
+    sparTimer--;
+    if(sparTimer<=0){
+      sparRound++;
+      sparTimer = 180;
+      sparPhase = 'fight';
+      playBell();
+      speak(`라운드 ${sparRound} 시작!`);
+    }
+  }
+  updateSparTimerDisplay();
+}
+
+function updateSparTimerDisplay(){
+  const m = Math.floor(sparTimer/60);
+  const s = sparTimer%60;
+  document.getElementById('rtRound').textContent = `ROUND ${sparRound} / 3`;
+  document.getElementById('rtTime').textContent = `${m}:${String(s).padStart(2,'0')}`;
+  document.getElementById('rtPhase').textContent = sparPhase==='rest'?'휴식':'';
+  document.getElementById('sparRound').textContent = `R${sparRound}`;
+}
+
+function updateSparring(dt){
+  if(sparPhase !== 'fight') return;
+
+  const cfg = SPAR_CONFIG[sparDifficulty];
+  sparPlayerCooldown = Math.max(0, sparPlayerCooldown - dt);
+
+  // Player attack animation
+  if(sparPlayerAction){
+    sparPlayerActionTimer -= dt;
+    const kf = KF[sparPlayerAction];
+    if(kf){
+      const t = 1 - Math.max(0, sparPlayerActionTimer) / 0.5;
+      const pose = getPoseAt(kf, Math.min(t, 1));
+      applyPoseObj(pose, B);
+    }
+    if(sparPlayerActionTimer <= 0){
+      sparPlayerAction = null;
+      applyGuard(B);
+    }
+  }
+
+  // Opponent AI
+  sparStateTimer -= dt;
+
+  if(sparOpponentState === 'idle'){
+    // Just guarding, waiting to attack
+    applyGuard(B2);
+    if(sparStateTimer <= 0){
+      // Choose attack
+      const attacks = ['jab','cross','lead_hook','rear_upper'];
+      sparOpponentMoveId = attacks[Math.floor(Math.random()*attacks.length)];
+      sparOpponentState = 'telegraph';
+      sparStateTimer = cfg.telegraphTime;
+      sparCounterWindow = false;
+    }
+  }
+  else if(sparOpponentState === 'telegraph'){
+    // Show telegraph animation (slight wind-up)
+    const kf = KF[sparOpponentMoveId];
+    if(kf && kf.length > 1){
+      const t = Math.min(0.2, (1 - sparStateTimer/cfg.telegraphTime)*0.2);
+      const pose = getPoseAt(kf, t);
+      applyPoseObj(pose, B2, false);
+    }
+    if(sparStateTimer <= 0){
+      sparOpponentState = 'attack';
+      sparStateTimer = 0.4 / cfg.punchSpeed;
+      sparDefenseTotal++;
+      // Flash warning
+      speakPunch(sparOpponentMoveId);
+    }
+  }
+  else if(sparOpponentState === 'attack'){
+    // Animate opponent punch
+    const kf = KF[sparOpponentMoveId];
+    if(kf){
+      const t = (1 - sparStateTimer / (0.4/cfg.punchSpeed));
+      const pose = getPoseAt(kf, Math.min(t*0.5 + 0.2, 0.7));
+      applyPoseObj(pose, B2, false);
+    }
+    if(sparStateTimer <= 0){
+      // Did player dodge?
+      // If player is in a defensive action, they dodged
+      if(sparPlayerAction && ['slip_l','slip_r','bob_weave'].includes(sparPlayerAction)){
+        sparDefenseSuccess++;
+        sparOpponentState = 'opening';
+        sparStateTimer = cfg.openingDur;
+        sparCounterWindow = true;
+        speak('카운터!');
+      } else {
+        // Player gets hit
+        const dmg = cfg.damage + Math.floor(Math.random()*5);
+        sparPlayerHP = Math.max(0, sparPlayerHP - dmg);
+        playPunchSound(0.5);
+        document.getElementById('hbPlayer').style.width = sparPlayerHP+'%';
+
+        if(sparPlayerHP <= 0){
+          speak('녹다운!');
+          sparKnockdowns++;
+          sparPlayerHP = 30;
+          document.getElementById('hbPlayer').style.width = '30%';
+        }
+
+        sparOpponentState = 'idle';
+        sparStateTimer = cfg.attackInterval[0] + Math.random()*(cfg.attackInterval[1]-cfg.attackInterval[0]);
+        sparCounterWindow = false;
+      }
+      applyGuard(B2);
+    }
+  }
+  else if(sparOpponentState === 'opening'){
+    // Opponent is open for counter
+    // Show staggered pose
+    const pose = {...GUARD, spineRZ: 0.2, headRZ: -0.15, pelvisY: 0.82};
+    applyPoseObj(pose, B2, false);
+    if(sparStateTimer <= 0){
+      sparOpponentState = 'idle';
+      sparStateTimer = cfg.attackInterval[0] + Math.random()*(cfg.attackInterval[1]-cfg.attackInterval[0]);
+      sparCounterWindow = false;
+      applyGuard(B2);
+    }
+  }
+  else if(sparOpponentState === 'hit'){
+    // Opponent just got hit, stagger
+    const pose = {...GUARD, spineRZ: -0.3, headRZ: 0.2, pelvisY: 0.82, spineRX: 0.15};
+    applyPoseObj(pose, B2, false);
+    if(sparStateTimer <= 0){
+      sparOpponentState = 'idle';
+      sparStateTimer = cfg.attackInterval[0]*0.5 + Math.random()*cfg.attackInterval[1]*0.5;
+      applyGuard(B2);
+    }
+  }
+
+  updateSparStats();
+}
+
+function sparPlayerAttack(type){
+  if(sparPhase!=='fight' || sparPlayerCooldown > 0) return;
+  sparPlayerAction = type;
+  sparPlayerActionTimer = 0.5;
+  sparPlayerCooldown = 0.4;
+  sessionPunches++;
+
+  playPunchSound(0.3);
+
+  // Check if opponent is in opening or idle
+  if(sparCounterWindow || sparOpponentState === 'idle'){
+    // Hit opponent
+    const baseDmg = type==='jab'?6 : type==='cross'?10 : type==='lead_hook'?12 : 14;
+    const counterBonus = sparCounterWindow ? 1.5 : 1;
+    const dmg = Math.round(baseDmg * counterBonus);
+    sparOpponentHP = Math.max(0, sparOpponentHP - dmg);
+    sparCleanHits++;
+    sparPlayerScore += Math.round(dmg * 10);
+    playPunchSound(0.6);
+
+    document.getElementById('hbOpponent').style.width = sparOpponentHP+'%';
+
+    if(sparOpponentHP <= 0){
+      speak('KO! 승리!');
+      stopSparring();
+      return;
+    }
+
+    sparOpponentState = 'hit';
+    sparStateTimer = 0.5;
+    sparCounterWindow = false;
+
+    if(sparCleanHits % 5 === 0) speakEncourage();
+  }
+}
+
+function sparPlayerDefend(type){
+  if(sparPhase!=='fight') return;
+  sparPlayerAction = type;
+  sparPlayerActionTimer = 0.6;
+  // Play the defense animation
+  const kf = KF[type];
+  if(kf){
+    comboSeq = [type]; comboStep = 0; comboT = 0;
+  }
+}
+
+function updateSparStats(){
+  document.getElementById('sparHits').textContent = sparCleanHits;
+  document.getElementById('sparDefense').textContent = sparDefenseTotal>0 ? Math.round(sparDefenseSuccess/sparDefenseTotal*100)+'%' : '0%';
+  document.getElementById('sparScore').textContent = sparPlayerScore;
+}
+
+function saveSparSession(){
+  addWorkoutRecord({
+    type:'sparring', date:new Date().toISOString(),
+    score:sparPlayerScore, cleanHits:sparCleanHits,
+    defense: sparDefenseTotal>0 ? Math.round(sparDefenseSuccess/sparDefenseTotal*100) : 0,
+    rounds:sparRound, knockdowns:sparKnockdowns,
+    duration:sparRound*180,
+    calories: Math.round(sparRound * 180 * 0.15)
+  });
+}
+
+// =====================================================
+// CALORIE & WORKOUT TRACKER
+// =====================================================
+function startSessionTracking(){
+  sessionStart = Date.now();
+  sessionPunches = 0;
+}
+
+function getWorkoutHistory(){
+  try{ return JSON.parse(localStorage.getItem('boxing_workout_history')||'[]'); }catch(e){return [];}
+}
+
+function addWorkoutRecord(record){
+  const history = getWorkoutHistory();
+  history.push(record);
+  // Keep last 365 records
+  while(history.length > 365) history.shift();
+  localStorage.setItem('boxing_workout_history', JSON.stringify(history));
+  updateStatsDisplay();
+}
+
+function saveSessionStats(){
+  const duration = Math.round((Date.now() - sessionStart)/1000);
+  const weight = parseInt(document.getElementById('userWeight').value)||70;
+  // Boxing burns ~600-800 cal/hr = 10-13 cal/min
+  const calPerMin = 10 * (weight/70);
+  const calories = Math.round(calPerMin * duration/60);
+
+  addWorkoutRecord({
+    type:'training', date:new Date().toISOString(),
+    punches:sessionPunches, duration:duration, calories:calories,
+    accuracy: poseAccuracy>0 ? Math.round(poseAccuracy) : null
+  });
+
+  sessionStart = Date.now();
+  sessionPunches = 0;
+}
+
+function updateStatsDisplay(){
+  const history = getWorkoutHistory();
+  const today = new Date().toISOString().slice(0,10);
+
+  // Today's stats
+  const todayRecords = history.filter(r=>r.date && r.date.startsWith(today));
+  const todayCal = todayRecords.reduce((s,r)=>s+(r.calories||0),0);
+  const todayPunches = todayRecords.reduce((s,r)=>s+(r.punches||r.cleanHits||0),0);
+  const todayDuration = todayRecords.reduce((s,r)=>s+(r.duration||0),0);
+
+  document.getElementById('todayCal').textContent = todayCal;
+  document.getElementById('todayPunch').textContent = todayPunches;
+  document.getElementById('todayTime').textContent = Math.round(todayDuration/60)+'분';
+
+  // Personal records
+  let maxCombo=0, maxAcc=0, maxCal=0;
+  history.forEach(r=>{
+    if(r.combo && r.combo > maxCombo) maxCombo = r.combo;
+    if(r.accuracy && r.accuracy > maxAcc) maxAcc = r.accuracy;
+    if(r.calories && r.calories > maxCal) maxCal = r.calories;
+  });
+  document.getElementById('prCombo').textContent = maxCombo;
+  document.getElementById('prAccuracy').textContent = maxAcc+'%';
+  document.getElementById('prCalorie').textContent = maxCal;
+
+  // Weekly chart
+  const weekChart = document.getElementById('weeklyChart');
+  weekChart.innerHTML = '';
+  const dayNames = ['일','월','화','수','목','금','토'];
+  const now = new Date();
+  let maxWeekCal = 1;
+  const weekData = [];
+  for(let i=6;i>=0;i--){
+    const d = new Date(now); d.setDate(d.getDate()-i);
+    const ds = d.toISOString().slice(0,10);
+    const cal = history.filter(r=>r.date&&r.date.startsWith(ds)).reduce((s,r)=>s+(r.calories||0),0);
+    weekData.push({label:dayNames[d.getDay()], cal});
+    if(cal>maxWeekCal) maxWeekCal=cal;
+  }
+  weekData.forEach(d=>{
+    const h = Math.max(2, (d.cal/maxWeekCal)*55);
+    weekChart.innerHTML += `<div class="bar" style="height:${h}px"><div class="bar-label">${d.label}</div></div>`;
+  });
+
+  // Monthly chart
+  const monthChart = document.getElementById('monthlyChart');
+  monthChart.innerHTML = '';
+  let maxMonthCal = 1;
+  const monthData = [];
+  for(let i=29;i>=0;i--){
+    const d = new Date(now); d.setDate(d.getDate()-i);
+    const ds = d.toISOString().slice(0,10);
+    const cal = history.filter(r=>r.date&&r.date.startsWith(ds)).reduce((s,r)=>s+(r.calories||0),0);
+    monthData.push({day:d.getDate(), cal});
+    if(cal>maxMonthCal) maxMonthCal=cal;
+  }
+  monthData.forEach(d=>{
+    const h = Math.max(1, (d.cal/maxMonthCal)*55);
+    monthChart.innerHTML += `<div class="bar" style="height:${h}px" title="${d.day}일: ${d.cal}kcal"></div>`;
+  });
+}
+
+function toggleStatsPanel(){
+  const def = document.getElementById('rightDefault');
+  const stats = document.getElementById('rightStats');
+  const btn = document.getElementById('btnStats');
+  const visible = stats.style.display!=='none';
+  def.style.display = visible?'block':'none';
+  stats.style.display = visible?'none':'block';
+  btn.classList.toggle('on', !visible);
+  if(!visible) updateStatsDisplay();
+}
+
+function saveSettings(){
+  localStorage.setItem('boxing_weight', document.getElementById('userWeight').value);
+}
+
+function loadAllData(){
+  const w = localStorage.getItem('boxing_weight');
+  if(w) document.getElementById('userWeight').value = w;
+  updateStatsDisplay();
+}
+
+// =====================================================
+// RESIZE
+// =====================================================
+window.addEventListener('resize',()=>{
+  camera.aspect=innerWidth/innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+  if(currentTab==='rhythm' && rhythmCtx){
+    const container = document.getElementById('rhythmCanvas');
+    rhythmCtx.canvas.width = container.clientWidth;
+    rhythmCtx.canvas.height = container.clientHeight;
+  }
+});
+
+// Load voices
+if(speechSynth.onvoiceschanged !== undefined){
+  speechSynth.onvoiceschanged = ()=>{};
+}
+
+// =====================================================
+// START
+// =====================================================
+init();
+</script>
+</body>
+</html>

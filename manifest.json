@@ -2,7 +2,7 @@
   "name": "Boxing Trainer",
   "short_name": "Boxing",
   "description": "복싱 트레이닝 앱",
-  "start_url": "./boxing-trainer-v2.html",
+  "start_url": "./boxing-trainer-v5.html",
   "display": "standalone",
   "background_color": "#1a1a2e",
   "theme_color": "#FF4444",
