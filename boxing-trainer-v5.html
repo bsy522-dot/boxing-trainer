@@ -387,13 +387,21 @@ function initThree() {
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
   renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 0.8;
+  renderer.toneMappingExposure = 1.05;
 
   clock = new THREE.Clock();
 
-  // Ambient light
-  const amb = new THREE.AmbientLight(0x1a1a2e, 0.4);
+  // Ambient + hemisphere fill (sky/ground bounce)
+  const amb = new THREE.AmbientLight(0x202030, 0.35);
   scene.add(amb);
+  const hemi = new THREE.HemisphereLight(0xffe8c4, 0x331515, 0.55);
+  hemi.position.set(0, 12, 0);
+  scene.add(hemi);
+
+  // Rim back-light to separate fighters from background
+  const rim = new THREE.DirectionalLight(0xfff5e0, 0.8);
+  rim.position.set(0, 6, -8);
+  scene.add(rim);
 
   // Overhead ring lights (warm white)
   const ringLight1 = new THREE.SpotLight(0xfff5e0, 1.5, 30, Math.PI / 4, 0.5, 1);
@@ -439,7 +447,9 @@ function initThree() {
   oppModel.group.scale.setScalar(2.6);
   playerModel.group.position.set(0, 0, 3);
   oppModel.group.position.set(0, 0, -1.5);
-  oppModel.group.rotation.y = Math.PI;
+  // Both fighters face each other (player at +z faces -z, opp at -z faces +z)
+  playerModel.group.rotation.y = Math.PI;
+  oppModel.group.rotation.y = 0;
   scene.add(playerModel.group);
   scene.add(oppModel.group);
 
@@ -693,16 +703,18 @@ function buildCrowd() {
 // ==================== BUILD 3D BOXER (Hierarchical Joint System) ====================
 function buildBoxer(gloveColor, isPlayer) {
   const group = new THREE.Group();
-  const skinMat = new THREE.MeshStandardMaterial({ color: skinColor, roughness: 0.7, metalness: 0.05 });
-  const darkSkinMat = new THREE.MeshStandardMaterial({ color: darkSkin, roughness: 0.7 });
-  const shortsMat = new THREE.MeshStandardMaterial({ color: isPlayer ? 0x111111 : 0x1a1a2e, roughness: 0.8 });
-  const gloveMat = new THREE.MeshStandardMaterial({ color: isPlayer ? 0xe63946 : 0x3b82f6, roughness: 0.4, metalness: 0.1 });
-  const shoeMat = new THREE.MeshStandardMaterial({ color: 0x1a1a2e, roughness: 0.9 });
-  const hairMat = new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.9 });
-  const stripeMat = new THREE.MeshStandardMaterial({ color: isPlayer ? 0xe63946 : 0x3b82f6, roughness: 0.6 });
+  const teamCol = isPlayer ? 0xe63946 : 0x3b82f6;
+  const skinMat = new THREE.MeshStandardMaterial({ color: skinColor, roughness: 0.55, metalness: 0.0 });
+  const darkSkinMat = new THREE.MeshStandardMaterial({ color: darkSkin, roughness: 0.55 });
+  const shortsMat = new THREE.MeshStandardMaterial({ color: isPlayer ? 0x141414 : 0x191928, roughness: 0.55, metalness: 0.15 });
+  const gloveMat = new THREE.MeshPhysicalMaterial({ color: teamCol, roughness: 0.32, metalness: 0.05, clearcoat: 0.85, clearcoatRoughness: 0.18 });
+  const shoeMat = new THREE.MeshStandardMaterial({ color: 0x141420, roughness: 0.7, metalness: 0.1 });
+  const hairMat = new THREE.MeshStandardMaterial({ color: 0x101010, roughness: 0.85 });
+  const stripeMat = new THREE.MeshStandardMaterial({ color: teamCol, roughness: 0.5, metalness: 0.1 });
   const eyeMat = new THREE.MeshStandardMaterial({ color: 0x111111 });
-  const mouthguardMat = new THREE.MeshStandardMaterial({ color: isPlayer ? 0xe63946 : 0x3b82f6 });
-  const wrapMat = new THREE.MeshStandardMaterial({ color: 0xeeeeee, roughness: 0.8 });
+  const mouthguardMat = new THREE.MeshStandardMaterial({ color: teamCol, emissive: teamCol, emissiveIntensity: 0.15 });
+  const wrapMat = new THREE.MeshStandardMaterial({ color: 0xeeeeee, roughness: 0.85 });
+  const headgearMat = new THREE.MeshStandardMaterial({ color: teamCol, roughness: 0.45, metalness: 0.18 });
 
   // ROOT — overall movement container
   const root = new THREE.Group();
@@ -801,6 +813,26 @@ function buildBoxer(gloveColor, isPlayer) {
   const mg = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.015, 0.03), mouthguardMat);
   mg.position.set(0, 0.0, 0.09);
   headGrp.add(mg);
+
+  // Headgear ring (open-face boxing headgear)
+  const headgearRing = new THREE.Mesh(new THREE.TorusGeometry(0.115, 0.025, 8, 18), headgearMat);
+  headgearRing.position.set(0, 0.085, 0);
+  headgearRing.rotation.x = Math.PI / 2;
+  headgearRing.castShadow = true;
+  headGrp.add(headgearRing);
+  // Top crown strap
+  const headgearCrown = new THREE.Mesh(new THREE.TorusGeometry(0.1, 0.022, 6, 14, Math.PI), headgearMat);
+  headgearCrown.position.set(0, 0.08, 0);
+  headgearCrown.rotation.set(0, Math.PI / 2, 0);
+  headGrp.add(headgearCrown);
+  // Cheek pads (left/right)
+  const cheekGeo = new THREE.SphereGeometry(0.045, 6, 5);
+  const lCheek = new THREE.Mesh(cheekGeo, headgearMat);
+  lCheek.position.set(-0.10, 0.05, 0.04); lCheek.scale.set(0.7, 1.2, 1.0);
+  headGrp.add(lCheek);
+  const rCheek = new THREE.Mesh(cheekGeo, headgearMat);
+  rCheek.position.set(0.10, 0.05, 0.04); rCheek.scale.set(0.7, 1.2, 1.0);
+  headGrp.add(rCheek);
 
   // LEFT SHOULDER joint group
   const lSh = new THREE.Group();
@@ -1057,11 +1089,17 @@ const PUNCH_KF = {
   ],
   hook: [
     {t:0, p:null},
-    {t:0.2, p:{pelvisRY:-0.55, lShX:-0.9, lShY:0.3, lShZ:0.9, lElX:-1.55, lElY:0.2, lKnX:0.25}},
-    {t:0.5, p:{pelvisRY:-0.1, spineRY:0.3, chestRY:0.25,
-      lShX:-0.7, lShY:0.7, lShZ:0.2, lElX:-1.55, lElY:0.4,
-      lHipY:0.1, rShX:-1.5, rElX:-1.8, headRY:-0.05}},
-    {t:0.75, p:{lShX:-1.0, lShY:0.4, lShZ:0.5, lElX:-1.6}},
+    {t:0.18, p:{pelvisRY:-0.7, spineRY:-0.28, chestRY:-0.22,
+      lShX:-1.05, lShY:0.55, lShZ:0.95, lElX:-1.55, lElY:0.35,
+      lKnX:0.32, rKnX:0.18, headRY:0.08, lAnkX:0.05}},
+    {t:0.42, p:{pelvisRY:0.05, spineRY:0.55, chestRY:0.5,
+      lShX:-0.85, lShY:1.05, lShZ:0.18, lElX:-1.55, lElY:0.45,
+      lHipY:0.18, rShX:-1.45, rElX:-1.85,
+      lKnX:0.18, rKnX:0.30, lAnkX:-0.18,
+      headRY:-0.12, headRX:-0.05}},
+    {t:0.65, p:{pelvisRY:-0.05, spineRY:0.42, chestRY:0.32,
+      lShX:-0.95, lShY:0.95, lShZ:0.32, lElX:-1.55, lElY:0.4,
+      rShX:-1.5, rElX:-1.8}},
     {t:1, p:null}
   ],
   uppercut: [
@@ -1596,6 +1634,8 @@ function startFight(opp, isCareer, oppIdx) {
   oppModel.group.visible = true;
   playerModel.group.position.set(0, 0, 3);
   oppModel.group.position.set(0, 0, -1.5);
+  playerModel.group.rotation.y = Math.PI;
+  oppModel.group.rotation.y = 0;
   playerModel.group.userData.baseX = 0;
   oppModel.group.userData.baseX = 0;
 
@@ -2095,6 +2135,8 @@ function startTraining(type) {
     oppModel.group.visible = true;
     playerModel.group.position.set(0, 0, 3);
     oppModel.group.position.set(0, 0, -1.5);
+    playerModel.group.rotation.y = Math.PI;
+    oppModel.group.rotation.y = 0;
     camReset();
     $('camControls').classList.remove('hidden');
     flashCamHint();
