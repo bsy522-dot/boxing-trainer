@@ -157,6 +157,30 @@ html,body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-ser
 <button class="menu-btn" onclick="startTraining('heavybag')"><span class="icon">&#x1F94A;</span> 헤비백<span class="sub">콤보 연습! 파워 향상</span></button>
 <button class="menu-btn" onclick="startTraining('jumprope')"><span class="icon">&#x1F3C3;</span> 줄넘기<span class="sub">타이밍 게임! 스태미나 향상</span></button>
 <button class="menu-btn" onclick="startTraining('sparring')"><span class="icon">&#x1F93C;</span> 스파링<span class="sub">AI와 연습! 방어력 향상</span></button>
+<button class="menu-btn" onclick="showCombos()"><span class="icon">&#x1F4DA;</span> 콤비네이션 학습<span class="sub">8가지 클래식 콤보를 단계별로 마스터</span></button>
+</div>
+
+<!-- COMBO MENU -->
+<div class="overlay hidden" id="comboMenu">
+<div class="menu-title" style="font-size:32px">콤비네이션</div>
+<div class="menu-sub">시연 → 가이드 → 메트로놈 → 응용 4단계 학습</div>
+<div id="comboList" class="career-list"></div>
+</div>
+
+<!-- COMBO TRAINING OVERLAY -->
+<div class="overlay hidden" id="comboTrainOverlay" style="background:transparent;pointer-events:none;justify-content:flex-start;padding-top:50px">
+<div id="comboPhaseTitle" style="font-size:22px;font-weight:800;color:var(--gold);text-shadow:0 2px 8px #000;letter-spacing:3px;pointer-events:auto"></div>
+<div id="comboNumberDisplay" style="font-size:48px;font-weight:900;color:var(--accent);margin-top:6px;text-shadow:0 0 20px rgba(230,57,70,.4);pointer-events:auto"></div>
+<div id="comboNextHint" style="font-size:14px;color:var(--text);background:rgba(0,0,0,.7);padding:8px 16px;border-radius:20px;margin-top:8px;pointer-events:auto;border:1px solid var(--border);max-width:340px;text-align:center"></div>
+<div id="comboArrowRow" style="display:flex;gap:6px;margin-top:14px;pointer-events:auto;flex-wrap:wrap;justify-content:center;max-width:340px"></div>
+<div id="comboBpmBar" style="margin-top:14px;text-align:center;pointer-events:auto">
+<div id="comboBpmLabel" style="font-size:11px;color:var(--dim)"></div>
+<div style="width:240px;height:6px;background:rgba(255,255,255,.08);border-radius:3px;margin:6px auto;overflow:hidden">
+<div id="comboBpmTick" style="height:100%;background:var(--gold);width:0%;transition:width .04s linear"></div>
+</div>
+</div>
+<div id="comboCoaching" style="margin-top:18px;padding:12px 18px;background:rgba(0,0,0,.78);border-radius:10px;font-size:13px;line-height:1.5;color:var(--text);max-width:360px;border-left:3px solid var(--accent);pointer-events:auto"></div>
+<div id="comboScoreboard" style="margin-top:16px;font-size:12px;color:var(--dim);pointer-events:auto"></div>
 </div>
 
 <!-- RECORDS -->
@@ -336,7 +360,8 @@ function defaultSave() {
     belt: '',
     unlockedOpponents: 1,
     fightHistory: [],
-    trainCount: { speedbag: 0, heavybag: 0, jumprope: 0, sparring: 0 }
+    trainCount: { speedbag: 0, heavybag: 0, jumprope: 0, sparring: 0, combo: 0 },
+    comboMastery: {}  // { 'jab_cross': { stars: 3, bestBpm: 100 }, ... }
   };
 }
 
@@ -716,6 +741,48 @@ function buildBoxer(gloveColor, isPlayer) {
   const wrapMat = new THREE.MeshStandardMaterial({ color: 0xeeeeee, roughness: 0.85 });
   const headgearMat = new THREE.MeshStandardMaterial({ color: teamCol, roughness: 0.45, metalness: 0.18 });
 
+  // Procedural shorts satin texture (diagonal stripe + waistband)
+  const shortsCanvas = document.createElement('canvas');
+  shortsCanvas.width = 256; shortsCanvas.height = 256;
+  const sctx = shortsCanvas.getContext('2d');
+  sctx.fillStyle = isPlayer ? '#161618' : '#1c1c34';
+  sctx.fillRect(0, 0, 256, 256);
+  // satin diagonal stripes
+  sctx.strokeStyle = isPlayer ? 'rgba(230,57,70,0.35)' : 'rgba(59,130,246,0.35)';
+  sctx.lineWidth = 3;
+  for (let i = -256; i < 512; i += 18) {
+    sctx.beginPath(); sctx.moveTo(i, 0); sctx.lineTo(i + 256, 256); sctx.stroke();
+  }
+  // waistband (top 20%)
+  sctx.fillStyle = isPlayer ? '#e63946' : '#3b82f6';
+  sctx.fillRect(0, 0, 256, 50);
+  sctx.fillStyle = '#fff'; sctx.font = 'bold 22px sans-serif'; sctx.textAlign = 'center';
+  sctx.fillText(isPlayer ? 'PLAYER' : 'CHALLENGER', 128, 32);
+  // bottom hem
+  sctx.fillStyle = isPlayer ? '#e63946' : '#3b82f6';
+  sctx.fillRect(0, 240, 256, 16);
+  const shortsTex = new THREE.CanvasTexture(shortsCanvas);
+  shortsTex.wrapS = shortsTex.wrapT = THREE.RepeatWrapping;
+  shortsMat.map = shortsTex; shortsMat.needsUpdate = true;
+
+  // Glove stripe texture
+  const gloveCanvas = document.createElement('canvas');
+  gloveCanvas.width = 128; gloveCanvas.height = 128;
+  const gctx = gloveCanvas.getContext('2d');
+  gctx.fillStyle = isPlayer ? '#e63946' : '#3b82f6';
+  gctx.fillRect(0, 0, 128, 128);
+  // White stripe band
+  gctx.fillStyle = '#ffffff';
+  gctx.fillRect(0, 50, 128, 14);
+  gctx.fillRect(0, 78, 128, 14);
+  // Brand circle
+  gctx.fillStyle = '#000';
+  gctx.beginPath(); gctx.arc(64, 32, 16, 0, Math.PI * 2); gctx.fill();
+  gctx.fillStyle = '#fff'; gctx.font = 'bold 14px sans-serif'; gctx.textAlign = 'center';
+  gctx.fillText('PH', 64, 37);
+  const gloveTex = new THREE.CanvasTexture(gloveCanvas);
+  gloveMat.map = gloveTex; gloveMat.needsUpdate = true;
+
   // ROOT — overall movement container
   const root = new THREE.Group();
   group.add(root);
@@ -741,12 +808,36 @@ function buildBoxer(gloveColor, isPlayer) {
 
   // Abdomen mesh
   const abdomen = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.16, 0.18, 0.2, 8),
+    new THREE.CylinderGeometry(0.16, 0.18, 0.2, 12),
     skinMat
   );
   abdomen.position.y = 0.1;
   abdomen.castShadow = true;
   spine.add(abdomen);
+
+  // Six-pack abs (3 rows × 2)
+  const absGeo = new THREE.BoxGeometry(0.06, 0.045, 0.025);
+  const absRows = [0.18, 0.12, 0.06];
+  for (const yy of absRows) {
+    const lAb = new THREE.Mesh(absGeo, skinMat);
+    lAb.position.set(-0.038, yy, 0.155);
+    spine.add(lAb);
+    const rAb = new THREE.Mesh(absGeo, skinMat);
+    rAb.position.set(0.038, yy, 0.155);
+    spine.add(rAb);
+  }
+  // Linea alba (centre divider) — slight darker line
+  const linea = new THREE.Mesh(new THREE.BoxGeometry(0.008, 0.18, 0.035), darkSkinMat);
+  linea.position.set(0, 0.12, 0.156);
+  spine.add(linea);
+  // Obliques (side abs)
+  const oblGeo = new THREE.SphereGeometry(0.05, 6, 5);
+  const lObl = new THREE.Mesh(oblGeo, skinMat);
+  lObl.position.set(-0.155, 0.10, 0.06); lObl.scale.set(0.7, 1.4, 0.8);
+  spine.add(lObl);
+  const rObl = new THREE.Mesh(oblGeo, skinMat);
+  rObl.position.set(0.155, 0.10, 0.06); rObl.scale.set(0.7, 1.4, 0.8);
+  spine.add(rObl);
 
   // CHEST
   const chest = new THREE.Group();
@@ -755,21 +846,56 @@ function buildBoxer(gloveColor, isPlayer) {
 
   // Chest mesh
   const chestMesh = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.2, 0.17, 0.25, 8),
+    new THREE.CylinderGeometry(0.2, 0.17, 0.25, 12),
     skinMat
   );
   chestMesh.position.y = 0.1;
   chestMesh.castShadow = true;
   chest.add(chestMesh);
 
-  // Shoulder bulk meshes
-  const shoulderBulkGeo = new THREE.SphereGeometry(0.1, 6, 6);
+  // Pectoralis (chest muscle) — left & right
+  const pecGeo = new THREE.SphereGeometry(0.085, 8, 6);
+  const lPec = new THREE.Mesh(pecGeo, skinMat);
+  lPec.position.set(-0.085, 0.16, 0.10); lPec.scale.set(1.05, 0.55, 0.7);
+  lPec.castShadow = true;
+  chest.add(lPec);
+  const rPec = new THREE.Mesh(pecGeo, skinMat);
+  rPec.position.set(0.085, 0.16, 0.10); rPec.scale.set(1.05, 0.55, 0.7);
+  rPec.castShadow = true;
+  chest.add(rPec);
+  // Sternum cleft
+  const sternum = new THREE.Mesh(new THREE.BoxGeometry(0.012, 0.13, 0.04), darkSkinMat);
+  sternum.position.set(0, 0.16, 0.165);
+  chest.add(sternum);
+
+  // Shoulder bulk meshes (deltoid)
+  const shoulderBulkGeo = new THREE.SphereGeometry(0.105, 8, 6);
   const lShoulderBulk = new THREE.Mesh(shoulderBulkGeo, skinMat);
-  lShoulderBulk.position.set(-0.22, 0.18, 0);
+  lShoulderBulk.position.set(-0.225, 0.18, 0); lShoulderBulk.scale.set(1.1, 1.0, 1.0);
+  lShoulderBulk.castShadow = true;
   chest.add(lShoulderBulk);
   const rShoulderBulk = new THREE.Mesh(shoulderBulkGeo, skinMat);
-  rShoulderBulk.position.set(0.22, 0.18, 0);
+  rShoulderBulk.position.set(0.225, 0.18, 0); rShoulderBulk.scale.set(1.1, 1.0, 1.0);
+  rShoulderBulk.castShadow = true;
   chest.add(rShoulderBulk);
+
+  // Latissimus (back muscle) — visible from side
+  const latGeo = new THREE.SphereGeometry(0.075, 6, 5);
+  const lLat = new THREE.Mesh(latGeo, skinMat);
+  lLat.position.set(-0.18, 0.05, -0.03); lLat.scale.set(0.6, 1.4, 0.7);
+  chest.add(lLat);
+  const rLat = new THREE.Mesh(latGeo, skinMat);
+  rLat.position.set(0.18, 0.05, -0.03); rLat.scale.set(0.6, 1.4, 0.7);
+  chest.add(rLat);
+
+  // Trapezius (neck-shoulder muscle)
+  const trapGeo = new THREE.SphereGeometry(0.06, 6, 5);
+  const lTrap = new THREE.Mesh(trapGeo, skinMat);
+  lTrap.position.set(-0.10, 0.24, -0.02); lTrap.scale.set(1.2, 0.6, 0.8);
+  chest.add(lTrap);
+  const rTrap = new THREE.Mesh(trapGeo, skinMat);
+  rTrap.position.set(0.10, 0.24, -0.02); rTrap.scale.set(1.2, 0.6, 0.8);
+  chest.add(rTrap);
 
   // Neck mesh
   const neck = new THREE.Mesh(
@@ -841,12 +967,20 @@ function buildBoxer(gloveColor, isPlayer) {
 
   // Upper arm mesh
   const lUpperArm = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.05, 0.045, 0.22, 6),
+    new THREE.CylinderGeometry(0.052, 0.047, 0.22, 8),
     skinMat
   );
   lUpperArm.position.y = -0.12;
   lUpperArm.castShadow = true;
   lSh.add(lUpperArm);
+  // Biceps bulge (front)
+  const lBicep = new THREE.Mesh(new THREE.SphereGeometry(0.045, 7, 6), skinMat);
+  lBicep.position.set(0, -0.10, 0.035); lBicep.scale.set(1.0, 1.5, 0.9);
+  lSh.add(lBicep);
+  // Triceps bulge (back)
+  const lTricep = new THREE.Mesh(new THREE.SphereGeometry(0.04, 6, 5), skinMat);
+  lTricep.position.set(0, -0.13, -0.035); lTricep.scale.set(1.0, 1.4, 0.8);
+  lSh.add(lTricep);
 
   // LEFT ELBOW joint group
   const lEl = new THREE.Group();
@@ -855,11 +989,15 @@ function buildBoxer(gloveColor, isPlayer) {
 
   // Forearm mesh
   const lForearm = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.04, 0.035, 0.2, 6),
+    new THREE.CylinderGeometry(0.042, 0.036, 0.2, 8),
     skinMat
   );
   lForearm.position.y = -0.1;
   lEl.add(lForearm);
+  // Forearm bulge (brachioradialis)
+  const lForeBulge = new THREE.Mesh(new THREE.SphereGeometry(0.038, 6, 5), skinMat);
+  lForeBulge.position.set(0, -0.06, 0.025); lForeBulge.scale.set(1.0, 1.4, 0.85);
+  lEl.add(lForeBulge);
 
   // Wrist wrap
   const lWristWrap = new THREE.Mesh(
@@ -887,12 +1025,18 @@ function buildBoxer(gloveColor, isPlayer) {
   chest.add(rSh);
 
   const rUpperArm = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.05, 0.045, 0.22, 6),
+    new THREE.CylinderGeometry(0.052, 0.047, 0.22, 8),
     skinMat
   );
   rUpperArm.position.y = -0.12;
   rUpperArm.castShadow = true;
   rSh.add(rUpperArm);
+  const rBicep = new THREE.Mesh(new THREE.SphereGeometry(0.045, 7, 6), skinMat);
+  rBicep.position.set(0, -0.10, 0.035); rBicep.scale.set(1.0, 1.5, 0.9);
+  rSh.add(rBicep);
+  const rTricep = new THREE.Mesh(new THREE.SphereGeometry(0.04, 6, 5), skinMat);
+  rTricep.position.set(0, -0.13, -0.035); rTricep.scale.set(1.0, 1.4, 0.8);
+  rSh.add(rTricep);
 
   // RIGHT ELBOW joint group
   const rEl = new THREE.Group();
@@ -900,11 +1044,14 @@ function buildBoxer(gloveColor, isPlayer) {
   rSh.add(rEl);
 
   const rForearm = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.04, 0.035, 0.2, 6),
+    new THREE.CylinderGeometry(0.042, 0.036, 0.2, 8),
     skinMat
   );
   rForearm.position.y = -0.1;
   rEl.add(rForearm);
+  const rForeBulge = new THREE.Mesh(new THREE.SphereGeometry(0.038, 6, 5), skinMat);
+  rForeBulge.position.set(0, -0.06, 0.025); rForeBulge.scale.set(1.0, 1.4, 0.85);
+  rEl.add(rForeBulge);
 
   const rWristWrap = new THREE.Mesh(
     new THREE.CylinderGeometry(0.04, 0.04, 0.04, 6),
@@ -945,11 +1092,16 @@ function buildBoxer(gloveColor, isPlayer) {
 
   // Thigh mesh
   const lLeg = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.06, 0.055, 0.32, 6),
+    new THREE.CylinderGeometry(0.065, 0.055, 0.32, 8),
     skinMat
   );
   lLeg.position.y = -0.16;
+  lLeg.castShadow = true;
   lHip.add(lLeg);
+  // Quadriceps bulge (front of thigh)
+  const lQuad = new THREE.Mesh(new THREE.SphereGeometry(0.055, 6, 5), skinMat);
+  lQuad.position.set(0, -0.16, 0.04); lQuad.scale.set(1.05, 2.2, 0.8);
+  lHip.add(lQuad);
 
   // LEFT KNEE joint group
   const lKn = new THREE.Group();
@@ -962,11 +1114,16 @@ function buildBoxer(gloveColor, isPlayer) {
 
   // Shin mesh
   const lLowerLeg = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.05, 0.045, 0.32, 6),
+    new THREE.CylinderGeometry(0.05, 0.045, 0.32, 8),
     skinMat
   );
   lLowerLeg.position.y = -0.18;
+  lLowerLeg.castShadow = true;
   lKn.add(lLowerLeg);
+  // Calf bulge (gastrocnemius)
+  const lCalf = new THREE.Mesh(new THREE.SphereGeometry(0.045, 6, 5), skinMat);
+  lCalf.position.set(0, -0.14, -0.035); lCalf.scale.set(1.0, 1.6, 0.85);
+  lKn.add(lCalf);
 
   // LEFT ANKLE joint group
   const lAnk = new THREE.Group();
@@ -992,11 +1149,15 @@ function buildBoxer(gloveColor, isPlayer) {
   pelvis.add(rHip);
 
   const rLeg = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.06, 0.055, 0.32, 6),
+    new THREE.CylinderGeometry(0.065, 0.055, 0.32, 8),
     skinMat
   );
   rLeg.position.y = -0.16;
+  rLeg.castShadow = true;
   rHip.add(rLeg);
+  const rQuad = new THREE.Mesh(new THREE.SphereGeometry(0.055, 6, 5), skinMat);
+  rQuad.position.set(0, -0.16, 0.04); rQuad.scale.set(1.05, 2.2, 0.8);
+  rHip.add(rQuad);
 
   const rKn = new THREE.Group();
   rKn.position.y = -0.34;
@@ -1006,11 +1167,15 @@ function buildBoxer(gloveColor, isPlayer) {
   rKn.add(rKnee);
 
   const rLowerLeg = new THREE.Mesh(
-    new THREE.CylinderGeometry(0.05, 0.045, 0.32, 6),
+    new THREE.CylinderGeometry(0.05, 0.045, 0.32, 8),
     skinMat
   );
   rLowerLeg.position.y = -0.18;
+  rLowerLeg.castShadow = true;
   rKn.add(rLowerLeg);
+  const rCalf = new THREE.Mesh(new THREE.SphereGeometry(0.045, 6, 5), skinMat);
+  rCalf.position.set(0, -0.14, -0.035); rCalf.scale.set(1.0, 1.6, 0.85);
+  rKn.add(rCalf);
 
   const rAnk = new THREE.Group();
   rAnk.position.y = -0.36;
@@ -1497,7 +1662,7 @@ let currentFight = null;
 let currentTraining = null;
 
 function hideAll() {
-  ['mainMenu', 'careerMenu', 'trainingMenu', 'recordsMenu', 'fightHud', 'controlsHint', 'fightResult', 'levelUp', 'trainResult', 'restScreen', 'mobileControls', 'trainOverlay', 'comboCounter', 'camControls'].forEach(id => {
+  ['mainMenu', 'careerMenu', 'trainingMenu', 'recordsMenu', 'fightHud', 'controlsHint', 'fightResult', 'levelUp', 'trainResult', 'restScreen', 'mobileControls', 'trainOverlay', 'comboCounter', 'camControls', 'comboMenu', 'comboTrainOverlay'].forEach(id => {
     const el = $(id);
     if (el) el.classList.add('hidden');
   });
@@ -1601,6 +1766,8 @@ function showRecords() {
 
 function goBack() {
   if (currentScreen === 'career' || currentScreen === 'training' || currentScreen === 'records') showMain();
+  else if (currentScreen === 'comboMenu') showTraining();
+  else if (currentScreen === 'combo') { comboState = null; currentTraining = null; showCombos(); }
   else if (currentScreen === 'fight' || currentScreen === 'train') {
     if (currentFight && currentFight.active) {
       if (confirm('경기를 포기하시겠습니까?')) { currentFight.active = false; showMain(); }
@@ -1703,6 +1870,15 @@ function updateFightHUD() {
 }
 
 function playerPunch(type) {
+  // Combo training intercept
+  if (currentScreen === 'combo' && comboState) {
+    comboHandlePunch(type);
+    // Trigger animation on player model directly
+    if (!currentFight) currentFight = {};
+    currentFight.playerPunchAnim = 0.001;
+    currentFight.playerPunchType = type;
+    return;
+  }
   const f = currentFight;
   if (!f || !f.active || f.phase !== 'fight') return;
   if (f.playerActionTime > 0) return;
@@ -2122,6 +2298,310 @@ function showLevelUp() {
   render();
 }
 
+// ==================== COMBO LIBRARY ====================
+// punch tokens: jab(1), cross(2), hook(3=L), uppercut(5=L). Game uses jab/cross/hook/uppercut only.
+const COMBO_LIBRARY = [
+  { id: 'jab_cross', number: '1-2', name: '잽 크로스', diff: 1,
+    seq: ['jab','cross'], bpm:[60,140],
+    desc: '권투의 알파벳. 잽으로 거리를 잡고 크로스로 데미지.',
+    coach: ['왼발 앞, 무릎 살짝 굽힌다.','잽: 왼팔 직선으로 어깨까지 회전.','크로스: 뒷발 피벗, 엉덩이 회전 동시에.','펀치 후 즉시 가드 복귀.'],
+    mistakes: ['크로스 시 가드 떨어짐','체중 이동 없이 팔만 휘두름'] },
+  { id: 'jab_jab_cross', number: '1-1-2', name: '더블 잽 크로스', diff: 2,
+    seq: ['jab','jab','cross'], bpm:[70,150],
+    desc: '거리 잡기. 두번째 잽이 셋업, 크로스가 피니시.',
+    coach: ['첫 잽은 떠보기, 짧고 빠르게.','두번째 잽 더 깊게 + 발 한 발 전진.','크로스에 모든 체중 실음.'],
+    mistakes: ['두 잽이 똑같은 강도','잽 사이 가드 풀림'] },
+  { id: 'one_two_three', number: '1-2-3', name: '잽-크로스-훅', diff: 2,
+    seq: ['jab','cross','hook'], bpm:[60,130],
+    desc: 'Mike Tyson favorite. 정통 3타 콤보.',
+    coach: ['1-2로 정렬, 3에서 측면 폭발.','훅 시 팔꿈치 90도 고정.','앞발 피벗 필수.'],
+    mistakes: ['훅이 팔만 휘두름 (몸통 회전 부재)','3 이후 무방비'] },
+  { id: 'one_two_five_two', number: '1-2-5-2', name: '잽-크로스-어퍼-크로스', diff: 3,
+    seq: ['jab','cross','uppercut','cross'], bpm:[55,120],
+    desc: '어퍼 셋업 후 크로스 마무리. 가드 사이 침투.',
+    coach: ['1-2로 가드 끌어올림.','5(어퍼) 무릎 굽혔다 폭발.','마지막 2는 카운터 회피용 즉시.'],
+    mistakes: ['어퍼 시 어깨가 솟아오름','마지막 크로스 늦음'] },
+  { id: 'one_six_three_two', number: '1-6-3-2', name: '잽-라이트어퍼-훅-크로스', diff: 4,
+    seq: ['jab','uppercut','hook','cross'], bpm:[55,110],
+    desc: '4타 콤보. 위→아래→옆→직선 전방위 공격.',
+    coach: ['잽 페이크 → 6 가드 사이 침투.','3은 가드 풀린 측면을 노림.','마지막 2는 카운터 차단.'],
+    mistakes: ['타이밍 균등 (강약 없음)','마지막에 체력 소진'] },
+  { id: 'two_three_two', number: '2-3-2', name: '크로스-훅-크로스', diff: 3,
+    seq: ['cross','hook','cross'], bpm:[60,130],
+    desc: '인사이드 파이팅. 잽 없이 폭발 시작.',
+    coach: ['2 시작 = 이미 가까운 거리.','3 폭발적 회전.','마지막 2 발 위치 회복하며.'],
+    mistakes: ['시작 거리 너무 멀음','3-2 사이 정지'] },
+  { id: 'jcrhc', number: '1-2-3-2', name: '잽-크로스-훅-크로스', diff: 4,
+    seq: ['jab','cross','hook','cross'], bpm:[55,120],
+    desc: '4타 표준 컴비. 1-2-3에 마지막 2로 클로징.',
+    coach: ['앞 3타는 같은 방향 회전 흐름.','마지막 2는 반대 방향 회전.','발 위치 4번 다 다름.'],
+    mistakes: ['마지막 2가 약함','3 이후 가드 무너짐'] },
+  { id: 'six_three_two', number: '6-3-2', name: '라이트어퍼-훅-크로스', diff: 4,
+    seq: ['uppercut','hook','cross'], bpm:[55,115],
+    desc: '인파이터 핵심. 클린치 직후 사용.',
+    coach: ['6 무릎으로 추진.','3 즉시 측면.','2 마무리, 거리 벌리며.'],
+    mistakes: ['6-3 사이 어깨 정렬 무너짐','2 후 가드 X'] },
+];
+
+const COMBO_COACHES_TIPS_DELAY = 1.4;
+let comboState = null;
+
+function showCombos() {
+  hideAll();
+  currentScreen = 'comboMenu';
+  $('comboMenu').classList.remove('hidden');
+  $('backBtn').classList.remove('hidden');
+  playerModel.group.visible = false;
+  oppModel.group.visible = false;
+  let html = '';
+  COMBO_LIBRARY.forEach(c => {
+    const m = save.comboMastery[c.id] || { stars: 0, bestBpm: 0 };
+    const stars = '★'.repeat(m.stars) + '☆'.repeat(5 - m.stars);
+    html += `<div class="opponent-card" onclick="startCombo('${c.id}')">
+      <div class="name" style="color:var(--gold);font-size:24px">${c.number}</div>
+      <div class="style">${c.name}</div>
+      <div class="record" style="color:var(--gold);letter-spacing:2px">${stars}</div>
+      <div style="font-size:11px;color:var(--dim);margin-top:4px">난이도 ${c.diff}/5 · 최고 ${m.bestBpm || '—'} BPM</div>
+      <div style="font-size:10px;color:var(--dim);margin-top:6px;line-height:1.4">${c.desc}</div>
+    </div>`;
+  });
+  $('comboList').innerHTML = html;
+}
+
+function startCombo(id) {
+  const combo = COMBO_LIBRARY.find(c => c.id === id);
+  if (!combo) return;
+  hideAll();
+  currentScreen = 'combo';
+  $('comboTrainOverlay').classList.remove('hidden');
+  $('backBtn').classList.remove('hidden');
+  $('camControls').classList.remove('hidden');
+  if ('ontouchstart' in window) $('mobileControls').classList.remove('hidden');
+  playerModel.group.visible = true;
+  oppModel.group.visible = true;
+  playerModel.group.position.set(0, 0, 3);
+  oppModel.group.position.set(0, 0, -1.5);
+  playerModel.group.rotation.y = Math.PI;
+  oppModel.group.rotation.y = 0;
+  // Side preset for combos
+  camPreset('side');
+  comboState = {
+    combo,
+    phase: 'demo',          // demo | guide | metronome | applied | done
+    phaseTime: 0,
+    seqIdx: 0,
+    bpm: combo.bpm[0],
+    metronomePhase: 0,
+    inputs: [],
+    correct: 0, missed: 0, lateCount: 0,
+    appliedRound: 0,
+    appliedSeq: [],
+    coachLine: 0,
+    score: 0, finalStars: 0,
+  };
+  currentTraining = { type: 'combo', active: true };
+  renderComboHud();
+}
+
+function renderComboHud() {
+  if (!comboState) return;
+  const c = comboState;
+  const phaseNames = { demo: '1단계 · 시연', guide: '2단계 · 가이드', metronome: '3단계 · 메트로놈 학습', applied: '4단계 · 응용 테스트', done: '완료' };
+  $('comboPhaseTitle').textContent = phaseNames[c.phase];
+  $('comboNumberDisplay').textContent = c.combo.number + ' ' + c.combo.name;
+  const nameMap = { jab: '잽', cross: '크로스', hook: '훅', uppercut: '어퍼' };
+  let arrows = '';
+  const seq = c.phase === 'applied' ? c.appliedSeq : c.combo.seq;
+  seq.forEach((p, i) => {
+    let cls = '';
+    if (i < c.seqIdx) cls = 'background:rgba(34,197,94,.25);border-color:#22c55e;color:#22c55e';
+    else if (i === c.seqIdx) cls = 'background:rgba(230,57,70,.25);border-color:var(--accent);color:var(--accent);transform:scale(1.15)';
+    else cls = 'opacity:.45';
+    arrows += `<div style="padding:8px 14px;border:2px solid #444;border-radius:10px;font-size:14px;font-weight:700;${cls};transition:all .15s">${nameMap[p]||p}</div>`;
+  });
+  $('comboArrowRow').innerHTML = arrows;
+
+  let hint = '';
+  if (c.phase === 'demo') hint = '상대를 보고 콤보를 배우세요';
+  else if (c.phase === 'guide') hint = '화살표 따라 천천히 입력 (1=잽 2=크로스 3=훅 4=어퍼)';
+  else if (c.phase === 'metronome') hint = `메트로놈 박자에 맞춰 입력! ${c.bpm} BPM`;
+  else if (c.phase === 'applied') hint = `랜덤 콤보 ${c.appliedRound + 1}/5`;
+  else hint = '완료!';
+  $('comboNextHint').textContent = hint;
+
+  if (c.phase === 'metronome') {
+    $('comboBpmLabel').textContent = `BPM ${Math.round(c.bpm)} · 정확도 ${c.correct}/${c.correct + c.missed + c.lateCount}`;
+    $('comboBpmTick').style.width = (c.metronomePhase * 100) + '%';
+  } else if (c.phase === 'applied') {
+    $('comboBpmLabel').textContent = `라운드 ${c.appliedRound + 1}/5 · 점수 ${c.score}`;
+    $('comboBpmTick').style.width = '0%';
+  } else { $('comboBpmLabel').textContent = ''; $('comboBpmTick').style.width = '0%'; }
+
+  if (c.phase === 'demo' || c.phase === 'guide') {
+    const lines = c.combo.coach;
+    $('comboCoaching').innerHTML = '<b style="color:var(--gold)">코칭</b><br>' + lines.map(l => '· ' + l).join('<br>') +
+      '<br><br><b style="color:var(--accent)">자주 하는 실수</b><br>' + c.combo.mistakes.map(l => '✗ ' + l).join('<br>');
+  } else if (c.phase === 'metronome') {
+    $('comboCoaching').innerHTML = '<b style="color:var(--gold)">팁</b><br>· 메트로놈 흰색 게이지가 가득 찰 때 그 박자.<br>· 늦으면 노란색, 너무 빠르면 빨간색.<br>· 정확도 80% 이상 → BPM 자동 상승.';
+  } else if (c.phase === 'applied') {
+    $('comboCoaching').innerHTML = '<b style="color:var(--gold)">실전 응용</b><br>· 무작위 콤보 5세트.<br>· 미리보기는 없음, 화살표만 보고 빠르게 반응.';
+  } else {
+    $('comboCoaching').innerHTML = `<b style="color:var(--gold)">완료!</b><br>★${c.finalStars}/5 · 최고 ${Math.round(c.bpm)} BPM<br>· 정확도 ${c.correct}/${c.correct + c.missed}<br>· 점수 ${c.score}`;
+  }
+
+  $('comboScoreboard').textContent = `Phase: ${phaseNames[c.phase]} · ${Math.ceil(c.phaseTime)}s`;
+}
+
+function updateComboTraining(dt) {
+  if (!comboState) return;
+  const c = comboState;
+  c.phaseTime += dt;
+
+  if (c.phase === 'demo') {
+    // Auto-play opp doing the combo on the player
+    const cycleTime = c.combo.seq.length * 0.5 + 0.6;
+    const t = (c.phaseTime % cycleTime) / 0.5;
+    const idx = Math.min(Math.floor(t), c.combo.seq.length - 1);
+    if (idx !== c.seqIdx) {
+      c.seqIdx = idx;
+      const p = c.combo.seq[idx];
+      // Trigger opp punch animation
+      currentFight = currentFight || {}; // safety
+      oppPunchAnim(p);
+      renderComboHud();
+    }
+    if (c.phaseTime > cycleTime * 2 + 0.5) {
+      c.phase = 'guide'; c.phaseTime = 0; c.seqIdx = 0; renderComboHud();
+    }
+  } else if (c.phase === 'guide') {
+    // Wait for player input matching combo.seq[seqIdx]. Auto-advance after 8s if stuck.
+    if (c.phaseTime > 12 || c.seqIdx >= c.combo.seq.length) {
+      c.phase = 'metronome'; c.phaseTime = 0; c.seqIdx = 0; c.metronomePhase = 0; c.correct = 0; c.missed = 0; c.lateCount = 0;
+      renderComboHud();
+    }
+  } else if (c.phase === 'metronome') {
+    const beatDuration = 60 / c.bpm;
+    c.metronomePhase += dt / beatDuration;
+    if (c.metronomePhase >= 1) {
+      // Beat tick — expected punch slot
+      const expected = c.combo.seq[c.seqIdx];
+      if (c.lastInputBeat !== c.metronomeBeat) {
+        c.missed++;
+      }
+      c.metronomePhase = 0; c.metronomeBeat = (c.metronomeBeat || 0) + 1;
+      // Cue with sound
+      playStep && playStep();
+      // Auto-advance combo position if it completed
+      if (c.seqIdx >= c.combo.seq.length) {
+        c.seqIdx = 0;
+        // Round complete — accuracy check
+        const total = c.correct + c.missed + c.lateCount;
+        const acc = total > 0 ? c.correct / total : 0;
+        if (acc >= 0.8 && c.bpm < c.combo.bpm[1]) {
+          c.bpm = Math.min(c.bpm + 10, c.combo.bpm[1]);
+        } else if (acc < 0.4 && c.bpm > c.combo.bpm[0]) {
+          c.bpm = Math.max(c.bpm - 10, c.combo.bpm[0]);
+        }
+      }
+    }
+    if (c.phaseTime > 25 || c.bpm >= c.combo.bpm[1]) {
+      c.phase = 'applied'; c.phaseTime = 0; c.seqIdx = 0; c.appliedRound = 0;
+      c.appliedSeq = randomCombo(); renderComboHud();
+    }
+    renderComboHud();
+  } else if (c.phase === 'applied') {
+    if (c.phaseTime > 5 && c.seqIdx < c.appliedSeq.length) {
+      // Failed this round
+      c.missed++;
+      c.appliedRound++;
+      if (c.appliedRound >= 5) finishCombo();
+      else { c.appliedSeq = randomCombo(); c.seqIdx = 0; c.phaseTime = 0; renderComboHud(); }
+    }
+  }
+}
+
+function randomCombo() {
+  const allTokens = ['jab','cross','hook','uppercut'];
+  const len = 2 + Math.floor(Math.random() * 3); // 2..4
+  const arr = [];
+  for (let i = 0; i < len; i++) arr.push(allTokens[Math.floor(Math.random() * allTokens.length)]);
+  return arr;
+}
+
+function comboHandlePunch(type) {
+  if (!comboState) return;
+  const c = comboState;
+  if (c.phase === 'guide') {
+    const expected = c.combo.seq[c.seqIdx];
+    if (type === expected) {
+      c.seqIdx++; playPunch && playPunch('light');
+      if (c.seqIdx >= c.combo.seq.length) {
+        // Reset for next demo loop
+        setTimeout(() => { if (comboState && comboState.phase === 'guide') { c.seqIdx = 0; renderComboHud(); } }, 500);
+      }
+      renderComboHud();
+    } else {
+      // wrong — no advance, brief shake
+      c.missed++;
+    }
+  } else if (c.phase === 'metronome') {
+    const expected = c.combo.seq[c.seqIdx];
+    const tolerance = 0.25;
+    const offBeat = Math.min(c.metronomePhase, 1 - c.metronomePhase);
+    if (type === expected && offBeat < tolerance) {
+      c.correct++; c.seqIdx = (c.seqIdx + 1) % c.combo.seq.length;
+      c.score += Math.round(10 * (1 - offBeat * 2));
+      c.lastInputBeat = c.metronomeBeat;
+      playPunch && playPunch('light');
+    } else if (type === expected) {
+      c.lateCount++; c.score += 2;
+    } else { c.missed++; }
+    renderComboHud();
+  } else if (c.phase === 'applied') {
+    const expected = c.appliedSeq[c.seqIdx];
+    if (type === expected) {
+      c.seqIdx++; c.correct++; c.score += 12;
+      playPunch && playPunch('light');
+      if (c.seqIdx >= c.appliedSeq.length) {
+        c.appliedRound++;
+        if (c.appliedRound >= 5) { finishCombo(); return; }
+        c.appliedSeq = randomCombo(); c.seqIdx = 0; c.phaseTime = 0;
+      }
+      renderComboHud();
+    } else { c.missed++; }
+  }
+}
+
+function finishCombo() {
+  if (!comboState) return;
+  const c = comboState;
+  c.phase = 'done';
+  // Stars based on accuracy & bpm
+  const total = c.correct + c.missed;
+  const acc = total > 0 ? c.correct / total : 0;
+  const bpmRange = c.combo.bpm[1] - c.combo.bpm[0];
+  const bpmFrac = bpmRange > 0 ? (c.bpm - c.combo.bpm[0]) / bpmRange : 0;
+  c.finalStars = Math.max(1, Math.min(5, Math.round((acc * 0.6 + bpmFrac * 0.4) * 5)));
+  // Save
+  const prev = save.comboMastery[c.combo.id] || { stars: 0, bestBpm: 0 };
+  save.comboMastery[c.combo.id] = {
+    stars: Math.max(prev.stars, c.finalStars),
+    bestBpm: Math.max(prev.bestBpm, Math.round(c.bpm))
+  };
+  save.trainCount.combo = (save.trainCount.combo || 0) + 1;
+  save.xp += 30 + c.finalStars * 12;
+  saveSave();
+  renderComboHud();
+  setTimeout(() => { if (comboState && comboState.phase === 'done') { comboState = null; currentTraining = null; showCombos(); } }, 4500);
+}
+
+function oppPunchAnim(type) {
+  // Drive opponent through animatePunch using a fake fight state
+  if (!currentFight) currentFight = {};
+  currentFight.oppPunchAnim = 0.001;
+  currentFight.oppPunchType = type;
+}
+
 // ==================== TRAINING MINI-GAMES ====================
 function startTraining(type) {
   hideAll();
@@ -2445,6 +2925,23 @@ function update3DScene(time, dt) {
       scene.background = new THREE.Color(0x050508);
     }
 
+  } else if (currentScreen === 'combo' && comboState) {
+    resetBoxerPose(playerModel);
+    resetBoxerPose(oppModel);
+    animateBoxerIdle(playerModel, time);
+    animateBoxerIdle(oppModel, time);
+    // Drive punch anims via faux currentFight set in playerPunch / oppPunchAnim
+    if (currentFight) {
+      if (currentFight.playerPunchAnim > 0) {
+        currentFight.playerPunchAnim = Math.max(0, currentFight.playerPunchAnim - dt / 0.42);
+        animatePunch(playerModel, currentFight.playerPunchType, 1 - currentFight.playerPunchAnim, false);
+      }
+      if (currentFight.oppPunchAnim > 0) {
+        currentFight.oppPunchAnim = Math.max(0, currentFight.oppPunchAnim - dt / 0.45);
+        animatePunch(oppModel, currentFight.oppPunchType, 1 - currentFight.oppPunchAnim, true);
+      }
+    }
+    applyOrbitCamera();
   } else if (currentScreen === 'train' && currentTraining && currentTraining.type === 'sparring') {
     resetBoxerPose(playerModel);
     resetBoxerPose(oppModel);
@@ -2480,6 +2977,7 @@ function gameLoop() {
 
   if (currentScreen === 'fight') updateFight(dt);
   else if (currentScreen === 'train') updateTraining(dt);
+  else if (currentScreen === 'combo') updateComboTraining(dt);
 
   update3DScene(time, dt);
   renderer.render(scene, camera);
