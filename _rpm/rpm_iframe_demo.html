@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>RPM Avatar Creator — 복싱트레이너 통합 데모</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+<style>
+  :root{--accent:#e63946;--bg:#0a0a0f;--panel:#161620;--border:#2a2a3a;--text:#e8e8ec;--dim:#888}
+  *{box-sizing:border-box;margin:0;padding:0}
+  html,body{height:100%;background:var(--bg);color:var(--text);font-family:-apple-system,Segoe UI,sans-serif;overflow:hidden}
+  #app{display:grid;grid-template-columns:1fr 1fr;height:100vh}
+  @media(max-width:900px){#app{grid-template-columns:1fr;grid-template-rows:1fr 1fr}}
+  .pane{position:relative;border:1px solid var(--border);overflow:hidden}
+  .pane h2{position:absolute;top:8px;left:12px;font-size:13px;color:var(--accent);letter-spacing:2px;z-index:5;background:rgba(10,10,15,.7);padding:4px 10px;border-radius:6px}
+  #rpmFrame{width:100%;height:100%;border:0;display:block}
+  #viewer{width:100%;height:100%;display:block}
+  #status{position:absolute;bottom:10px;left:10px;right:10px;background:rgba(20,20,30,.85);border:1px solid var(--border);padding:8px 12px;border-radius:6px;font-size:12px;color:var(--dim);z-index:5;max-height:120px;overflow-y:auto;font-family:Consolas,monospace}
+  #status .ok{color:#4ade80}
+  #status .err{color:#f87171}
+  #status .url{color:#fbbf24;word-break:break-all}
+  #controls{position:absolute;top:8px;right:12px;z-index:5;display:flex;gap:6px}
+  button{background:var(--panel);border:1px solid var(--border);color:var(--text);padding:6px 12px;border-radius:6px;cursor:pointer;font-size:12px}
+  button:hover{border-color:var(--accent)}
+  button.primary{background:var(--accent);border-color:var(--accent)}
+  #loading{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:14px;color:var(--accent);display:none}
+  #loading.show{display:block}
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="pane">
+    <h2>READY PLAYER ME — 아바타 생성</h2>
+    <div id="controls">
+      <button onclick="reloadFrame()">새로고침</button>
+    </div>
+    <iframe id="rpmFrame" allow="camera *; microphone *; clipboard-write" src=""></iframe>
+  </div>
+  <div class="pane">
+    <h2>THREE.JS 미리보기</h2>
+    <div id="controls">
+      <button class="primary" id="useBtn" onclick="useForGame()" disabled>게임에 사용</button>
+      <button onclick="loadSampleAvatar()">샘플 로드</button>
+    </div>
+    <div id="loading">아바타 다운로드 중...</div>
+    <canvas id="viewer"></canvas>
+    <div id="status"><span class="dim">대기 중. 왼쪽에서 아바타를 만들고 [Next] 클릭하세요.</span></div>
+  </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<script src="rpm_loader.js"></script>
+<script>
+// ============================================================
+// RPM iframe + Three.js 미리보기 데모
+// ============================================================
+
+// 사용자 subdomain. 파트너 등록 후 'bsy522'로 변경.
+// 데모 / 개인 테스트는 'demo' 사용 (커머셜 사용 금지 — 파트너 가입 필요)
+const SUBDOMAIN = 'demo';
+const FRAME_URL = `https://${SUBDOMAIN}.readyplayer.me/avatar?frameApi&clearCache`;
+
+const $ = id => document.getElementById(id);
+const frame = $('rpmFrame');
+const statusEl = $('status');
+const useBtn = $('useBtn');
+let currentGLBUrl = null;
+
+function log(msg, cls='') {
+  const time = new Date().toLocaleTimeString();
+  statusEl.innerHTML = `<div class="${cls}">[${time}] ${msg}</div>` + statusEl.innerHTML;
+}
+
+function reloadFrame() {
+  frame.src = FRAME_URL;
+  log('iframe 새로고침');
+}
+
+// ============================================================
+// PostMessage 핸들러 — RPM iframe API
+// ============================================================
+function parseEvent(event) {
+  try {
+    return typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+  } catch(e) { return null; }
+}
+
+function isRPMMessage(msg) {
+  return msg && msg.source === 'readyplayerme';
+}
+
+window.addEventListener('message', (event) => {
+  const msg = parseEvent(event);
+  if (!isRPMMessage(msg)) return;
+
+  // 1) iframe 로드 완료 — 모든 v1 이벤트 구독 요청
+  if (msg.eventName === 'v1.frame.ready') {
+    log('frame.ready — v1.** 구독 요청', 'ok');
+    frame.contentWindow.postMessage(JSON.stringify({
+      target: 'readyplayerme',
+      type: 'subscribe',
+      eventName: 'v1.**'
+    }), '*');
+    return;
+  }
+
+  // 2) 사용자 ID 수신
+  if (msg.eventName === 'v1.user.set') {
+    log(`user.set — id=${msg.data?.id || '?'}`, 'ok');
+    return;
+  }
+
+  // 3) 아바타 export 완료 — GLB URL 수신
+  if (msg.eventName === 'v1.avatar.exported' || msg.eventName === 'v2.avatar.exported') {
+    const url = msg.data?.url || msg.data;
+    if (typeof url === 'string' && url.endsWith('.glb')) {
+      log(`avatar.exported`, 'ok');
+      log(`<span class="url">${url}</span>`);
+      currentGLBUrl = url;
+      useBtn.disabled = false;
+      loadAvatar(url);
+    }
+    return;
+  }
+
+  // 기타 이벤트 디버그
+  if (msg.eventName) log(`이벤트: ${msg.eventName}`);
+});
+
+// ============================================================
+// Three.js 뷰어
+// ============================================================
+const canvas = $('viewer');
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.shadowMap.enabled = true;
+
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x161620);
+
+const camera = new THREE.PerspectiveCamera(35, 1, 0.1, 100);
+camera.position.set(0, 1.5, 3.5);
+
+const controls = new THREE.OrbitControls(camera, canvas);
+controls.target.set(0, 1.0, 0);
+controls.enableDamping = true;
+controls.minDistance = 1.0;
+controls.maxDistance = 8.0;
+
+// 라이팅
+scene.add(new THREE.AmbientLight(0xffffff, 0.55));
+const keyLight = new THREE.DirectionalLight(0xffffff, 1.0);
+keyLight.position.set(2, 4, 3);
+scene.add(keyLight);
+const fillLight = new THREE.DirectionalLight(0x88aaff, 0.35);
+fillLight.position.set(-2, 2, -2);
+scene.add(fillLight);
+
+// 그라운드
+const ground = new THREE.Mesh(
+  new THREE.CircleGeometry(2, 32),
+  new THREE.MeshStandardMaterial({ color: 0x222230, roughness: 0.85 })
+);
+ground.rotation.x = -Math.PI / 2;
+ground.receiveShadow = true;
+scene.add(ground);
+
+// 그리드
+const grid = new THREE.GridHelper(4, 8, 0x444466, 0x222233);
+scene.add(grid);
+
+let currentAvatar = null;
+
+async function loadAvatar(url) {
+  $('loading').classList.add('show');
+  log(`Three.js 로드 시작: ${url.split('/').pop()}`);
+  try {
+    // rpm_loader.js의 RPMLoader 사용 (캐싱 포함)
+    const loader = window.RPMLoader ? new window.RPMLoader() : null;
+    let gltf;
+    if (loader) {
+      gltf = await loader.load(url);
+      log('IndexedDB 캐싱 완료', 'ok');
+    } else {
+      gltf = await new Promise((res, rej) => {
+        new THREE.GLTFLoader().load(url, res, undefined, rej);
+      });
+    }
+    if (currentAvatar) scene.remove(currentAvatar);
+    currentAvatar = gltf.scene;
+    currentAvatar.traverse(o => {
+      if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; }
+    });
+    scene.add(currentAvatar);
+
+    // 본 구조 검사 — Mixamo 호환성
+    let boneCount = 0, hasHips = false, hasMixamoPrefix = false;
+    currentAvatar.traverse(o => {
+      if (o.isBone) {
+        boneCount++;
+        if (o.name === 'Hips' || o.name.endsWith(':Hips')) hasHips = true;
+        if (o.name.startsWith('mixamorig')) hasMixamoPrefix = true;
+      }
+    });
+    log(`로드 완료 — ${boneCount}개 본, Hips=${hasHips}, mixamorig=${hasMixamoPrefix}`, 'ok');
+  } catch(e) {
+    log(`로드 실패: ${e.message}`, 'err');
+  } finally {
+    $('loading').classList.remove('show');
+  }
+}
+
+function loadSampleAvatar() {
+  // RPM 공개 샘플 URL (테스트용)
+  const SAMPLE = 'https://models.readyplayer.me/64bfa15f0e72c63d7c3934a6.glb';
+  loadAvatar(SAMPLE);
+}
+
+function useForGame() {
+  if (!currentGLBUrl) return;
+  localStorage.setItem('rpm_avatar_url', currentGLBUrl);
+  log('localStorage["rpm_avatar_url"] 저장 완료', 'ok');
+  log('이제 boxing-trainer-v5.html을 열면 RPM 아바타가 player로 사용됩니다.', 'ok');
+}
+
+// 리사이즈 + 렌더 루프
+function resize() {
+  const w = canvas.clientWidth, h = canvas.clientHeight;
+  if (canvas.width !== w || canvas.height !== h) {
+    renderer.setSize(w, h, false);
+    camera.aspect = w / h;
+    camera.updateProjectionMatrix();
+  }
+}
+function animate() {
+  requestAnimationFrame(animate);
+  resize();
+  controls.update();
+  if (currentAvatar) currentAvatar.rotation.y += 0.003;
+  renderer.render(scene, camera);
+}
+animate();
+
+// 시작 시 iframe 로드
+frame.src = FRAME_URL;
+log(`iframe 로드: ${SUBDOMAIN}.readyplayer.me`);
+</script>
+</body>
+</html>

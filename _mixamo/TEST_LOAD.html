@@ -1,0 +1,169 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<title>boxer.glb 로드 테스트</title>
+<style>
+  html, body { margin: 0; padding: 0; background: #0a0a14; color: #eee; font-family: 'Segoe UI', sans-serif; height: 100%; overflow: hidden; }
+  #info { position: fixed; top: 0; left: 0; right: 0; padding: 12px 16px; background: rgba(0,0,0,.7); z-index: 10; max-height: 40vh; overflow-y: auto; font-size: 13px; line-height: 1.55; }
+  #info h2 { margin: 0 0 8px; font-size: 15px; color: #ffd166; }
+  #info table { border-collapse: collapse; width: 100%; max-width: 720px; font-size: 12px; }
+  #info th, #info td { border: 1px solid #333; padding: 4px 8px; text-align: left; }
+  #info th { background: #1a1a28; color: #9eccff; }
+  #buttons { padding: 8px 0 0; }
+  #buttons button { margin: 2px 4px 2px 0; padding: 4px 10px; background: #e63946; color: #fff; border: 0; border-radius: 4px; cursor: pointer; font-size: 12px; }
+  #buttons button:hover { background: #ff556a; }
+  #status { color: #ffd166; }
+  #canvas { display: block; width: 100vw; height: 100vh; }
+  .err { color: #ff6b6b; }
+  .ok { color: #6bff8a; }
+</style>
+</head>
+<body>
+<div id="info">
+  <h2>boxer.glb 로드 테스트</h2>
+  <div id="status">로드 중…</div>
+  <div id="clipList"></div>
+  <div id="buttons"></div>
+</div>
+<canvas id="canvas"></canvas>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/DRACOLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+<script>
+const status = document.getElementById('status');
+const clipList = document.getElementById('clipList');
+const buttons = document.getElementById('buttons');
+const canvas = document.getElementById('canvas');
+
+// === Three.js 셋업 ===
+const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x0a0a14);
+scene.fog = new THREE.Fog(0x0a0a14, 5, 30);
+
+const camera = new THREE.PerspectiveCamera(50, innerWidth / innerHeight, 0.1, 100);
+camera.position.set(2.5, 1.7, 3.5);
+
+const renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+renderer.setSize(innerWidth, innerHeight);
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.outputEncoding = THREE.sRGBEncoding;
+renderer.shadowMap.enabled = true;
+
+window.addEventListener('resize', () => {
+  camera.aspect = innerWidth / innerHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(innerWidth, innerHeight);
+});
+
+// 라이팅
+scene.add(new THREE.HemisphereLight(0xffffff, 0x223344, 0.6));
+const key = new THREE.DirectionalLight(0xffffff, 1.0);
+key.position.set(3, 5, 4);
+key.castShadow = true;
+scene.add(key);
+
+// 바닥
+const floor = new THREE.Mesh(
+  new THREE.PlaneGeometry(20, 20),
+  new THREE.MeshStandardMaterial({ color: 0x222230, roughness: 0.9 })
+);
+floor.rotation.x = -Math.PI / 2;
+floor.receiveShadow = true;
+scene.add(floor);
+
+// 컨트롤
+const controls = new THREE.OrbitControls(camera, canvas);
+controls.target.set(0, 1.0, 0);
+controls.update();
+
+// === GLTF 로드 ===
+let mixer = null;
+let clips = [];
+let currentAction = null;
+
+const loader = new THREE.GLTFLoader();
+const draco = new THREE.DRACOLoader();
+draco.setDecoderPath('https://www.gstatic.com/draco/v1/decoders/');
+loader.setDRACOLoader(draco);
+
+const glbPath = '../assets/boxer.glb';
+
+loader.load(
+  glbPath,
+  (gltf) => {
+    const model = gltf.scene;
+    model.traverse(o => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; }});
+    scene.add(model);
+
+    clips = gltf.animations || [];
+    mixer = new THREE.AnimationMixer(model);
+
+    status.innerHTML = `<span class="ok">로드 성공!</span> ` +
+                       `씬 객체: ${model.children.length}개, ` +
+                       `애니메이션 클립: ${clips.length}개`;
+
+    // 클립 표 출력
+    let html = '<table><thead><tr><th>#</th><th>이름</th><th>길이(초)</th><th>트랙 수</th></tr></thead><tbody>';
+    clips.forEach((c, i) => {
+      html += `<tr><td>${i}</td><td><code>${c.name}</code></td><td>${c.duration.toFixed(2)}</td><td>${c.tracks.length}</td></tr>`;
+    });
+    html += '</tbody></table>';
+    clipList.innerHTML = html;
+
+    // 재생 버튼
+    buttons.innerHTML = '';
+    clips.forEach(c => {
+      const b = document.createElement('button');
+      b.textContent = c.name;
+      b.onclick = () => playClip(c);
+      buttons.appendChild(b);
+    });
+
+    // 첫 클립 자동 재생 (보통 Idle)
+    if (clips.length > 0) {
+      const idle = clips.find(c => /idle/i.test(c.name)) || clips[0];
+      playClip(idle);
+    }
+
+    // 콘솔에도 출력 (디버깅용)
+    console.log('=== boxer.glb 클립 목록 ===');
+    clips.forEach((c, i) => console.log(`[${i}] ${c.name.padEnd(20)} ${c.duration.toFixed(2)}s, ${c.tracks.length} tracks`));
+  },
+  (xhr) => {
+    if (xhr.lengthComputable) {
+      const pct = ((xhr.loaded / xhr.total) * 100).toFixed(0);
+      status.textContent = `다운로드 중… ${pct}%`;
+    }
+  },
+  (err) => {
+    status.innerHTML = `<span class="err">로드 실패!</span> ${err.message || err}<br>` +
+                       `경로: <code>${glbPath}</code><br>` +
+                       `이 파일은 ../assets/boxer.glb를 찾습니다. fbx_to_glb.py를 먼저 실행하세요.`;
+    console.error(err);
+  }
+);
+
+function playClip(clip) {
+  if (!mixer) return;
+  if (currentAction) currentAction.fadeOut(0.2);
+  currentAction = mixer.clipAction(clip);
+  currentAction.reset().fadeIn(0.2).play();
+}
+
+// === 루프 ===
+const clock = new THREE.Clock();
+function tick() {
+  const dt = clock.getDelta();
+  if (mixer) mixer.update(dt);
+  controls.update();
+  renderer.render(scene, camera);
+  requestAnimationFrame(tick);
+}
+tick();
+</script>
+</body>
+</html>

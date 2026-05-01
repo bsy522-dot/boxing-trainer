@@ -137,7 +137,18 @@ html,body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-ser
 <button class="menu-btn" onclick="showTraining()"><span class="icon">&#x1F3CB;&#xFE0F;</span> 트레이닝<span class="sub">스피드백, 헤비백, 줄넘기, 스파링</span></button>
 <button class="menu-btn" onclick="showRecords()"><span class="icon">&#x1F4CA;</span> 전적 / 스탯<span class="sub">파이트 기록과 능력치 확인</span></button>
 <button class="menu-btn" onclick="quickFight()"><span class="icon">&#x26A1;</span> 퀵 매치<span class="sub">랜덤 상대와 즉시 대전</span></button>
+<button class="menu-btn" onclick="openRPMCreator()"><span class="icon">&#x1F464;</span> 내 아바타 만들기<span class="sub">Ready Player Me로 자기 얼굴/체형 아바타</span></button>
+<button class="menu-btn" id="rpmClearBtn" onclick="clearRPMAvatar()" style="display:none;border-color:rgba(255,193,7,.3)"><span class="icon">&#x1F5D1;&#xFE0F;</span> 기본 캐릭터로 복귀<span class="sub">RPM 아바타 제거</span></button>
 <button class="menu-btn" onclick="resetAll()" style="border-color:rgba(230,57,70,.3)"><span class="icon">&#x1F504;</span> 데이터 초기화<span class="sub">모든 진행 상황을 리셋합니다</span></button>
+</div>
+
+<!-- RPM Avatar Creator Overlay -->
+<div class="overlay hidden" id="rpmOverlay" style="padding:0;background:#0a0a0f;justify-content:flex-start">
+<div style="display:flex;align-items:center;padding:10px;background:#161620;border-bottom:1px solid #2a2a3a;width:100%;box-sizing:border-box;z-index:5">
+<div style="flex:1;color:var(--accent);font-weight:700;letter-spacing:2px">READY PLAYER ME</div>
+<button class="back-btn" style="position:static" onclick="closeRPMCreator()">닫기</button>
+</div>
+<iframe id="rpmFrame" style="flex:1;width:100%;height:calc(100vh - 50px);border:0" allow="camera *; microphone *; clipboard-write"></iframe>
 </div>
 
 <!-- CAREER SELECT -->
@@ -246,6 +257,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-ser
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
   onerror="tryFallbackThree()"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
 <script>
 function tryFallbackThree(){
   if(window.THREE)return;
@@ -262,6 +274,71 @@ function tryFallbackThree(){
 // BOXING TRAINER V5 — 3D Career Mode (Three.js)
 // ============================================================
 const $ = id => document.getElementById(id);
+
+// ==================== READY PLAYER ME INTEGRATION ====================
+const RPM_SUBDOMAIN = 'demo';
+const RPM_KEY = 'rpm_avatar_url';
+let rpmPreviewModel = null;
+
+function openRPMCreator() {
+  const overlay = $('rpmOverlay');
+  const frame = $('rpmFrame');
+  frame.src = `https://${RPM_SUBDOMAIN}.readyplayer.me/avatar?frameApi&clearCache`;
+  hideAll && hideAll();
+  overlay.classList.remove('hidden');
+}
+function closeRPMCreator() {
+  $('rpmOverlay').classList.add('hidden');
+  $('rpmFrame').src = '';
+  showMain && showMain();
+}
+function clearRPMAvatar() {
+  localStorage.removeItem(RPM_KEY);
+  refreshRPMButton();
+  alert('RPM 아바타를 제거했습니다. 기본 캐릭터로 복귀합니다.');
+}
+function refreshRPMButton() {
+  const has = !!localStorage.getItem(RPM_KEY);
+  const btn = $('rpmClearBtn'); if (btn) btn.style.display = has ? 'block' : 'none';
+}
+
+window.addEventListener('message', (event) => {
+  let msg;
+  try { msg = typeof event.data === 'string' ? JSON.parse(event.data) : event.data; } catch (e) { return; }
+  if (!msg || msg.source !== 'readyplayerme') return;
+  const frame = $('rpmFrame');
+  if (msg.eventName === 'v1.frame.ready') {
+    frame.contentWindow.postMessage(JSON.stringify({
+      target: 'readyplayerme', type: 'subscribe', eventName: 'v1.**'
+    }), '*');
+    return;
+  }
+  if (msg.eventName === 'v1.avatar.exported' || msg.eventName === 'v2.avatar.exported') {
+    const url = (msg.data && msg.data.url) || msg.data;
+    if (typeof url === 'string' && url.endsWith('.glb')) {
+      localStorage.setItem(RPM_KEY, url);
+      closeRPMCreator();
+      alert('아바타 저장 완료! 메인 메뉴 좌측에 미리보기가 표시됩니다.\n(권투 매치는 다음 업데이트에서 RPM 모델로 적용됩니다)');
+      loadRPMPreview();
+    }
+  }
+});
+
+async function loadRPMPreview() {
+  const url = localStorage.getItem(RPM_KEY);
+  if (!url || typeof THREE === 'undefined' || typeof THREE.GLTFLoader === 'undefined') return;
+  try {
+    const loader = new THREE.GLTFLoader();
+    const gltf = await new Promise((res, rej) => loader.load(url, res, undefined, rej));
+    if (rpmPreviewModel && scene) scene.remove(rpmPreviewModel);
+    rpmPreviewModel = gltf.scene;
+    rpmPreviewModel.scale.setScalar(2.4);
+    rpmPreviewModel.position.set(-3.5, 0, 1);
+    rpmPreviewModel.rotation.y = 0.4;
+    rpmPreviewModel.userData.isRPMPreview = true;
+    if (scene) scene.add(rpmPreviewModel);
+  } catch (e) { console.warn('RPM preview load failed', e); }
+}
 
 // ==================== AUDIO ====================
 let audioCtx = null;
@@ -1679,6 +1756,9 @@ function showMain() {
   // Position fighters for menu display
   playerModel.group.visible = false;
   oppModel.group.visible = false;
+  refreshRPMButton();
+  if (localStorage.getItem(RPM_KEY) && !rpmPreviewModel) loadRPMPreview();
+  if (rpmPreviewModel) rpmPreviewModel.visible = true;
 }
 
 function updatePlayerInfo() {
@@ -2955,8 +3035,15 @@ function update3DScene(time, dt) {
       camera.lookAt(0, 3, 1);
     }
   } else {
+    // Menu — show RPM preview if loaded
+    if (rpmPreviewModel) {
+      rpmPreviewModel.rotation.y += dt * 0.5;
+    }
     if (camState.userActive) {
       applyOrbitCamera();
+    } else if (rpmPreviewModel) {
+      camera.position.set(-3.5 + Math.sin(time * 0.15) * 1.5, 4, 5);
+      camera.lookAt(-3.5, 2.2, 1);
     } else {
       // Menu scene - slow camera rotation
       camera.position.x = Math.sin(time * 0.15) * 8;
