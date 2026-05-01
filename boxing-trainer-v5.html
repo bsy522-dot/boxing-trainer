@@ -115,6 +115,14 @@ html,body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-ser
 .train-combo-item{padding:6px 14px;border-radius:8px;font-size:14px;font-weight:600;background:rgba(255,255,255,.05);color:var(--dim);border:1px solid var(--border)}
 .train-combo-item.done{color:var(--green);border-color:var(--green)}
 .train-combo-item.current{color:var(--accent);border-color:var(--accent);background:rgba(230,57,70,.1)}
+/* Camera controls */
+.cam-controls{position:fixed;right:12px;bottom:12px;z-index:18;display:flex;flex-direction:column;gap:6px;pointer-events:auto}
+.cam-controls.hidden{display:none}
+.cam-btn{width:44px;height:44px;border-radius:10px;background:rgba(14,14,22,.85);border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.85);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center;padding:0}
+.cam-btn:hover,.cam-btn:active{border-color:var(--accent);background:rgba(230,57,70,.18)}
+.cam-btn.small{font-size:18px;font-weight:900}
+.cam-hint{position:fixed;left:50%;transform:translateX(-50%);top:8px;z-index:18;font-size:10px;color:var(--dim);background:var(--panel);padding:4px 10px;border-radius:14px;border:1px solid var(--border);pointer-events:none;opacity:0;transition:opacity .3s}
+.cam-hint.show{opacity:1}
 </style>
 </head>
 <body>
@@ -183,6 +191,17 @@ html,body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-ser
 <div class="train-result hidden" id="trainResult"></div>
 <div class="train-overlay hidden" id="trainOverlay"></div>
 <button class="back-btn hidden" id="backBtn" onclick="goBack()">&#x2190; 뒤로</button>
+
+<!-- Camera controls -->
+<div class="cam-controls hidden" id="camControls">
+<button class="cam-btn small" onclick="camPreset('side')" title="사이드뷰">&#x25C0;&#x25B6;</button>
+<button class="cam-btn small" onclick="camPreset('front')" title="정면뷰">&#x25BC;</button>
+<button class="cam-btn small" onclick="camPreset('top')" title="탑뷰">&#x25CE;</button>
+<button class="cam-btn small" onclick="camZoom(-1)" title="줌인">+</button>
+<button class="cam-btn small" onclick="camZoom(1)" title="줌아웃">-</button>
+<button class="cam-btn small" onclick="camReset()" title="리셋">&#x21BA;</button>
+</div>
+<div class="cam-hint" id="camHint">드래그=회전 · 휠/핀치=줌</div>
 
 <!-- Mobile controls -->
 <div class="mobile-controls hidden" id="mobileControls">
@@ -335,6 +354,21 @@ let ringGroup, playerModel, oppModel;
 let particles3D = [];
 let cameraShake = { x: 0, y: 0, amount: 0 };
 let koFlashLight = null;
+
+// User-controlled orbit camera state
+const camState = {
+  azimuth: 0.55,    // horizontal angle (radians) - default 3/4 side over-shoulder
+  polar: 1.25,      // vertical angle (0=top, PI=bottom)
+  radius: 13,       // distance from target
+  target: new THREE.Vector3(0, 2.2, 0.75),
+  userActive: false,         // true after user touched the camera
+  preset: 'auto',            // 'auto' | 'side' | 'front' | 'top'
+  // input state
+  dragging: false,
+  lastX: 0, lastY: 0,
+  pinchDist: 0,
+};
+const CAM_LIMITS = { polarMin: 0.25, polarMax: Math.PI - 0.25, radiusMin: 4, radiusMax: 22 };
 const skinColor = 0xc8956c;
 const darkSkin = 0xa07050;
 
@@ -410,6 +444,103 @@ function initThree() {
   scene.add(oppModel.group);
 
   window.addEventListener('resize', onResize);
+  setupCameraControls();
+}
+
+// ==================== CAMERA CONTROLS ====================
+function setupCameraControls() {
+  const cv = $('c3d');
+  // Mouse
+  cv.addEventListener('mousedown', e => {
+    if (e.button !== 0) return;
+    camState.dragging = true; camState.lastX = e.clientX; camState.lastY = e.clientY;
+    camState.userActive = true; flashCamHint();
+  });
+  window.addEventListener('mousemove', e => {
+    if (!camState.dragging) return;
+    const dx = e.clientX - camState.lastX, dy = e.clientY - camState.lastY;
+    camState.azimuth -= dx * 0.005;
+    camState.polar = clamp(camState.polar - dy * 0.005, CAM_LIMITS.polarMin, CAM_LIMITS.polarMax);
+    camState.lastX = e.clientX; camState.lastY = e.clientY;
+  });
+  window.addEventListener('mouseup', () => { camState.dragging = false; });
+  cv.addEventListener('wheel', e => {
+    e.preventDefault();
+    camState.radius = clamp(camState.radius * (1 + Math.sign(e.deltaY) * 0.08), CAM_LIMITS.radiusMin, CAM_LIMITS.radiusMax);
+    camState.userActive = true; flashCamHint();
+  }, { passive: false });
+  // Touch
+  cv.addEventListener('touchstart', e => {
+    if (e.touches.length === 1) {
+      camState.dragging = true;
+      camState.lastX = e.touches[0].clientX; camState.lastY = e.touches[0].clientY;
+      camState.userActive = true; flashCamHint();
+    } else if (e.touches.length === 2) {
+      camState.dragging = false;
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      camState.pinchDist = Math.hypot(dx, dy);
+    }
+  }, { passive: true });
+  cv.addEventListener('touchmove', e => {
+    if (e.touches.length === 1 && camState.dragging) {
+      const dx = e.touches[0].clientX - camState.lastX;
+      const dy = e.touches[0].clientY - camState.lastY;
+      camState.azimuth -= dx * 0.006;
+      camState.polar = clamp(camState.polar - dy * 0.006, CAM_LIMITS.polarMin, CAM_LIMITS.polarMax);
+      camState.lastX = e.touches[0].clientX; camState.lastY = e.touches[0].clientY;
+    } else if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const d = Math.hypot(dx, dy);
+      if (camState.pinchDist > 0) {
+        const ratio = camState.pinchDist / d;
+        camState.radius = clamp(camState.radius * ratio, CAM_LIMITS.radiusMin, CAM_LIMITS.radiusMax);
+      }
+      camState.pinchDist = d;
+    }
+  }, { passive: true });
+  cv.addEventListener('touchend', e => {
+    if (e.touches.length === 0) { camState.dragging = false; camState.pinchDist = 0; }
+  });
+}
+
+function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+
+function applyOrbitCamera() {
+  const t = camState.target;
+  const r = camState.radius, p = camState.polar, a = camState.azimuth;
+  const sinP = Math.sin(p), cosP = Math.cos(p);
+  camera.position.set(
+    t.x + r * sinP * Math.sin(a) + cameraShake.x,
+    t.y + r * cosP + cameraShake.y,
+    t.z + r * sinP * Math.cos(a)
+  );
+  camera.lookAt(t);
+}
+
+function camPreset(name) {
+  camState.userActive = true;
+  camState.preset = name;
+  if (name === 'side')  { camState.azimuth =  Math.PI / 2; camState.polar = 1.45; camState.radius = 15; camState.target.set(0, 2, 0.75); }
+  if (name === 'front') { camState.azimuth = 0;            camState.polar = 1.30; camState.radius = 11; camState.target.set(0, 2.2, 0.75); }
+  if (name === 'top')   { camState.azimuth = 0;            camState.polar = 0.35; camState.radius = 13; camState.target.set(0, 0, 0.75); }
+  flashCamHint();
+}
+function camZoom(dir) {
+  camState.userActive = true;
+  camState.radius = clamp(camState.radius * (1 + dir * 0.15), CAM_LIMITS.radiusMin, CAM_LIMITS.radiusMax);
+}
+function camReset() {
+  camState.userActive = false;
+  camState.preset = 'auto';
+  camState.azimuth = 0.55; camState.polar = 1.25; camState.radius = 13; camState.target.set(0, 2.2, 0.75);
+}
+function flashCamHint() {
+  const h = $('camHint'); if (!h) return;
+  h.classList.add('show');
+  clearTimeout(flashCamHint._t);
+  flashCamHint._t = setTimeout(() => h.classList.remove('show'), 1400);
 }
 
 function onResize() {
@@ -1328,7 +1459,7 @@ let currentFight = null;
 let currentTraining = null;
 
 function hideAll() {
-  ['mainMenu', 'careerMenu', 'trainingMenu', 'recordsMenu', 'fightHud', 'controlsHint', 'fightResult', 'levelUp', 'trainResult', 'restScreen', 'mobileControls', 'trainOverlay', 'comboCounter'].forEach(id => {
+  ['mainMenu', 'careerMenu', 'trainingMenu', 'recordsMenu', 'fightHud', 'controlsHint', 'fightResult', 'levelUp', 'trainResult', 'restScreen', 'mobileControls', 'trainOverlay', 'comboCounter', 'camControls'].forEach(id => {
     const el = $(id);
     if (el) el.classList.add('hidden');
   });
@@ -1455,6 +1586,7 @@ function startFight(opp, isCareer, oppIdx) {
   $('fightHud').classList.remove('hidden');
   $('controlsHint').classList.remove('hidden');
   $('backBtn').classList.remove('hidden');
+  $('camControls').classList.remove('hidden');
   if ('ontouchstart' in window) $('mobileControls').classList.remove('hidden');
 
   $('oppNameHud').textContent = opp.name;
@@ -1467,9 +1599,9 @@ function startFight(opp, isCareer, oppIdx) {
   playerModel.group.userData.baseX = 0;
   oppModel.group.userData.baseX = 0;
 
-  // Camera for fight
-  camera.position.set(1.5, 5, 8);
-  camera.lookAt(0, 3, 1);
+  // Camera for fight - reset to auto if user hasn't customized
+  camReset();
+  flashCamHint();
 
   currentFight = {
     active: true,
@@ -1963,8 +2095,9 @@ function startTraining(type) {
     oppModel.group.visible = true;
     playerModel.group.position.set(0, 0, 3);
     oppModel.group.position.set(0, 0, -1.5);
-    camera.position.set(1.5, 5, 8);
-    camera.lookAt(0, 3, 1);
+    camReset();
+    $('camControls').classList.remove('hidden');
+    flashCamHint();
     if ('ontouchstart' in window) $('mobileControls').classList.remove('hidden');
   } else {
     playerModel.group.visible = false;
@@ -2004,7 +2137,7 @@ function updateTrainOverlay() {
     </div>`;
 
   if (t.type === 'speedbag') {
-    html += `<div class="train-target" style="color:${t.sbTarget ? 'var(--green)' : 'var(--dim)};font-size:28px;margin:16px 0">${t.sbTarget ? '지금! 탭하세요!' : '대기...'}</div>
+    html += `<div class="train-target" style="color:${t.sbTarget ? 'var(--green)' : 'var(--dim)'};font-size:28px;margin:16px 0">${t.sbTarget ? '지금! 탭하세요!' : '대기...'}</div>
     <div style="font-size:12px;color:var(--dim)">초록색일 때 아무 키(1/2/3/4) 또는 탭</div>`;
   } else if (t.type === 'heavybag') {
     html += `<div style="margin:12px 0;font-size:14px">콤보 입력:</div>
@@ -2252,11 +2385,12 @@ function update3DScene(time, dt) {
       cameraShake.y *= 0.9;
     }
 
-    // Dynamic camera follow
-    const camTarget = new THREE.Vector3(0, 3, 1);
-    camera.position.x = 1.5 + cameraShake.x + Math.sin(time * 0.3) * 0.1;
-    camera.position.y = 5 + cameraShake.y + Math.sin(time * 0.2) * 0.05;
-    camera.lookAt(camTarget);
+    // Auto mode breathes the orbit slightly; user mode locks to user input
+    if (!camState.userActive) {
+      camState.azimuth = 0.55 + Math.sin(time * 0.25) * 0.04;
+      camState.polar = 1.25 + Math.sin(time * 0.18) * 0.02;
+    }
+    applyOrbitCamera();
 
     // Flash overlay using ambient light
     if (f.flashAmount > 0.05) {
@@ -2275,14 +2409,22 @@ function update3DScene(time, dt) {
     animateBoxerIdle(playerModel, time);
     animateBoxerIdle(oppModel, time);
 
-    camera.position.set(1.5, 5, 8);
-    camera.lookAt(0, 3, 1);
+    if (camState.userActive) {
+      applyOrbitCamera();
+    } else {
+      camera.position.set(1.5, 5, 8);
+      camera.lookAt(0, 3, 1);
+    }
   } else {
-    // Menu scene - slow camera rotation
-    camera.position.x = Math.sin(time * 0.15) * 8;
-    camera.position.z = Math.cos(time * 0.15) * 8;
-    camera.position.y = 4 + Math.sin(time * 0.1) * 0.5;
-    camera.lookAt(0, 1.5, 0);
+    if (camState.userActive) {
+      applyOrbitCamera();
+    } else {
+      // Menu scene - slow camera rotation
+      camera.position.x = Math.sin(time * 0.15) * 8;
+      camera.position.z = Math.cos(time * 0.15) * 8;
+      camera.position.y = 4 + Math.sin(time * 0.1) * 0.5;
+      camera.lookAt(0, 1.5, 0);
+    }
   }
 
   updateParticles3D(dt);

@@ -1,0 +1,10 @@
+node_modules/
+_archive/
+_*.png
+_*.py
+_*.mjs
+_*.html
+_*.js
+_*.txt
+_*.json
+package-lock.json
