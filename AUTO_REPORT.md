@@ -131,3 +131,103 @@ Ran these automated checks:
 | External CDN violations | 1 | 0 | fixed |
 
 ---
+
+## 2026-05-06 &mdash; Pass #2 (Opus 4.6)
+
+### Stage 1. Benchmarking vs FightCamp / BOXX / Fitness Boxing
+
+Current app (v5) had excellent 3D biomechanics, combo learning, and camera controls,
+but lacked a **training ecosystem** around the workout. Pro apps deliver:
+
+| Feature | FightCamp | BOXX | Fitness Boxing | v5 (before) |
+| --- | --- | --- | --- | --- |
+| Training dashboard/hub | YES | YES | YES | **NO** |
+| Daily streak system | YES | YES | YES | **NO** |
+| Calorie tracking | YES | YES | - | **NO** |
+| Session history log | YES | YES | YES | **NO** |
+| Achievement/badge system | YES | YES | YES | **NO** |
+| Training programs/presets | YES | YES | YES | partial |
+| Progress charts | YES | YES | - | **NO** |
+| BGM/beat during training | YES | YES | YES | **NO** |
+| Dark/Light mode | YES | YES | - | **NO** |
+| PWA offline support | - | - | - | **NO** |
+
+**Gap verdict**: v5 was a world-class 3D boxing simulator but lacked the motivational
+and tracking features that keep users coming back. FightCamp&rsquo;s biggest advantage is
+their ecosystem of streak, calories, and progress visualization.
+
+### Stage 2. Full-team development
+
+**Frontend / UX (index.html &mdash; Training Hub)**
+- Complete Training Hub dashboard (1178 lines, standalone HTML)
+- Dark theme (#0f0a1e) with glassmorphism cards, backdrop-filter blur
+- Dark/Light mode toggle with localStorage persistence
+- Fully responsive: 3-column grid on desktop, single column on mobile
+- CSS keyframe animations: float, pulse, glow, slideUp, badge-unlock, bar-grow, streak-fire
+- System font stack (no external CDN &mdash; rule compliant)
+- Hero section with animated SVG boxing glove + gradient title
+- Sticky top navigation bar with BGM/theme/settings controls
+- Settings overlay panel (sound, vibration, daily goals)
+
+**Backend / Logic**
+- localStorage data management (`boxingTrainerData` key)
+- Session recording from URL params + sessionStorage bridge
+- Daily streak calculator with automatic reset
+- Calorie estimation formula: `punches &times; 0.5 + combos &times; 2 + minutes &times; 8`
+- Score calculation: `punches + combos &times; 5 + minutes &times; 3`
+- 12 achievement auto-check engine with unlock timestamps
+- 7-day punch chart aggregation
+- Training calendar (current week view with done indicators)
+- Data merge with defaults for forward compatibility
+
+**Audio (Web Audio API)**
+- Motivational BGM engine at 130 BPM
+- Kick drum: sine 150&rarr;30Hz exponential ramp
+- Snare: filtered noise burst (2kHz highpass)
+- Hi-hat: ultra-short noise (7kHz highpass)
+- Pattern: kick on 1,3 / snare on 2,4 / hihat on every 8th
+
+**Content**
+- 3 training presets (&#52488;&#44553; 3R&times;1min / &#51473;&#44553; 5R&times;2min / &#44256;&#44553; 8R&times;3min)
+- 12 achievement badges with icons, descriptions, and check conditions
+- 7-day visual history chart
+- Calorie ring progress indicator (SVG arc)
+
+**Infrastructure (PWA)**
+- `sw.js`: Service Worker v6 (104 lines)
+  - Precache: index.html, boxing-trainer-v5.html, manifest.json
+  - Cache-first for assets, network-first for JSON data
+  - skipWaiting + clients.claim for immediate activation
+  - Offline fallback handling
+- `manifest.json`: Updated to v6
+  - standalone display, portrait orientation
+  - Categories: fitness, health, sports
+  - 192px + 512px SVG icons with maskable purpose
+  - Korean language, start_url &rarr; index.html
+
+### Stage 3. QA verification
+
+| Check | Result |
+| --- | --- |
+| JS syntax (new Function parse) | PASS |
+| HTML tag balance (div) | 76/76 |
+| HTML tag balance (section) | 8/8 |
+| getElementById integrity | 22 refs / 22 match / 0 missing |
+| External URL scan | 0 CDN violations (SVG namespace only) |
+| Personal info scan | CLEAN |
+| Manifest JSON parse | OK |
+| Service Worker syntax | PASS |
+
+### Stage 4. Metrics
+
+| | Before | After | Delta |
+| --- | ---: | ---: | ---: |
+| index.html lines | 60 (redirect) | 1178 (Training Hub) | +1118 |
+| New files | 0 | sw.js (104), manifest update | +2 |
+| Training features | 0 | 12 (streak/cal/history/chart/badges/programs/BGM/theme/settings/PWA/calendar/scoring) | +12 |
+| Achievements | 0 | 12 | +12 |
+| Training programs | 0 | 3 | +3 |
+| Offline support | NO | YES (Service Worker) | +PWA |
+| FightCamp gap items resolved | - | 10/10 | 100% |
+
+---

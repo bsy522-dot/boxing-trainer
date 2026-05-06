@@ -2,19 +2,1177 @@
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Boxing Trainer</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Boxing Trainer Pro - Training Hub</title>
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23FF4444'/%3E%3Cstop offset='100%25' stop-color='%23CC2222'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath d='M14 18c-4 0-6 4-6 10s4 14 10 16l4-2c-4-2-8-8-8-14z' fill='url(%23g)'/%3E%3Cellipse cx='28' cy='30' rx='16' ry='14' fill='url(%23g)'/%3E%3Cellipse cx='28' cy='30' rx='13' ry='11' fill='none' stroke='%23FF6666' stroke-width='1.5'/%3E%3Cpath d='M18 22c2-2 6-4 10-4s8 2 10 4' stroke='%23AA1111' stroke-width='2' fill='none'/%3E%3Crect x='36' y='38' width='8' height='14' rx='4' fill='%23CC2222'/%3E%3Cpath d='M38 52v6' stroke='%23FFD700' stroke-width='3' stroke-linecap='round'/%3E%3Cpath d='M42 52v6' stroke='%23FFD700' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='50' cy='14' r='4' fill='%23FFD700' opacity='.8'/%3E%3Cpath d='M50 8v2M54 14h2M50 20v-2M46 14h-2' stroke='%23FFD700' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231a1a2e'/%3E%3Cellipse cx='32' cy='30' rx='16' ry='14' fill='%23FF4444'/%3E%3Cellipse cx='32' cy='30' rx='13' ry='11' fill='none' stroke='%23FF6666' stroke-width='1.5'/%3E%3Crect x='38' y='38' width='8' height='12' rx='4' fill='%23CC2222'/%3E%3C/svg%3E">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#1a1a2e">
-<meta http-equiv="refresh" content="0;url=boxing-trainer-v5.html">
+<meta name="theme-color" content="#FF4444">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <style>
-body{margin:0;background:#1a1a2e;color:#FF4444;display:flex;align-items:center;justify-content:center;height:100vh;font-family:sans-serif}
-a{color:#FF6666}
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --bg:#0f0a1e;
+  --surface:rgba(255,255,255,0.04);
+  --glass:rgba(255,255,255,0.06);
+  --glass-border:rgba(255,255,255,0.1);
+  --accent:#FF4444;
+  --accent-glow:rgba(255,68,68,0.3);
+  --accent-soft:rgba(255,68,68,0.1);
+  --text:#f0f0f0;
+  --text-dim:#8a8a9e;
+  --text-muted:#5a5a6e;
+  --gold:#FFD700;
+  --green:#22c55e;
+  --blue:#3b82f6;
+  --purple:#a855f7;
+  --orange:#f97316;
+  --radius:16px;
+  --font:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+}
+[data-theme="light"]{
+  --bg:#f5f5f8;
+  --surface:rgba(0,0,0,0.03);
+  --glass:rgba(255,255,255,0.7);
+  --glass-border:rgba(0,0,0,0.08);
+  --text:#1a1a2e;
+  --text-dim:#555;
+  --text-muted:#888;
+}
+html,body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--font);
+  min-height:100vh;
+  overflow-x:hidden;
+  scroll-behavior:smooth;
+}
+body{padding-bottom:80px}
+
+/* Animations */
+@keyframes float{
+  0%,100%{transform:translateY(0) rotate(0deg)}
+  25%{transform:translateY(-8px) rotate(2deg)}
+  75%{transform:translateY(4px) rotate(-1deg)}
+}
+@keyframes pulse{
+  0%,100%{transform:scale(1);opacity:1}
+  50%{transform:scale(1.05);opacity:0.8}
+}
+@keyframes glow{
+  0%,100%{box-shadow:0 0 20px var(--accent-glow)}
+  50%{box-shadow:0 0 40px var(--accent-glow),0 0 60px rgba(255,68,68,0.1)}
+}
+@keyframes slideUp{
+  from{opacity:0;transform:translateY(30px)}
+  to{opacity:1;transform:translateY(0)}
+}
+@keyframes fadeIn{
+  from{opacity:0}
+  to{opacity:1}
+}
+@keyframes shake{
+  0%,100%{transform:translateX(0)}
+  25%{transform:translateX(-4px)}
+  75%{transform:translateX(4px)}
+}
+@keyframes streak-fire{
+  0%,100%{transform:scale(1) rotate(-5deg)}
+  50%{transform:scale(1.2) rotate(5deg)}
+}
+@keyframes progress-fill{
+  from{width:0}
+  to{width:var(--progress)}
+}
+@keyframes badge-unlock{
+  0%{transform:scale(0) rotate(-180deg);opacity:0}
+  50%{transform:scale(1.3) rotate(10deg);opacity:1}
+  100%{transform:scale(1) rotate(0);opacity:1}
+}
+@keyframes bar-grow{
+  from{height:0}
+  to{height:var(--h)}
+}
+
+/* Top Bar */
+.top-bar{
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 20px;
+  background:rgba(15,10,30,0.9);
+  backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--glass-border);
+}
+[data-theme="light"] .top-bar{background:rgba(245,245,248,0.9)}
+.top-bar-left{display:flex;align-items:center;gap:10px}
+.top-bar-logo{width:32px;height:32px}
+.top-bar-title{font-size:16px;font-weight:800;letter-spacing:1px;color:var(--accent)}
+.top-bar-right{display:flex;align-items:center;gap:8px}
+.icon-btn{
+  width:36px;height:36px;border-radius:50%;
+  background:var(--glass);border:1px solid var(--glass-border);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all 0.2s;font-size:16px;
+  color:var(--text-dim);
+}
+.icon-btn:hover{border-color:var(--accent);color:var(--accent);transform:scale(1.1)}
+.icon-btn.active{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+
+/* Hero */
+.hero{
+  text-align:center;padding:40px 20px 30px;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;top:-50%;left:-50%;
+  width:200%;height:200%;
+  background:radial-gradient(circle at 50% 80%,var(--accent-glow) 0%,transparent 50%);
+  opacity:0.3;pointer-events:none;
+}
+.hero-glove{
+  width:100px;height:100px;margin:0 auto 20px;
+  animation:float 4s ease-in-out infinite;
+}
+.hero-title{
+  font-size:clamp(28px,6vw,42px);font-weight:900;
+  letter-spacing:3px;
+  background:linear-gradient(135deg,var(--accent),#FF8866);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:8px;
+}
+.hero-sub{font-size:14px;color:var(--text-dim);margin-bottom:24px;letter-spacing:1px}
+.hero-btn{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:16px 40px;
+  background:linear-gradient(135deg,var(--accent),#CC2222);
+  border:none;border-radius:50px;
+  color:#fff;font-size:18px;font-weight:700;
+  cursor:pointer;transition:all 0.3s;
+  text-decoration:none;letter-spacing:2px;
+  animation:glow 3s ease-in-out infinite;
+}
+.hero-btn:hover{transform:scale(1.05);filter:brightness(1.1)}
+.hero-btn:active{transform:scale(0.98)}
+
+/* Streak */
+.streak-section{
+  text-align:center;padding:20px;
+  animation:slideUp 0.5s ease-out 0.2s both;
+}
+.streak-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:10px 24px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:50px;
+  backdrop-filter:blur(10px);
+}
+.streak-fire{font-size:24px;animation:streak-fire 1s ease-in-out infinite}
+.streak-num{font-size:28px;font-weight:900;color:var(--orange)}
+.streak-label{font-size:12px;color:var(--text-dim)}
+
+/* Container */
+.container{
+  max-width:1100px;margin:0 auto;padding:0 16px;
+}
+
+/* Section */
+.section{
+  margin:24px 0;
+  animation:slideUp 0.5s ease-out both;
+}
+.section:nth-child(2){animation-delay:0.1s}
+.section:nth-child(3){animation-delay:0.2s}
+.section:nth-child(4){animation-delay:0.3s}
+.section:nth-child(5){animation-delay:0.4s}
+.section-title{
+  font-size:18px;font-weight:800;margin-bottom:14px;
+  display:flex;align-items:center;gap:8px;
+  letter-spacing:0.5px;
+}
+.section-title .emoji{font-size:22px}
+
+/* Card */
+.card{
+  background:var(--glass);
+  border:1px solid var(--glass-border);
+  border-radius:var(--radius);
+  padding:20px;
+  backdrop-filter:blur(12px);
+  transition:all 0.3s;
+}
+.card:hover{border-color:rgba(255,68,68,0.3);transform:translateY(-2px)}
+
+/* Grid */
+.grid-3{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:16px}
+.grid-2{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+.grid-4{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:12px}
+
+/* Stats Dashboard */
+.stat-card{
+  text-align:center;padding:16px 12px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:var(--radius);backdrop-filter:blur(12px);
+}
+.stat-value{font-size:28px;font-weight:900;color:var(--accent);margin:4px 0}
+.stat-label{font-size:11px;color:var(--text-dim);text-transform:uppercase;letter-spacing:1px}
+
+/* Calendar */
+.calendar-week{
+  display:grid;grid-template-columns:repeat(7,1fr);gap:6px;
+  margin-top:10px;
+}
+.cal-day{
+  aspect-ratio:1;border-radius:10px;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:var(--surface);border:1px solid var(--glass-border);
+  font-size:11px;color:var(--text-dim);
+  transition:all 0.2s;
+}
+.cal-day.today{border-color:var(--accent);color:var(--accent)}
+.cal-day.done{background:var(--accent-soft);border-color:var(--accent);color:var(--accent)}
+.cal-day.done::after{content:'';display:block;width:6px;height:6px;border-radius:50%;background:var(--accent);margin-top:3px}
+.cal-day-label{font-size:9px;color:var(--text-muted);margin-bottom:2px}
+
+/* Bar Chart */
+.chart-container{
+  display:flex;align-items:flex-end;justify-content:space-between;
+  height:120px;padding:10px 0;gap:4px;
+}
+.chart-bar-wrap{
+  flex:1;display:flex;flex-direction:column;align-items:center;gap:4px;
+  height:100%;justify-content:flex-end;
+}
+.chart-bar{
+  width:100%;max-width:30px;
+  background:linear-gradient(to top,var(--accent),#FF8866);
+  border-radius:6px 6px 2px 2px;
+  min-height:4px;
+  transition:height 0.6s ease-out;
+  animation:bar-grow 0.8s ease-out both;
+}
+.chart-label{font-size:9px;color:var(--text-muted)}
+.chart-value{font-size:9px;color:var(--text-dim);font-weight:600}
+
+/* Programs */
+.program-card{
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:var(--radius);padding:20px;
+  backdrop-filter:blur(12px);
+  cursor:pointer;transition:all 0.3s;
+  text-decoration:none;color:var(--text);
+  display:block;position:relative;overflow:hidden;
+}
+.program-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--accent),var(--orange));
+  opacity:0;transition:opacity 0.3s;
+}
+.program-card:hover{transform:translateY(-4px);border-color:var(--accent)}
+.program-card:hover::before{opacity:1}
+.program-level{
+  font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:2px;margin-bottom:6px;
+}
+.program-level.beginner{color:var(--green)}
+.program-level.intermediate{color:var(--orange)}
+.program-level.advanced{color:var(--accent)}
+.program-name{font-size:20px;font-weight:800;margin-bottom:4px}
+.program-desc{font-size:12px;color:var(--text-dim);margin-bottom:12px;line-height:1.5}
+.program-meta{display:flex;gap:10px;flex-wrap:wrap}
+.program-tag{
+  font-size:10px;padding:4px 10px;
+  background:var(--surface);border:1px solid var(--glass-border);
+  border-radius:20px;color:var(--text-dim);
+}
+
+/* Achievements */
+.badge-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:10px}
+.badge{
+  display:flex;flex-direction:column;align-items:center;
+  padding:14px 8px;text-align:center;
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:14px;transition:all 0.3s;
+  cursor:default;
+}
+.badge.unlocked{
+  border-color:var(--gold);
+  background:rgba(255,215,0,0.05);
+  animation:badge-unlock 0.5s ease-out;
+}
+.badge.locked{opacity:0.4;filter:grayscale(1)}
+.badge-icon{font-size:28px;margin-bottom:6px}
+.badge-name{font-size:9px;color:var(--text-dim);line-height:1.3;font-weight:600}
+
+/* History */
+.history-list{display:flex;flex-direction:column;gap:8px;max-height:300px;overflow-y:auto}
+.history-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 16px;
+  background:var(--surface);border:1px solid var(--glass-border);
+  border-radius:12px;transition:all 0.2s;
+}
+.history-item:hover{border-color:var(--accent-glow)}
+.history-date{font-size:12px;color:var(--text-dim);font-weight:600}
+.history-stats{display:flex;gap:12px;font-size:11px;color:var(--text-muted)}
+.history-stats span{display:flex;align-items:center;gap:3px}
+.history-stats .val{color:var(--text);font-weight:700}
+
+/* Settings Panel */
+.settings-overlay{
+  position:fixed;top:0;left:0;width:100%;height:100%;
+  background:rgba(0,0,0,0.6);backdrop-filter:blur(5px);
+  z-index:1000;display:none;align-items:center;justify-content:center;
+  animation:fadeIn 0.2s;
+}
+.settings-overlay.open{display:flex}
+.settings-panel{
+  background:var(--bg);border:1px solid var(--glass-border);
+  border-radius:20px;padding:30px;
+  width:90%;max-width:400px;max-height:80vh;overflow-y:auto;
+}
+.settings-title{font-size:20px;font-weight:800;margin-bottom:20px;text-align:center}
+.setting-row{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:14px 0;border-bottom:1px solid var(--glass-border);
+}
+.setting-row:last-child{border-bottom:none}
+.setting-label{font-size:14px;color:var(--text)}
+.setting-desc{font-size:11px;color:var(--text-muted);margin-top:2px}
+.toggle{
+  width:44px;height:24px;border-radius:12px;
+  background:var(--surface);border:1px solid var(--glass-border);
+  position:relative;cursor:pointer;transition:all 0.3s;
+}
+.toggle.on{background:var(--accent);border-color:var(--accent)}
+.toggle::after{
+  content:'';position:absolute;top:2px;left:2px;
+  width:18px;height:18px;border-radius:50%;
+  background:#fff;transition:all 0.3s;
+}
+.toggle.on::after{left:22px}
+.setting-input{
+  width:80px;padding:6px 10px;
+  background:var(--surface);border:1px solid var(--glass-border);
+  border-radius:8px;color:var(--text);
+  font-size:14px;text-align:center;
+}
+.settings-close{
+  display:block;width:100%;margin-top:20px;
+  padding:12px;border:none;border-radius:12px;
+  background:var(--accent);color:#fff;
+  font-size:15px;font-weight:700;cursor:pointer;
+}
+.settings-close:hover{filter:brightness(1.1)}
+
+/* Footer */
+.footer{
+  text-align:center;padding:30px 20px;
+  border-top:1px solid var(--glass-border);
+  margin-top:40px;
+}
+.footer-ver{font-size:11px;color:var(--text-muted);margin-bottom:10px}
+.install-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:10px 20px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:10px;color:var(--text-dim);
+  font-size:13px;cursor:pointer;transition:all 0.2s;
+}
+.install-btn:hover{border-color:var(--accent);color:var(--accent)}
+.install-btn.hidden{display:none}
+
+/* Calorie Display */
+.calorie-ring{
+  width:120px;height:120px;margin:0 auto;position:relative;
+}
+.calorie-ring svg{transform:rotate(-90deg)}
+.calorie-ring-text{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  text-align:center;
+}
+.calorie-ring-value{font-size:24px;font-weight:900;color:var(--accent)}
+.calorie-ring-label{font-size:10px;color:var(--text-dim)}
+
+/* Mobile */
+@media(max-width:768px){
+  .grid-3{grid-template-columns:1fr}
+  .grid-2{grid-template-columns:1fr}
+  .grid-4{grid-template-columns:repeat(3,1fr)}
+  .badge-grid{grid-template-columns:repeat(4,1fr)}
+  .hero{padding:30px 16px 20px}
+  .hero-title{font-size:28px}
+  .container{padding:0 12px}
+  .chart-container{height:80px}
+}
+@media(max-width:400px){
+  .badge-grid{grid-template-columns:repeat(3,1fr)}
+  .grid-4{grid-template-columns:repeat(2,1fr)}
+}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--glass-border);border-radius:2px}
+::-webkit-scrollbar-thumb:hover{background:var(--accent)}
+
+/* No-data placeholder */
+.empty-state{
+  text-align:center;padding:30px;color:var(--text-muted);
+  font-size:13px;
+}
+.empty-state .emoji{font-size:32px;margin-bottom:8px;display:block}
 </style>
 </head>
 <body>
-<p>Loading... <a href="boxing-trainer-v5.html">Click here</a></p>
+
+<!-- Top Bar -->
+<div class="top-bar">
+  <div class="top-bar-left">
+    <svg class="top-bar-logo" viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+      <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#FF4444"/><stop offset="100%" stop-color="#CC2222"/></linearGradient></defs>
+      <ellipse cx="28" cy="30" rx="16" ry="14" fill="url(#lg)"/>
+      <ellipse cx="28" cy="30" rx="13" ry="11" fill="none" stroke="#FF6666" stroke-width="1.5"/>
+      <rect x="36" y="38" width="8" height="14" rx="4" fill="#CC2222"/>
+    </svg>
+    <span class="top-bar-title">BOXING PRO</span>
+  </div>
+  <div class="top-bar-right">
+    <div class="icon-btn" id="bgmToggle" title="BGM">&#9835;</div>
+    <div class="icon-btn" id="themeToggle" title="Theme">&#9789;</div>
+    <div class="icon-btn" id="settingsBtn" title="Settings">&#9881;</div>
+  </div>
+</div>
+
+<!-- Hero Section -->
+<section class="hero">
+  <div class="hero-glove">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="gloveGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0%" stop-color="#FF4444"/>
+          <stop offset="100%" stop-color="#CC2222"/>
+        </linearGradient>
+        <filter id="gloveGlow">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+        </filter>
+      </defs>
+      <g filter="url(#gloveGlow)">
+        <path d="M20 35c-6 0-10 6-10 16s6 22 16 26l6-3c-6-3-12-12-12-23z" fill="url(#gloveGrad)" opacity="0.8"/>
+        <ellipse cx="45" cy="48" rx="26" ry="22" fill="url(#gloveGrad)"/>
+        <ellipse cx="45" cy="48" rx="21" ry="17" fill="none" stroke="#FF6666" stroke-width="2"/>
+        <path d="M28 36c3-4 10-7 17-7s13 3 17 7" stroke="#AA1111" stroke-width="3" fill="none"/>
+        <rect x="60" y="62" width="12" height="20" rx="6" fill="#CC2222"/>
+        <path d="M63 82v8M69 82v8" stroke="#FFD700" stroke-width="4" stroke-linecap="round"/>
+        <circle cx="80" cy="20" r="5" fill="#FFD700" opacity="0.9"/>
+        <path d="M80 12v3M85 20h3M80 28v-3M75 20h-3" stroke="#FFD700" stroke-width="2" stroke-linecap="round"/>
+      </g>
+    </svg>
+  </div>
+  <h1 class="hero-title">Boxing Trainer Pro</h1>
+  <p class="hero-sub">3D AI &#48373;&#49905; &#53944;&#47112;&#51060;&#45320;</p>
+  <a href="boxing-trainer-v5.html" class="hero-btn" id="startBtn">&#129354; &#54984;&#47144; &#49884;&#51089;</a>
+</section>
+
+<!-- Streak Section -->
+<section class="streak-section">
+  <div class="streak-badge">
+    <span class="streak-fire">&#128293;</span>
+    <span class="streak-num" id="streakCount">0</span>
+    <span class="streak-label">&#51068; &#50672;&#49549;</span>
+  </div>
+</section>
+
+<div class="container">
+
+  <!-- Stats Dashboard -->
+  <section class="section">
+    <h2 class="section-title"><span class="emoji">&#128200;</span> &#53685;&#44228; &#45824;&#49884;&#48372;&#46300;</h2>
+    <div class="grid-4">
+      <div class="stat-card">
+        <div class="stat-label">&#52509; &#54144;&#52824;</div>
+        <div class="stat-value" id="totalPunches">0</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">&#52509; &#54984;&#47144;&#49884;&#44036;</div>
+        <div class="stat-value" id="totalTime">0<small style="font-size:12px">&#48516;</small></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">&#52572;&#44256; &#50672;&#49549;</div>
+        <div class="stat-value" id="bestStreak">0<small style="font-size:12px">&#51068;</small></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">&#54217;&#44512; &#51216;&#49688;</div>
+        <div class="stat-value" id="avgScore">0</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Calorie + Chart Row -->
+  <section class="section">
+    <div class="grid-2">
+      <!-- Calorie Counter -->
+      <div class="card">
+        <h3 class="section-title"><span class="emoji">&#128293;</span> &#52860;&#47196;&#47532;</h3>
+        <div class="calorie-ring">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="52" fill="none" stroke="var(--glass-border)" stroke-width="8"/>
+            <circle cx="60" cy="60" r="52" fill="none" stroke="var(--accent)" stroke-width="8"
+              stroke-dasharray="327" stroke-dashoffset="327" stroke-linecap="round" id="calorieArc"/>
+          </svg>
+          <div class="calorie-ring-text">
+            <div class="calorie-ring-value" id="todayCalories">0</div>
+            <div class="calorie-ring-label">kcal &#50724;&#45720;</div>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--text-muted)">
+          &#47785;&#54364;: <span id="calorieGoal">300</span> kcal
+        </div>
+      </div>
+      <!-- Mini Chart -->
+      <div class="card">
+        <h3 class="section-title"><span class="emoji">&#128202;</span> &#51452;&#44036; &#54144;&#52824;</h3>
+        <div class="chart-container" id="weekChart"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Training Calendar -->
+  <section class="section">
+    <h2 class="section-title"><span class="emoji">&#128197;</span> &#51060;&#48264; &#51452; &#54984;&#47144;</h2>
+    <div class="card">
+      <div class="calendar-week" id="calendarWeek"></div>
+    </div>
+  </section>
+
+  <!-- Training Programs -->
+  <section class="section">
+    <h2 class="section-title"><span class="emoji">&#127942;</span> &#54984;&#47144; &#54532;&#47196;&#44536;&#47016;</h2>
+    <div class="grid-3">
+      <a href="boxing-trainer-v5.html?preset=beginner" class="program-card">
+        <div class="program-level beginner">BEGINNER</div>
+        <div class="program-name">&#52488;&#44553;</div>
+        <div class="program-desc">&#44592;&#48376;&#44592;&#47484; &#50061;&#55176;&#44256; &#51088;&#49888;&#44048;&#51012; &#53412;&#50864;&#49464;&#50836;. &#51105;&#44284; &#53356;&#47196;&#49828;&#47484; &#51473;&#49900;&#51004;&#47196; &#54984;&#47144;&#54633;&#45768;&#45796;.</div>
+        <div class="program-meta">
+          <span class="program-tag">3R &times; 1&#48516;</span>
+          <span class="program-tag">&#51105;/&#53356;&#47196;&#49828;</span>
+          <span class="program-tag">&#52488;&#48372;&#51088;</span>
+        </div>
+      </a>
+      <a href="boxing-trainer-v5.html?preset=intermediate" class="program-card">
+        <div class="program-level intermediate">INTERMEDIATE</div>
+        <div class="program-name">&#51473;&#44553;</div>
+        <div class="program-desc">&#53092;&#48372; &#44592;&#49696;&#51012; &#48176;&#50864;&#44256; &#51025;&#50857;&#54644;&#48372;&#49464;&#50836;. &#45796;&#50577;&#54620; &#53092;&#48708;&#45348;&#51060;&#49496; &#54984;&#47144;&#51004;&#47196; &#49892;&#47141;&#51012; &#45458;&#51077;&#45768;&#45796;.</div>
+        <div class="program-meta">
+          <span class="program-tag">5R &times; 2&#48516;</span>
+          <span class="program-tag">&#53092;&#48372;</span>
+          <span class="program-tag">&#51473;&#44553;&#51088;</span>
+        </div>
+      </a>
+      <a href="boxing-trainer-v5.html?preset=advanced" class="program-card">
+        <div class="program-level advanced">ADVANCED</div>
+        <div class="program-name">&#44256;&#44553;</div>
+        <div class="program-desc">&#54532;&#47532;&#49828;&#53440;&#51068; &#47784;&#46300;&#47196; &#51088;&#50976;&#47213;&#44172; &#54984;&#47144;&#54616;&#49464;&#50836;. &#47784;&#46304; &#44592;&#49696;&#51012; &#54876;&#50857;&#54620; &#44256;&#44053;&#46020; &#53944;&#47112;&#51060;&#45789;&#51077;&#45768;&#45796;.</div>
+        <div class="program-meta">
+          <span class="program-tag">8R &times; 3&#48516;</span>
+          <span class="program-tag">&#54532;&#47532;&#49828;&#53440;&#51068;</span>
+          <span class="program-tag">&#49345;&#44553;&#51088;</span>
+        </div>
+      </a>
+    </div>
+  </section>
+
+  <!-- Achievements -->
+  <section class="section">
+    <h2 class="section-title"><span class="emoji">&#127941;</span> &#50629;&#51201; &#48176;&#51648;</h2>
+    <div class="badge-grid" id="badgeGrid"></div>
+  </section>
+
+  <!-- Session History -->
+  <section class="section">
+    <h2 class="section-title"><span class="emoji">&#128221;</span> &#49464;&#49496; &#44592;&#47197;</h2>
+    <div class="card">
+      <div class="history-list" id="historyList">
+        <div class="empty-state"><span class="emoji">&#128064;</span>&#50500;&#51649; &#54984;&#47144; &#44592;&#47197;&#51060; &#50630;&#49845;&#45768;&#45796;.<br>&#52395; &#54984;&#47144;&#51012; &#49884;&#51089;&#54644;&#48372;&#49464;&#50836;!</div>
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <div class="footer-ver">Boxing Trainer Pro v6.0 | PWA Enabled</div>
+  <button class="install-btn hidden" id="installBtn">&#128229; &#50545; &#49444;&#52824;&#54616;&#44592;</button>
+</div>
+
+<!-- Settings Overlay -->
+<div class="settings-overlay" id="settingsOverlay">
+  <div class="settings-panel">
+    <div class="settings-title">&#9881; &#49444;&#51221;</div>
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">&#49548;&#47532;</div>
+        <div class="setting-desc">&#54984;&#47144; &#54952;&#44284;&#51020; &#51116;&#49373;</div>
+      </div>
+      <div class="toggle on" id="soundToggle" data-key="sound"></div>
+    </div>
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">&#51652;&#46041;</div>
+        <div class="setting-desc">&#54144;&#52824; &#54588;&#46300;&#48177;</div>
+      </div>
+      <div class="toggle on" id="vibrationToggle" data-key="vibration"></div>
+    </div>
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">&#51068;&#51068; &#47785;&#54364; &#52860;&#47196;&#47532;</div>
+        <div class="setting-desc">kcal &#45800;&#50948;</div>
+      </div>
+      <input type="number" class="setting-input" id="goalCalories" value="300" min="50" max="2000" step="50">
+    </div>
+    <div class="setting-row">
+      <div>
+        <div class="setting-label">&#51068;&#51068; &#47785;&#54364; &#54144;&#52824;</div>
+        <div class="setting-desc">&#54924; &#49688;</div>
+      </div>
+      <input type="number" class="setting-input" id="goalPunches" value="500" min="50" max="5000" step="50">
+    </div>
+    <button class="settings-close" id="settingsClose">&#45803;&#44592;</button>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+// ===== DATA MANAGEMENT =====
+const STORAGE_KEY = 'boxingTrainerData';
+
+function getDefaultData(){
+  return {
+    sessions: [],
+    streak: 0,
+    bestStreak: 0,
+    lastTrainDate: null,
+    totalPunches: 0,
+    totalTime: 0,
+    totalCombos: 0,
+    totalCalories: 0,
+    achievements: {},
+    settings: {
+      sound: true,
+      vibration: true,
+      goalCalories: 300,
+      goalPunches: 500,
+      theme: 'dark',
+      bgm: false
+    }
+  };
+}
+
+function loadData(){
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if(!raw) return getDefaultData();
+    const data = JSON.parse(raw);
+    // merge with defaults for new fields
+    const def = getDefaultData();
+    return {...def, ...data, settings: {...def.settings, ...(data.settings||{})}};
+  } catch(e){
+    return getDefaultData();
+  }
+}
+
+function saveData(data){
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  } catch(e){}
+}
+
+let appData = loadData();
+
+// ===== SESSION RECORDING FROM URL PARAMS =====
+function checkReturnFromTraining(){
+  const params = new URLSearchParams(window.location.search);
+  const punches = parseInt(params.get('punches')) || 0;
+  const time = parseInt(params.get('time')) || 0;
+  const combos = parseInt(params.get('combos')) || 0;
+
+  // Also check sessionStorage
+  let sessionData = null;
+  try {
+    const raw = sessionStorage.getItem('boxingSessionResult');
+    if(raw){
+      sessionData = JSON.parse(raw);
+      sessionStorage.removeItem('boxingSessionResult');
+    }
+  } catch(e){}
+
+  const p = sessionData ? (sessionData.punches || punches) : punches;
+  const t = sessionData ? (sessionData.time || time) : time;
+  const c = sessionData ? (sessionData.combos || combos) : combos;
+
+  if(p > 0 || t > 0){
+    recordSession(p, t, c);
+    // Clean URL
+    if(params.has('punches') || params.has('time') || params.has('combos')){
+      window.history.replaceState({}, '', window.location.pathname);
+    }
+  }
+}
+
+function recordSession(punches, timeMin, combos){
+  const calories = Math.round(punches * 0.5 + combos * 2 + timeMin * 8);
+  const session = {
+    date: new Date().toISOString(),
+    punches: punches,
+    duration: timeMin,
+    combos: combos,
+    calories: calories,
+    score: Math.round(punches + combos * 5 + timeMin * 3)
+  };
+
+  appData.sessions.unshift(session);
+  if(appData.sessions.length > 50) appData.sessions = appData.sessions.slice(0, 50);
+
+  appData.totalPunches += punches;
+  appData.totalTime += timeMin;
+  appData.totalCombos += combos;
+  appData.totalCalories += calories;
+
+  // Streak
+  updateStreak();
+  checkAchievements(session);
+  saveData(appData);
+}
+
+function updateStreak(){
+  const today = new Date().toDateString();
+  const lastDate = appData.lastTrainDate;
+
+  if(lastDate === today) return;
+
+  if(lastDate){
+    const last = new Date(lastDate);
+    const diff = Math.floor((new Date(today) - last) / 86400000);
+    if(diff === 1){
+      appData.streak++;
+    } else if(diff > 1){
+      appData.streak = 1;
+    }
+  } else {
+    appData.streak = 1;
+  }
+
+  appData.lastTrainDate = today;
+  if(appData.streak > appData.bestStreak){
+    appData.bestStreak = appData.streak;
+  }
+}
+
+// ===== ACHIEVEMENTS =====
+const ACHIEVEMENTS = [
+  {id:'first_punch', name:'첫 펀치', icon:'🥊', desc:'첫 번째 펀치를 날리다', check: d => d.totalPunches >= 1},
+  {id:'combo_100', name:'100콤보', icon:'💥', desc:'콤보 100회 달성', check: d => d.totalCombos >= 100},
+  {id:'punch_1000', name:'1000펀치', icon:'👊', desc:'펀치 1000회 달성', check: d => d.totalPunches >= 1000},
+  {id:'streak_7', name:'7일연속', icon:'🔥', desc:'7일 연속 훈련', check: d => d.bestStreak >= 7},
+  {id:'streak_30', name:'30일연속', icon:'🌟', desc:'30일 연속 훈련', check: d => d.bestStreak >= 30},
+  {id:'calorie_1000', name:'칼로리버너', icon:'🔥', desc:'총 1000kcal 소모', check: d => d.totalCalories >= 1000},
+  {id:'master', name:'마스터', icon:'🏆', desc:'모든 콤보 마스터', check: d => d.totalCombos >= 500},
+  {id:'dawn_warrior', name:'새벽전사', icon:'🌅', desc:'새벽 6시 이전 훈련', check: d => {
+    return d.sessions.some(s => new Date(s.date).getHours() < 6);
+  }},
+  {id:'night_warrior', name:'야간전사', icon:'🌙', desc:'밤 10시 이후 훈련', check: d => {
+    return d.sessions.some(s => new Date(s.date).getHours() >= 22);
+  }},
+  {id:'marathon', name:'마라톤', icon:'⏱️', desc:'30분 이상 세션', check: d => {
+    return d.sessions.some(s => s.duration >= 30);
+  }},
+  {id:'speedster', name:'스피드스터', icon:'⚡', desc:'3분에 200+ 펀치', check: d => {
+    return d.sessions.some(s => s.duration <= 3 && s.punches >= 200);
+  }},
+  {id:'legend', name:'레전드', icon:'👑', desc:'총 10000 펀치 달성', check: d => d.totalPunches >= 10000}
+];
+
+function checkAchievements(session){
+  ACHIEVEMENTS.forEach(a => {
+    if(!appData.achievements[a.id] && a.check(appData)){
+      appData.achievements[a.id] = new Date().toISOString();
+    }
+  });
+}
+
+// ===== RENDER =====
+function renderAll(){
+  renderStats();
+  renderStreak();
+  renderCalendar();
+  renderChart();
+  renderBadges();
+  renderHistory();
+  renderCalories();
+  applyTheme();
+  applySettings();
+}
+
+function renderStats(){
+  document.getElementById('totalPunches').textContent = formatNum(appData.totalPunches);
+  document.getElementById('totalTime').innerHTML = formatNum(appData.totalTime) + '<small style="font-size:12px">분</small>';
+  document.getElementById('bestStreak').innerHTML = appData.bestStreak + '<small style="font-size:12px">일</small>';
+
+  const scores = appData.sessions.map(s => s.score || 0);
+  const avg = scores.length ? Math.round(scores.reduce((a,b) => a+b, 0) / scores.length) : 0;
+  document.getElementById('avgScore').textContent = formatNum(avg);
+}
+
+function renderStreak(){
+  document.getElementById('streakCount').textContent = appData.streak;
+  // Check if streak is still valid (trained today or yesterday)
+  if(appData.lastTrainDate){
+    const last = new Date(appData.lastTrainDate);
+    const diff = Math.floor((new Date() - last) / 86400000);
+    if(diff > 1){
+      appData.streak = 0;
+      saveData(appData);
+      document.getElementById('streakCount').textContent = '0';
+    }
+  }
+}
+
+function renderCalendar(){
+  const container = document.getElementById('calendarWeek');
+  container.innerHTML = '';
+  const days = ['일','월','화','수','목','금','토'];
+  const today = new Date();
+  const startOfWeek = new Date(today);
+  startOfWeek.setDate(today.getDate() - today.getDay());
+
+  for(let i = 0; i < 7; i++){
+    const d = new Date(startOfWeek);
+    d.setDate(startOfWeek.getDate() + i);
+    const dateStr = d.toDateString();
+    const isToday = dateStr === today.toDateString();
+    const isDone = appData.sessions.some(s => new Date(s.date).toDateString() === dateStr);
+
+    const el = document.createElement('div');
+    el.className = 'cal-day' + (isToday ? ' today' : '') + (isDone ? ' done' : '');
+    el.innerHTML = '<span class="cal-day-label">' + days[i] + '</span>' + d.getDate();
+    container.appendChild(el);
+  }
+}
+
+function renderChart(){
+  const container = document.getElementById('weekChart');
+  container.innerHTML = '';
+
+  const last7 = [];
+  for(let i = 6; i >= 0; i--){
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const dateStr = d.toDateString();
+    const daySessions = appData.sessions.filter(s => new Date(s.date).toDateString() === dateStr);
+    const totalPunches = daySessions.reduce((sum, s) => sum + s.punches, 0);
+    last7.push({label: (d.getMonth()+1) + '/' + d.getDate(), value: totalPunches});
+  }
+
+  const maxVal = Math.max(...last7.map(d => d.value), 1);
+
+  last7.forEach((d, i) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'chart-bar-wrap';
+    const pct = Math.max((d.value / maxVal) * 100, 3);
+    wrap.innerHTML =
+      '<span class="chart-value">' + (d.value || '') + '</span>' +
+      '<div class="chart-bar" style="--h:' + pct + '%;height:' + pct + '%;animation-delay:' + (i*0.1) + 's"></div>' +
+      '<span class="chart-label">' + d.label + '</span>';
+    container.appendChild(wrap);
+  });
+}
+
+function renderBadges(){
+  const grid = document.getElementById('badgeGrid');
+  grid.innerHTML = '';
+
+  ACHIEVEMENTS.forEach(a => {
+    const unlocked = !!appData.achievements[a.id];
+    const el = document.createElement('div');
+    el.className = 'badge ' + (unlocked ? 'unlocked' : 'locked');
+    el.title = a.desc;
+    el.innerHTML = '<span class="badge-icon">' + a.icon + '</span><span class="badge-name">' + a.name + '</span>';
+    grid.appendChild(el);
+  });
+}
+
+function renderHistory(){
+  const list = document.getElementById('historyList');
+  const sessions = appData.sessions.slice(0, 10);
+
+  if(sessions.length === 0){
+    list.innerHTML = '<div class="empty-state"><span class="emoji">&#128064;</span>아직 훈련 기록이 없습니다.<br>첫 훈련을 시작해보세요!</div>';
+    return;
+  }
+
+  list.innerHTML = '';
+  sessions.forEach(s => {
+    const d = new Date(s.date);
+    const dateStr = (d.getMonth()+1) + '/' + d.getDate() + ' ' + padZero(d.getHours()) + ':' + padZero(d.getMinutes());
+    const el = document.createElement('div');
+    el.className = 'history-item';
+    el.innerHTML =
+      '<span class="history-date">' + dateStr + '</span>' +
+      '<div class="history-stats">' +
+        '<span>&#129354; <span class="val">' + s.punches + '</span></span>' +
+        '<span>&#9201; <span class="val">' + s.duration + '분</span></span>' +
+        '<span>&#128165; <span class="val">' + s.combos + '</span></span>' +
+        '<span>&#128293; <span class="val">' + s.calories + 'kcal</span></span>' +
+      '</div>';
+    list.appendChild(el);
+  });
+}
+
+function renderCalories(){
+  const todaySessions = appData.sessions.filter(s => new Date(s.date).toDateString() === new Date().toDateString());
+  const todayCal = todaySessions.reduce((sum, s) => sum + s.calories, 0);
+  const goal = appData.settings.goalCalories || 300;
+
+  document.getElementById('todayCalories').textContent = todayCal;
+  document.getElementById('calorieGoal').textContent = goal;
+
+  const pct = Math.min(todayCal / goal, 1);
+  const circumference = 2 * Math.PI * 52; // r=52
+  const offset = circumference * (1 - pct);
+  document.getElementById('calorieArc').style.strokeDashoffset = offset;
+}
+
+// ===== THEME =====
+function applyTheme(){
+  const theme = appData.settings.theme || 'dark';
+  document.body.setAttribute('data-theme', theme);
+  const btn = document.getElementById('themeToggle');
+  btn.innerHTML = theme === 'dark' ? '&#9789;' : '&#9788;';
+  // Update theme-color meta
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if(meta) meta.content = theme === 'dark' ? '#FF4444' : '#f5f5f8';
+}
+
+function toggleTheme(){
+  appData.settings.theme = appData.settings.theme === 'dark' ? 'light' : 'dark';
+  saveData(appData);
+  applyTheme();
+}
+
+// ===== SETTINGS =====
+function applySettings(){
+  const soundToggle = document.getElementById('soundToggle');
+  const vibToggle = document.getElementById('vibrationToggle');
+  const goalCal = document.getElementById('goalCalories');
+  const goalPunch = document.getElementById('goalPunches');
+
+  soundToggle.className = 'toggle' + (appData.settings.sound ? ' on' : '');
+  vibToggle.className = 'toggle' + (appData.settings.vibration ? ' on' : '');
+  goalCal.value = appData.settings.goalCalories || 300;
+  goalPunch.value = appData.settings.goalPunches || 500;
+}
+
+function openSettings(){
+  document.getElementById('settingsOverlay').classList.add('open');
+}
+
+function closeSettings(){
+  // Save goal values
+  appData.settings.goalCalories = parseInt(document.getElementById('goalCalories').value) || 300;
+  appData.settings.goalPunches = parseInt(document.getElementById('goalPunches').value) || 500;
+  saveData(appData);
+  document.getElementById('settingsOverlay').classList.remove('open');
+  renderCalories();
+}
+
+// ===== BGM (Web Audio API) =====
+let bgmCtx = null;
+let bgmInterval = null;
+let bgmPlaying = false;
+
+function toggleBGM(){
+  if(bgmPlaying){
+    stopBGM();
+  } else {
+    startBGM();
+  }
+}
+
+function startBGM(){
+  if(!bgmCtx) bgmCtx = new (window.AudioContext || window.webkitAudioContext)();
+  if(bgmCtx.state === 'suspended') bgmCtx.resume();
+
+  bgmPlaying = true;
+  appData.settings.bgm = true;
+  saveData(appData);
+  document.getElementById('bgmToggle').classList.add('active');
+
+  const bpm = 130;
+  const beatInterval = 60000 / bpm;
+  let step = 0;
+
+  function playBeat(){
+    if(!bgmPlaying) return;
+
+    const now = bgmCtx.currentTime;
+
+    // Kick on 1, 3 (every 2 steps)
+    if(step % 4 === 0){
+      playKick(now);
+    }
+    // Hihat on every step
+    playHihat(now);
+    // Snare on 2, 4
+    if(step % 4 === 2){
+      playSnare(now);
+    }
+
+    step = (step + 1) % 16;
+  }
+
+  bgmInterval = setInterval(playBeat, beatInterval / 2);
+}
+
+function stopBGM(){
+  bgmPlaying = false;
+  appData.settings.bgm = false;
+  saveData(appData);
+  document.getElementById('bgmToggle').classList.remove('active');
+  if(bgmInterval){
+    clearInterval(bgmInterval);
+    bgmInterval = null;
+  }
+}
+
+function playKick(time){
+  const osc = bgmCtx.createOscillator();
+  const gain = bgmCtx.createGain();
+  osc.type = 'sine';
+  osc.frequency.setValueAtTime(150, time);
+  osc.frequency.exponentialRampToValueAtTime(30, time + 0.1);
+  gain.gain.setValueAtTime(0.6, time);
+  gain.gain.exponentialRampToValueAtTime(0.001, time + 0.15);
+  osc.connect(gain).connect(bgmCtx.destination);
+  osc.start(time);
+  osc.stop(time + 0.15);
+}
+
+function playSnare(time){
+  const bufferSize = bgmCtx.sampleRate * 0.1;
+  const buffer = bgmCtx.createBuffer(1, bufferSize, bgmCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for(let i = 0; i < bufferSize; i++){
+    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.2));
+  }
+  const source = bgmCtx.createBufferSource();
+  source.buffer = buffer;
+  const gain = bgmCtx.createGain();
+  gain.gain.setValueAtTime(0.3, time);
+  gain.gain.exponentialRampToValueAtTime(0.001, time + 0.1);
+  const filter = bgmCtx.createBiquadFilter();
+  filter.type = 'highpass';
+  filter.frequency.value = 2000;
+  source.connect(filter).connect(gain).connect(bgmCtx.destination);
+  source.start(time);
+}
+
+function playHihat(time){
+  const bufferSize = bgmCtx.sampleRate * 0.05;
+  const buffer = bgmCtx.createBuffer(1, bufferSize, bgmCtx.sampleRate);
+  const data = buffer.getChannelData(0);
+  for(let i = 0; i < bufferSize; i++){
+    data[i] = (Math.random() * 2 - 1) * Math.exp(-i / (bufferSize * 0.1));
+  }
+  const source = bgmCtx.createBufferSource();
+  source.buffer = buffer;
+  const gain = bgmCtx.createGain();
+  gain.gain.setValueAtTime(0.1, time);
+  gain.gain.exponentialRampToValueAtTime(0.001, time + 0.04);
+  const filter = bgmCtx.createBiquadFilter();
+  filter.type = 'highpass';
+  filter.frequency.value = 7000;
+  source.connect(filter).connect(gain).connect(bgmCtx.destination);
+  source.start(time);
+}
+
+// ===== PWA INSTALL =====
+let deferredPrompt = null;
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredPrompt = e;
+  document.getElementById('installBtn').classList.remove('hidden');
+});
+
+function installApp(){
+  if(!deferredPrompt) return;
+  deferredPrompt.prompt();
+  deferredPrompt.userChoice.then(result => {
+    deferredPrompt = null;
+    document.getElementById('installBtn').classList.add('hidden');
+  });
+}
+
+// ===== SERVICE WORKER =====
+if('serviceWorker' in navigator){
+  navigator.serviceWorker.register('sw.js').catch(function(){});
+}
+
+// ===== HELPERS =====
+function formatNum(n){
+  if(n >= 10000) return (n/1000).toFixed(1) + 'k';
+  if(n >= 1000) return n.toLocaleString();
+  return n.toString();
+}
+
+function padZero(n){
+  return n < 10 ? '0' + n : n.toString();
+}
+
+// ===== EVENT LISTENERS =====
+document.getElementById('themeToggle').addEventListener('click', toggleTheme);
+document.getElementById('bgmToggle').addEventListener('click', toggleBGM);
+document.getElementById('settingsBtn').addEventListener('click', openSettings);
+document.getElementById('settingsClose').addEventListener('click', closeSettings);
+document.getElementById('installBtn').addEventListener('click', installApp);
+
+document.getElementById('soundToggle').addEventListener('click', function(){
+  appData.settings.sound = !appData.settings.sound;
+  this.className = 'toggle' + (appData.settings.sound ? ' on' : '');
+  saveData(appData);
+});
+
+document.getElementById('vibrationToggle').addEventListener('click', function(){
+  appData.settings.vibration = !appData.settings.vibration;
+  this.className = 'toggle' + (appData.settings.vibration ? ' on' : '');
+  saveData(appData);
+});
+
+// Close settings on overlay click
+document.getElementById('settingsOverlay').addEventListener('click', function(e){
+  if(e.target === this) closeSettings();
+});
+
+// ===== INIT =====
+checkReturnFromTraining();
+renderAll();
+
+// Resume BGM if was playing
+if(appData.settings.bgm){
+  // Wait for user interaction
+  document.addEventListener('click', function resumeBGM(){
+    startBGM();
+    document.removeEventListener('click', resumeBGM);
+  }, {once: true});
+  document.getElementById('bgmToggle').classList.add('active');
+}
+
+})();
+</script>
 </body>
 </html>
