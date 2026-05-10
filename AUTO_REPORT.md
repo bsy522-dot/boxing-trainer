@@ -48,8 +48,7 @@ whitelist (Three.js / Tone.js / Leaflet only).
   combo number (1, 1-2, 2-3-5-6&hellip;).
 - Added Toast notification system for status messages.
 - Added fullscreen red flash on round-start events.
-- Added difficulty badges (&#48712;&#52488;/&#51473;&#44553;/&#44256;&#44553;)
-  on every move button.
+- Added difficulty badges on every move button.
 - Reworked bottom toolbar: added slow-mo, round, shadowbox buttons.
 - HTML entity-encoded all quotes in inline onclick handlers for safety.
 
@@ -153,7 +152,7 @@ but lacked a **training ecosystem** around the workout. Pro apps deliver:
 | PWA offline support | - | - | - | **NO** |
 
 **Gap verdict**: v5 was a world-class 3D boxing simulator but lacked the motivational
-and tracking features that keep users coming back. FightCamp&rsquo;s biggest advantage is
+and tracking features that keep users coming back. FightCamp's biggest advantage is
 their ecosystem of streak, calories, and progress visualization.
 
 ### Stage 2. Full-team development
@@ -173,8 +172,8 @@ their ecosystem of streak, calories, and progress visualization.
 - localStorage data management (`boxingTrainerData` key)
 - Session recording from URL params + sessionStorage bridge
 - Daily streak calculator with automatic reset
-- Calorie estimation formula: `punches &times; 0.5 + combos &times; 2 + minutes &times; 8`
-- Score calculation: `punches + combos &times; 5 + minutes &times; 3`
+- Calorie estimation formula: `punches x 0.5 + combos x 2 + minutes x 8`
+- Score calculation: `punches + combos x 5 + minutes x 3`
 - 12 achievement auto-check engine with unlock timestamps
 - 7-day punch chart aggregation
 - Training calendar (current week view with done indicators)
@@ -182,13 +181,13 @@ their ecosystem of streak, calories, and progress visualization.
 
 **Audio (Web Audio API)**
 - Motivational BGM engine at 130 BPM
-- Kick drum: sine 150&rarr;30Hz exponential ramp
+- Kick drum: sine 150-30Hz exponential ramp
 - Snare: filtered noise burst (2kHz highpass)
 - Hi-hat: ultra-short noise (7kHz highpass)
 - Pattern: kick on 1,3 / snare on 2,4 / hihat on every 8th
 
 **Content**
-- 3 training presets (&#52488;&#44553; 3R&times;1min / &#51473;&#44553; 5R&times;2min / &#44256;&#44553; 8R&times;3min)
+- 3 training presets (beginner 3Rx1min / intermediate 5Rx2min / advanced 8Rx3min)
 - 12 achievement badges with icons, descriptions, and check conditions
 - 7-day visual history chart
 - Calorie ring progress indicator (SVG arc)
@@ -203,7 +202,7 @@ their ecosystem of streak, calories, and progress visualization.
   - standalone display, portrait orientation
   - Categories: fitness, health, sports
   - 192px + 512px SVG icons with maskable purpose
-  - Korean language, start_url &rarr; index.html
+  - Korean language, start_url to index.html
 
 ### Stage 3. QA verification
 
@@ -228,6 +227,103 @@ their ecosystem of streak, calories, and progress visualization.
 | Achievements | 0 | 12 | +12 |
 | Training programs | 0 | 3 | +3 |
 | Offline support | NO | YES (Service Worker) | +PWA |
+| FightCamp gap items resolved | - | 10/10 | 100% |
+
+---
+
+## 2026-05-10 &mdash; Pass #3 (Opus 4.6)
+
+### Stage 1. Benchmarking vs FightCamp / BOXX / Fitness Boxing
+
+Current app (v6) had a solid training hub with streak, calories, and 12 achievements,
+but still lacked several features that competitors offer:
+
+| Feature | FightCamp | BOXX | Boxing Trainer v6 |
+| --- | --- | --- | --- |
+| Player rank/level system | YES | YES | **NO** |
+| Punch type breakdown chart | YES | YES | **NO** |
+| Weekly training planner | YES | YES | **NO** |
+| Training tips/motivation | YES | YES | **NO** |
+| Monthly training heatmap | YES | - | **NO** |
+| 24+ achievements | YES | YES | 12 only |
+| Daily punch goal ring | YES | YES | **NO** |
+| Data export | YES | - | **NO** |
+| Rest period coaching tips | YES | YES | **NO** |
+| Punch type tracking per fight | YES | YES | **NO** |
+
+**Gap verdict**: v6 had the ecosystem basics but lacked the motivational and analytical
+features that drive long-term retention. FightCamp's rank progression and detailed
+punch analytics are their biggest retention drivers.
+
+### Stage 2. Full-team development
+
+**Frontend / UX (index.html &mdash; Training Hub v7.0)**
+- Player Rank System: 6 tiers (Bronze/Silver/Gold/Platinum/Diamond/Champion)
+  based on total punches with progress bar to next rank
+- Daily Punch Goal Ring: SVG arc progress indicator (orange theme)
+- Punch Type Breakdown: SVG donut chart (jab/cross/hook/uppercut) with legend
+- Monthly Training Heatmap: GitHub-style contribution grid with 4 intensity levels
+- Weekly Training Planner: 7-day grid with recommended activity types
+- Training Tips Section: 8 rotating tips with dot navigation
+- Toast Notification System: slide-up feedback messages
+- Data Export: clipboard copy of training stats as JSON
+- Data Reset: confirmation dialog with full data clear
+- Improved footer: v7.0 version badge, export/reset buttons
+
+**Backend / Logic**
+- Punch type tracking: `punchTypes` object in data model (jab/cross/hook/uppercut)
+- Session punch breakdown via `sessionStorage` bridge from game
+- Rank calculation engine: 6 tiers with progress percentage
+- Monthly heatmap aggregation from session history
+- Enhanced session recording: punch type import, larger history (50 to 100 sessions)
+- Donut chart SVG rendering with `stroke-dasharray` calculations
+
+**Achievements (12 to 24, +12 new)**
+- 5000 punches, 500 combos, 1000 combos, 5K calories, 10K calories
+- 2 weeks streak, 100 days streak
+- 10 sessions, 50 sessions, 100 sessions
+- Weekend warrior, Early bird
+
+**Game Engine (boxing-trainer-v5.html)**
+- Punch type counter: `punchTypeCounts` object per fight (jab/cross/hook/uppercut)
+- Session data bridge: `sessionStorage.setItem('boxingSessionResult'/'boxingPunchTypes')`
+  passes fight data back to Training Hub automatically
+- Rest period coaching: 7 contextual tips shown during round breaks
+- Dynamic tip selection: warns player if taking more hits than dealing
+
+**Infrastructure**
+- `sw.js`: Updated to v7 (cache name `boxing-trainer-v7`)
+- `manifest.json`: Updated description for v7 features
+
+### Stage 3. QA verification
+
+| Check | Result |
+| --- | --- |
+| index.html JS syntax | PASS |
+| index.html div balance | 108/108 BALANCED |
+| index.html section balance | 12/12 BALANCED |
+| index.html getElementById integrity | 41 refs / 0 missing |
+| index.html external CDN scan | 0 violations |
+| index.html personal info scan | CLEAN |
+| v5.html JS syntax | PASS |
+| v5.html div balance | 131/131 BALANCED |
+| v5.html non-Three CDN scan | CLEAN |
+| v5.html personal info scan | CLEAN |
+| sw.js JS syntax | PASS |
+| manifest.json JSON parse | PASS |
+
+### Stage 4. Metrics
+
+| | Before (v6) | After (v7) | Delta |
+| --- | ---: | ---: | ---: |
+| index.html lines | 1178 | 1704 | +526 (+45%) |
+| index.html size | 43KB | 68KB | +25KB (+58%) |
+| v5.html lines | 3084 | 3120 | +36 |
+| Achievements | 12 | 24 | +12 |
+| New UI sections | 0 | 6 (rank/punchGoal/donut/heatmap/planner/tips) | +6 |
+| Punch tracking | none | per-type (jab/cross/hook/uppercut) | +4 types |
+| Data features | 0 | 2 (export + reset) | +2 |
+| Rest coaching tips | 0 | 7 | +7 |
 | FightCamp gap items resolved | - | 10/10 | 100% |
 
 ---
