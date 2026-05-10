@@ -220,7 +220,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-ser
 <div class="combo-popup" id="comboPopup"></div>
 <div class="combo-counter hidden" id="comboCounter"></div>
 <div class="controls-hint hidden" id="controlsHint">1/J=잽 2/K=크로스 3/L=훅 4/;=어퍼 | Q=슬립좌 E=슬립우 S=덕 | A=하이가드 D=로우가드</div>
-<div class="rest-screen hidden" id="restScreen"><h2>휴식</h2><div class="timer" id="restTimer">60</div><div style="font-size:13px;color:var(--dim);margin-top:10px">체력이 회복됩니다...</div></div>
+<div class="rest-screen hidden" id="restScreen"><h2>&#55092;&#49885;</h2><div class="timer" id="restTimer">60</div><div style="font-size:13px;color:var(--dim);margin-top:10px">&#52404;&#47141;&#51060; &#54924;&#48373;&#46121;&#45768;&#45796;...</div><div id="restTip" style="margin-top:18px;padding:12px 18px;background:rgba(255,255,255,0.04);border-radius:10px;max-width:320px;font-size:12px;color:var(--dim);line-height:1.6;border-left:3px solid var(--yellow)"></div></div>
 <div class="fight-result hidden" id="fightResult"></div>
 <div class="level-up hidden" id="levelUp"></div>
 <div class="train-result hidden" id="trainResult"></div>
@@ -1910,6 +1910,7 @@ function startFight(opp, isCareer, oppIdx) {
     totalPlayerHits: 0, totalOppHits: 0,
     totalPlayerDmg: 0, totalOppDmg: 0,
     totalDodges: 0, totalBlocks: 0,
+    punchTypeCounts: { jab: 0, cross: 0, hook: 0, uppercut: 0 },
     knockdowns: 0, oppKnockdowns: 0,
     shakeAmount: 0, flashAmount: 0,
     crowdIntensity: 0.2,
@@ -2009,6 +2010,7 @@ function playerPunch(type) {
     f.oppHP -= dmg;
     f.totalPlayerHits++;
     f.totalPlayerDmg += dmg;
+    if(f.punchTypeCounts && f.punchTypeCounts[type] !== undefined) f.punchTypeCounts[type]++;
     f.oppHitAnim = 0.3;
     f.shakeAmount = Math.min(dmg / 3, 8);
     f.flashAmount = 0.3;
@@ -2231,6 +2233,7 @@ function updateFight(dt) {
       f.phase = 'rest';
       f.restTimer = 10;
       $('restScreen').classList.remove('hidden');
+      showRestTip(f);
       playBell();
       return;
     }
@@ -2275,6 +2278,25 @@ function updateFight(dt) {
   }
 }
 
+const REST_TIPS = [
+  '\u{1F94A} 잡을 더 활용해보세요. 빠른 잡으로 거리를 유지하면 상대가 접근하기 어렵습니다.',
+  '\u{1F6E1}️ 가드 후 반격을 시도해보세요. 블록 직후가 카운터 찬스입니다.',
+  '⚡ 잡-크로스 콤보를 연습해보세요. 가장 기본적이면서 효과적인 콤보입니다.',
+  '\u{1F3C3} 스태미나 관리가 중요합니다. 스태미나가 낮을 때는 방어에 집중하세요.',
+  '\u{1F3AF} 훅과 어퍼캿은 데미지가 높지만 스태미나 소모도 큽니다.',
+  '\u{1F4A8} 슬립과 덕을 활용하면 피해 없이 공격을 피할 수 있습니다.',
+  '\u{1F4AA} 몸통 공격을 섬어보세요. 상대가 하이가드를 올릴 때 보디샷이 효과적입니다.'
+];
+
+function showRestTip(f) {
+  var tip = $('restTip');
+  if(!tip) return;
+  var idx = (f.round - 1) % REST_TIPS.length;
+  var text = REST_TIPS[idx];
+  if(f.totalPlayerHits < f.totalOppHits) text = '⚠️ 피격이 많습니다. 가드와 회피를 더 적극적으로 활용해보세요.';
+  tip.textContent = text;
+}
+
 function endFight() {
   const f = currentFight;
   f.active = false;
@@ -2311,6 +2333,19 @@ function endFight() {
     playerDmg: Math.round(f.totalPlayerDmg),
     oppDmg: Math.round(f.totalOppDmg)
   });
+
+  // Pass session data to Training Hub
+  try {
+    const duration = Math.round(f.round * 3);
+    sessionStorage.setItem('boxingSessionResult', JSON.stringify({
+      punches: f.totalPlayerHits,
+      time: duration,
+      combos: f.comboCount || 0
+    }));
+    if(f.punchTypeCounts){
+      sessionStorage.setItem('boxingPunchTypes', JSON.stringify(f.punchTypeCounts));
+    }
+  } catch(e){}
 
   saveSave();
 
