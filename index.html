@@ -423,6 +423,139 @@ body{padding-bottom:80px}
   font-size:13px;
 }
 .empty-state .emoji{font-size:32px;margin-bottom:8px;display:block}
+
+/* Player Rank */
+.rank-badge{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:8px 20px;margin-top:14px;
+  background:var(--glass);border:2px solid var(--glass-border);
+  border-radius:50px;backdrop-filter:blur(10px);
+  transition:all 0.3s;
+}
+.rank-badge.bronze{border-color:#cd7f32;color:#cd7f32}
+.rank-badge.silver{border-color:#c0c0c0;color:#c0c0c0}
+.rank-badge.gold{border-color:#ffd700;color:#ffd700}
+.rank-badge.platinum{border-color:#4fc3f7;color:#4fc3f7}
+.rank-badge.diamond{border-color:#ce93d8;color:#ce93d8}
+.rank-badge.champion{border-color:var(--accent);color:var(--accent);animation:glow 2s ease-in-out infinite}
+.rank-icon{font-size:22px}
+.rank-name{font-size:14px;font-weight:800;letter-spacing:2px}
+.rank-progress{
+  width:200px;height:6px;background:var(--surface);border-radius:3px;
+  overflow:hidden;margin-top:8px;display:inline-block;
+}
+.rank-progress-fill{height:100%;border-radius:3px;transition:width 0.8s ease-out}
+
+/* Donut Chart */
+.donut-chart{position:relative;width:140px;height:140px;margin:0 auto}
+.donut-chart svg{transform:rotate(-90deg)}
+.donut-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  text-align:center;
+}
+.donut-center-val{font-size:20px;font-weight:900;color:var(--accent)}
+.donut-center-label{font-size:9px;color:var(--text-dim)}
+.punch-legend{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin-top:12px}
+.punch-legend-item{display:flex;align-items:center;gap:4px;font-size:11px;color:var(--text-dim)}
+.punch-legend-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* Tips Section */
+.tip-card{
+  background:linear-gradient(135deg,rgba(255,68,68,0.08),rgba(255,136,102,0.04));
+  border:1px solid rgba(255,68,68,0.15);
+  border-radius:var(--radius);
+  padding:20px;display:flex;gap:14px;align-items:flex-start;
+  transition:all 0.3s;cursor:pointer;
+}
+.tip-card:hover{border-color:rgba(255,68,68,0.3)}
+.tip-icon{font-size:28px;flex-shrink:0;margin-top:2px}
+.tip-content{flex:1}
+.tip-title{font-size:14px;font-weight:700;margin-bottom:4px}
+.tip-text{font-size:12px;color:var(--text-dim);line-height:1.6}
+.tip-nav{display:flex;gap:6px;justify-content:center;margin-top:10px}
+.tip-dot{width:6px;height:6px;border-radius:50%;background:var(--glass-border);cursor:pointer;transition:all 0.2s}
+.tip-dot.active{background:var(--accent);transform:scale(1.3)}
+
+/* Planner */
+.planner-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:6px}
+.planner-day{
+  padding:10px 4px;text-align:center;
+  background:var(--surface);border:1px solid var(--glass-border);
+  border-radius:10px;transition:all 0.2s;cursor:pointer;
+}
+.planner-day:hover{border-color:var(--accent)}
+.planner-day.today{border-color:var(--accent);background:var(--accent-soft)}
+.planner-day-name{font-size:9px;color:var(--text-muted);margin-bottom:4px;font-weight:600}
+.planner-day-icon{font-size:18px;margin-bottom:2px}
+.planner-day-type{font-size:8px;color:var(--text-dim);line-height:1.2}
+
+/* Breathing */
+.breathe-circle{
+  width:100px;height:100px;border-radius:50%;margin:10px auto;
+  border:3px solid var(--accent);
+  display:flex;align-items:center;justify-content:center;
+  font-size:13px;font-weight:700;color:var(--accent);
+  transition:all 4s ease-in-out;
+}
+.breathe-circle.inhale{transform:scale(1.4);background:var(--accent-soft)}
+.breathe-circle.exhale{transform:scale(1);background:transparent}
+
+/* Monthly Heatmap */
+.heatmap-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px}
+.heatmap-cell{
+  aspect-ratio:1;border-radius:3px;
+  background:var(--surface);
+  transition:all 0.2s;position:relative;
+}
+.heatmap-cell.l1{background:rgba(255,68,68,0.15)}
+.heatmap-cell.l2{background:rgba(255,68,68,0.3)}
+.heatmap-cell.l3{background:rgba(255,68,68,0.5)}
+.heatmap-cell.l4{background:rgba(255,68,68,0.75)}
+.heatmap-label{font-size:8px;color:var(--text-muted);text-align:center;padding:2px 0}
+
+/* Export Button */
+.export-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:10px 20px;margin:8px 4px;
+  background:var(--glass);border:1px solid var(--glass-border);
+  border-radius:10px;color:var(--text-dim);
+  font-size:13px;cursor:pointer;transition:all 0.2s;
+}
+.export-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Toast */
+.toast-container{
+  position:fixed;top:60px;right:16px;z-index:999;
+  display:flex;flex-direction:column;gap:8px;pointer-events:none;
+}
+.toast{
+  padding:12px 18px;background:var(--bg);
+  border:1px solid var(--accent);border-radius:12px;
+  color:var(--text);font-size:13px;font-weight:600;
+  backdrop-filter:blur(10px);
+  animation:slideUp 0.3s ease-out;
+  pointer-events:auto;
+  box-shadow:0 4px 20px rgba(0,0,0,0.3);
+}
+
+/* Punch Goal Ring */
+.punch-ring{
+  width:120px;height:120px;margin:0 auto;position:relative;
+}
+.punch-ring svg{transform:rotate(-90deg)}
+.punch-ring-text{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  text-align:center;
+}
+.punch-ring-value{font-size:24px;font-weight:900;color:var(--orange)}
+.punch-ring-label{font-size:10px;color:var(--text-dim)}
+
+@media(max-width:768px){
+  .planner-grid{gap:4px}
+  .planner-day{padding:8px 2px}
+  .planner-day-icon{font-size:14px}
+  .heatmap-grid{gap:2px}
+}
 </style>
 </head>
 <body>
@@ -474,6 +607,13 @@ body{padding-bottom:80px}
   <h1 class="hero-title">Boxing Trainer Pro</h1>
   <p class="hero-sub">3D AI &#48373;&#49905; &#53944;&#47112;&#51060;&#45320;</p>
   <a href="boxing-trainer-v5.html" class="hero-btn" id="startBtn">&#129354; &#54984;&#47144; &#49884;&#51089;</a>
+  <div id="rankBadge" class="rank-badge bronze" style="display:none">
+    <span class="rank-icon" id="rankIcon">&#129351;</span>
+    <span class="rank-name" id="rankName">BRONZE</span>
+  </div>
+  <div class="rank-progress" id="rankProgressWrap" style="display:none">
+    <div class="rank-progress-fill" id="rankProgressFill" style="width:0%;background:var(--accent)"></div>
+  </div>
 </section>
 
 <!-- Streak Section -->
@@ -590,6 +730,102 @@ body{padding-bottom:80px}
     <div class="badge-grid" id="badgeGrid"></div>
   </section>
 
+  <!-- Calorie + Punch Goal Row -->
+  <section class="section">
+    <div class="grid-2">
+      <!-- Punch Goal Ring -->
+      <div class="card">
+        <h3 class="section-title"><span class="emoji">&#128074;</span> &#51068;&#51068; &#54144;&#52824; &#47785;&#54364;</h3>
+        <div class="punch-ring">
+          <svg width="120" height="120" viewBox="0 0 120 120">
+            <circle cx="60" cy="60" r="52" fill="none" stroke="var(--glass-border)" stroke-width="8"/>
+            <circle cx="60" cy="60" r="52" fill="none" stroke="var(--orange)" stroke-width="8"
+              stroke-dasharray="327" stroke-dashoffset="327" stroke-linecap="round" id="punchArc"/>
+          </svg>
+          <div class="punch-ring-text">
+            <div class="punch-ring-value" id="todayPunches">0</div>
+            <div class="punch-ring-label">&#54144;&#52824; &#50724;&#45720;</div>
+          </div>
+        </div>
+        <div style="text-align:center;margin-top:10px;font-size:11px;color:var(--text-muted)">
+          &#47785;&#54364;: <span id="punchGoal">500</span> &#54924;
+        </div>
+      </div>
+      <!-- Punch Type Breakdown -->
+      <div class="card">
+        <h3 class="section-title"><span class="emoji">&#128200;</span> &#54144;&#52824; &#48516;&#49437;</h3>
+        <div class="donut-chart" id="punchDonut">
+          <svg width="140" height="140" viewBox="0 0 140 140">
+            <circle cx="70" cy="70" r="55" fill="none" stroke="var(--glass-border)" stroke-width="16"/>
+            <circle cx="70" cy="70" r="55" fill="none" stroke="var(--accent)" stroke-width="16"
+              stroke-dasharray="0 346" id="donutJab"/>
+            <circle cx="70" cy="70" r="55" fill="none" stroke="var(--orange)" stroke-width="16"
+              stroke-dasharray="0 346" id="donutCross"/>
+            <circle cx="70" cy="70" r="55" fill="none" stroke="var(--blue)" stroke-width="16"
+              stroke-dasharray="0 346" id="donutHook"/>
+            <circle cx="70" cy="70" r="55" fill="none" stroke="var(--purple)" stroke-width="16"
+              stroke-dasharray="0 346" id="donutUppercut"/>
+          </svg>
+          <div class="donut-center">
+            <div class="donut-center-val" id="donutTotal">0</div>
+            <div class="donut-center-label">&#52509;&#54144;&#52824;</div>
+          </div>
+        </div>
+        <div class="punch-legend">
+          <span class="punch-legend-item"><span class="punch-legend-dot" style="background:var(--accent)"></span>&#51105;</span>
+          <span class="punch-legend-item"><span class="punch-legend-dot" style="background:var(--orange)"></span>&#53356;&#47196;&#49828;</span>
+          <span class="punch-legend-item"><span class="punch-legend-dot" style="background:var(--blue)"></span>&#54985;</span>
+          <span class="punch-legend-item"><span class="punch-legend-dot" style="background:var(--purple)"></span>&#50612;&#54140;</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Monthly Heatmap -->
+  <section class="section">
+    <h2 class="section-title"><span class="emoji">&#128293;</span> &#50900;&#44036; &#54984;&#47144; &#55176;&#53944;&#47589;</h2>
+    <div class="card">
+      <div style="display:flex;gap:4px;margin-bottom:6px">
+        <span class="heatmap-label" style="flex:1;text-align:center">&#51068;</span>
+        <span class="heatmap-label" style="flex:1;text-align:center">&#50900;</span>
+        <span class="heatmap-label" style="flex:1;text-align:center">&#54868;</span>
+        <span class="heatmap-label" style="flex:1;text-align:center">&#49688;</span>
+        <span class="heatmap-label" style="flex:1;text-align:center">&#47785;</span>
+        <span class="heatmap-label" style="flex:1;text-align:center">&#44552;</span>
+        <span class="heatmap-label" style="flex:1;text-align:center">&#53664;</span>
+      </div>
+      <div class="heatmap-grid" id="heatmapGrid"></div>
+      <div style="display:flex;align-items:center;justify-content:flex-end;gap:4px;margin-top:8px;font-size:9px;color:var(--text-muted)">
+        &#51201;&#51020; <span class="heatmap-cell" style="width:12px;height:12px;display:inline-block"></span>
+        <span class="heatmap-cell l1" style="width:12px;height:12px;display:inline-block"></span>
+        <span class="heatmap-cell l2" style="width:12px;height:12px;display:inline-block"></span>
+        <span class="heatmap-cell l3" style="width:12px;height:12px;display:inline-block"></span>
+        <span class="heatmap-cell l4" style="width:12px;height:12px;display:inline-block"></span> &#47566;&#51020;
+      </div>
+    </div>
+  </section>
+
+  <!-- Weekly Planner -->
+  <section class="section">
+    <h2 class="section-title"><span class="emoji">&#128197;</span> &#51452;&#44036; &#54984;&#47144; &#54540;&#47000;&#45320;</h2>
+    <div class="card">
+      <div class="planner-grid" id="plannerGrid"></div>
+    </div>
+  </section>
+
+  <!-- Training Tips -->
+  <section class="section">
+    <h2 class="section-title"><span class="emoji">&#128161;</span> &#54984;&#47144; &#54021;</h2>
+    <div class="tip-card" id="tipCard">
+      <span class="tip-icon" id="tipIcon">&#129354;</span>
+      <div class="tip-content">
+        <div class="tip-title" id="tipTitle">&#47196;&#46377; &#51473;...</div>
+        <div class="tip-text" id="tipText"></div>
+      </div>
+    </div>
+    <div class="tip-nav" id="tipNav"></div>
+  </section>
+
   <!-- Session History -->
   <section class="section">
     <h2 class="section-title"><span class="emoji">&#128221;</span> &#49464;&#49496; &#44592;&#47197;</h2>
@@ -602,10 +838,17 @@ body{padding-bottom:80px}
 
 </div>
 
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
 <!-- Footer -->
 <div class="footer">
-  <div class="footer-ver">Boxing Trainer Pro v6.0 | PWA Enabled</div>
-  <button class="install-btn hidden" id="installBtn">&#128229; &#50545; &#49444;&#52824;&#54616;&#44592;</button>
+  <div class="footer-ver">Boxing Trainer Pro v7.0 | PWA Enabled</div>
+  <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap">
+    <button class="export-btn" id="exportBtn">&#128230; &#45936;&#51060;&#53552; &#45236;&#48372;&#45236;&#44592;</button>
+    <button class="export-btn" id="resetBtn">&#128260; &#52488;&#44592;&#54868;</button>
+    <button class="install-btn hidden" id="installBtn">&#128229; &#50545; &#49444;&#52824;&#54616;&#44592;</button>
+  </div>
 </div>
 
 <!-- Settings Overlay -->
@@ -661,6 +904,7 @@ function getDefaultData(){
     totalTime: 0,
     totalCombos: 0,
     totalCalories: 0,
+    punchTypes: { jab: 0, cross: 0, hook: 0, uppercut: 0 },
     achievements: {},
     settings: {
       sound: true,
@@ -726,24 +970,48 @@ function checkReturnFromTraining(){
 
 function recordSession(punches, timeMin, combos){
   const calories = Math.round(punches * 0.5 + combos * 2 + timeMin * 8);
+
+  // Punch type breakdown from sessionStorage
+  let punchBreakdown = null;
+  try {
+    const raw = sessionStorage.getItem('boxingPunchTypes');
+    if(raw){ punchBreakdown = JSON.parse(raw); sessionStorage.removeItem('boxingPunchTypes'); }
+  } catch(e){}
+
   const session = {
     date: new Date().toISOString(),
     punches: punches,
     duration: timeMin,
     combos: combos,
     calories: calories,
-    score: Math.round(punches + combos * 5 + timeMin * 3)
+    score: Math.round(punches + combos * 5 + timeMin * 3),
+    punchTypes: punchBreakdown || null
   };
 
   appData.sessions.unshift(session);
-  if(appData.sessions.length > 50) appData.sessions = appData.sessions.slice(0, 50);
+  if(appData.sessions.length > 100) appData.sessions = appData.sessions.slice(0, 100);
 
   appData.totalPunches += punches;
   appData.totalTime += timeMin;
   appData.totalCombos += combos;
   appData.totalCalories += calories;
 
-  // Streak
+  // Update punch type totals
+  if(!appData.punchTypes) appData.punchTypes = { jab: 0, cross: 0, hook: 0, uppercut: 0 };
+  if(punchBreakdown){
+    appData.punchTypes.jab += (punchBreakdown.jab || 0);
+    appData.punchTypes.cross += (punchBreakdown.cross || 0);
+    appData.punchTypes.hook += (punchBreakdown.hook || 0);
+    appData.punchTypes.uppercut += (punchBreakdown.uppercut || 0);
+  } else {
+    // Estimate distribution if no breakdown available
+    const est = Math.round(punches / 4);
+    appData.punchTypes.jab += est;
+    appData.punchTypes.cross += est;
+    appData.punchTypes.hook += Math.round(punches / 6);
+    appData.punchTypes.uppercut += Math.round(punches / 8);
+  }
+
   updateStreak();
   checkAchievements(session);
   saveData(appData);
@@ -775,26 +1043,42 @@ function updateStreak(){
 
 // ===== ACHIEVEMENTS =====
 const ACHIEVEMENTS = [
-  {id:'first_punch', name:'첫 펀치', icon:'🥊', desc:'첫 번째 펀치를 날리다', check: d => d.totalPunches >= 1},
-  {id:'combo_100', name:'100콤보', icon:'💥', desc:'콤보 100회 달성', check: d => d.totalCombos >= 100},
-  {id:'punch_1000', name:'1000펀치', icon:'👊', desc:'펀치 1000회 달성', check: d => d.totalPunches >= 1000},
-  {id:'streak_7', name:'7일연속', icon:'🔥', desc:'7일 연속 훈련', check: d => d.bestStreak >= 7},
-  {id:'streak_30', name:'30일연속', icon:'🌟', desc:'30일 연속 훈련', check: d => d.bestStreak >= 30},
-  {id:'calorie_1000', name:'칼로리버너', icon:'🔥', desc:'총 1000kcal 소모', check: d => d.totalCalories >= 1000},
-  {id:'master', name:'마스터', icon:'🏆', desc:'모든 콤보 마스터', check: d => d.totalCombos >= 500},
-  {id:'dawn_warrior', name:'새벽전사', icon:'🌅', desc:'새벽 6시 이전 훈련', check: d => {
+  {id:'first_punch', name:'&#52395; &#54144;&#52824;', icon:'&#129354;', desc:'&#52395; &#48264;&#51704; &#54144;&#52824;&#47484; &#45216;&#47532;&#45796;', check: d => d.totalPunches >= 1},
+  {id:'combo_100', name:'100&#53092;&#48372;', icon:'&#128165;', desc:'&#53092;&#48372; 100&#54924; &#45804;&#49457;', check: d => d.totalCombos >= 100},
+  {id:'punch_1000', name:'1000&#54144;&#52824;', icon:'&#128074;', desc:'&#54144;&#52824; 1000&#54924; &#45804;&#49457;', check: d => d.totalPunches >= 1000},
+  {id:'streak_7', name:'7&#51068;&#50672;&#49549;', icon:'&#128293;', desc:'7&#51068; &#50672;&#49549; &#54984;&#47144;', check: d => d.bestStreak >= 7},
+  {id:'streak_30', name:'30&#51068;&#50672;&#49549;', icon:'&#11088;', desc:'30&#51068; &#50672;&#49549; &#54984;&#47144;', check: d => d.bestStreak >= 30},
+  {id:'calorie_1000', name:'&#52860;&#47196;&#47532;&#48260;&#45320;', icon:'&#128293;', desc:'&#52509; 1000kcal &#49548;&#47784;', check: d => d.totalCalories >= 1000},
+  {id:'master', name:'&#47560;&#49828;&#53552;', icon:'&#127942;', desc:'&#47784;&#46304; &#53092;&#48372; &#47560;&#49828;&#53552;', check: d => d.totalCombos >= 500},
+  {id:'dawn_warrior', name:'&#49352;&#48317;&#51204;&#49324;', icon:'&#127749;', desc:'&#49352;&#48317; 6&#49884; &#51060;&#51204; &#54984;&#47144;', check: d => {
     return d.sessions.some(s => new Date(s.date).getHours() < 6);
   }},
-  {id:'night_warrior', name:'야간전사', icon:'🌙', desc:'밤 10시 이후 훈련', check: d => {
+  {id:'night_warrior', name:'&#50556;&#44036;&#51204;&#49324;', icon:'&#127769;', desc:'&#48164; 10&#49884; &#51060;&#54980; &#54984;&#47144;', check: d => {
     return d.sessions.some(s => new Date(s.date).getHours() >= 22);
   }},
-  {id:'marathon', name:'마라톤', icon:'⏱️', desc:'30분 이상 세션', check: d => {
+  {id:'marathon', name:'&#47560;&#46972;&#53668;', icon:'&#9201;&#65039;', desc:'30&#48516; &#51060;&#49345; &#49464;&#49496;', check: d => {
     return d.sessions.some(s => s.duration >= 30);
   }},
-  {id:'speedster', name:'스피드스터', icon:'⚡', desc:'3분에 200+ 펀치', check: d => {
+  {id:'speedster', name:'&#49828;&#54588;&#46300;&#49828;&#53552;', icon:'&#9889;', desc:'3&#48516;&#50640; 200+ &#54144;&#52824;', check: d => {
     return d.sessions.some(s => s.duration <= 3 && s.punches >= 200);
   }},
-  {id:'legend', name:'레전드', icon:'👑', desc:'총 10000 펀치 달성', check: d => d.totalPunches >= 10000}
+  {id:'legend', name:'&#47112;&#51204;&#46300;', icon:'&#128081;', desc:'&#52509; 10000 &#54144;&#52824; &#45804;&#49457;', check: d => d.totalPunches >= 10000},
+  {id:'punch_5000', name:'5000&#54144;&#52824;', icon:'&#128170;', desc:'&#54144;&#52824; 5000&#54924; &#45804;&#49457;', check: d => d.totalPunches >= 5000},
+  {id:'combo_500', name:'500&#53092;&#48372;', icon:'&#127775;', desc:'&#53092;&#48372; 500&#54924; &#45804;&#49457;', check: d => d.totalCombos >= 500},
+  {id:'combo_1000', name:'1000&#53092;&#48372;', icon:'&#128171;', desc:'&#53092;&#48372; 1000&#54924; &#45804;&#49457;', check: d => d.totalCombos >= 1000},
+  {id:'calorie_5000', name:'5K&#52860;&#47196;&#47532;', icon:'&#128367;&#65039;', desc:'&#52509; 5000kcal &#49548;&#47784;', check: d => d.totalCalories >= 5000},
+  {id:'calorie_10k', name:'10K&#52860;&#47196;&#47532;', icon:'&#9763;&#65039;', desc:'&#52509; 10000kcal &#49548;&#47784;', check: d => d.totalCalories >= 10000},
+  {id:'streak_14', name:'2&#51452;&#50672;&#49549;', icon:'&#128170;', desc:'14&#51068; &#50672;&#49549; &#54984;&#47144;', check: d => d.bestStreak >= 14},
+  {id:'streak_100', name:'100&#51068;&#50672;&#49549;', icon:'&#127941;', desc:'100&#51068; &#50672;&#49549; &#54984;&#47144;', check: d => d.bestStreak >= 100},
+  {id:'session_10', name:'10&#54924;&#54984;&#47144;', icon:'&#127947;&#65039;', desc:'&#52509; 10&#54924; &#49464;&#49496; &#50756;&#47308;', check: d => d.sessions.length >= 10},
+  {id:'session_50', name:'50&#54924;&#54984;&#47144;', icon:'&#128171;', desc:'&#52509; 50&#54924; &#49464;&#49496; &#50756;&#47308;', check: d => d.sessions.length >= 50},
+  {id:'session_100', name:'100&#54924;&#54984;&#47144;', icon:'&#129351;', desc:'&#52509; 100&#54924; &#49464;&#49496; &#50756;&#47308;', check: d => d.sessions.length >= 100},
+  {id:'weekend_warrior', name:'&#51452;&#47568;&#51204;&#49324;', icon:'&#127796;', desc:'&#53664;&#50836;&#51068;/&#51068;&#50836;&#51068; &#54984;&#47144;', check: d => {
+    return d.sessions.some(s => { const day = new Date(s.date).getDay(); return day === 0 || day === 6; });
+  }},
+  {id:'early_bird', name:'&#50500;&#52840;&#54805;', icon:'&#127774;', desc:'&#50724;&#51204; 6-9&#49884; &#54984;&#47144;', check: d => {
+    return d.sessions.some(s => { const h = new Date(s.date).getHours(); return h >= 6 && h < 9; });
+  }}
 ];
 
 function checkAchievements(session){
@@ -814,6 +1098,12 @@ function renderAll(){
   renderBadges();
   renderHistory();
   renderCalories();
+  renderRank();
+  renderPunchGoal();
+  renderPunchDonut();
+  renderHeatmap();
+  renderPlanner();
+  renderTip();
   applyTheme();
   applySettings();
 }
@@ -911,7 +1201,7 @@ function renderHistory(){
   const sessions = appData.sessions.slice(0, 10);
 
   if(sessions.length === 0){
-    list.innerHTML = '<div class="empty-state"><span class="emoji">&#128064;</span>아직 훈련 기록이 없습니다.<br>첫 훈련을 시작해보세요!</div>';
+    list.innerHTML = '<div class="empty-state"><span class="emoji">&#128064;</span>아직 훈련 기록이 없습니다.<br>첨 훈련을 시작해보세요!</div>';
     return;
   }
 
@@ -945,6 +1235,234 @@ function renderCalories(){
   const circumference = 2 * Math.PI * 52; // r=52
   const offset = circumference * (1 - pct);
   document.getElementById('calorieArc').style.strokeDashoffset = offset;
+}
+
+// ===== PLAYER RANK =====
+const RANKS = [
+  {name:'BRONZE', icon:'&#129351;', cls:'bronze', min:0, max:999},
+  {name:'SILVER', icon:'&#129352;', cls:'silver', min:1000, max:4999},
+  {name:'GOLD', icon:'&#129353;', cls:'gold', min:5000, max:9999},
+  {name:'PLATINUM', icon:'&#128142;', cls:'platinum', min:10000, max:24999},
+  {name:'DIAMOND', icon:'&#128142;', cls:'diamond', min:25000, max:49999},
+  {name:'CHAMPION', icon:'&#127942;', cls:'champion', min:50000, max:Infinity}
+];
+
+function getRank(totalPunches){
+  for(let i = RANKS.length - 1; i >= 0; i--){
+    if(totalPunches >= RANKS[i].min) return {rank: RANKS[i], index: i};
+  }
+  return {rank: RANKS[0], index: 0};
+}
+
+function renderRank(){
+  const {rank, index} = getRank(appData.totalPunches);
+  const badge = document.getElementById('rankBadge');
+  const icon = document.getElementById('rankIcon');
+  const name = document.getElementById('rankName');
+  const progressWrap = document.getElementById('rankProgressWrap');
+  const progressFill = document.getElementById('rankProgressFill');
+
+  badge.style.display = 'inline-flex';
+  progressWrap.style.display = 'inline-block';
+  badge.className = 'rank-badge ' + rank.cls;
+  icon.innerHTML = rank.icon;
+  name.textContent = rank.name;
+
+  if(index < RANKS.length - 1){
+    const nextRank = RANKS[index + 1];
+    const progress = (appData.totalPunches - rank.min) / (nextRank.min - rank.min);
+    progressFill.style.width = Math.min(progress * 100, 100) + '%';
+    const colors = {bronze:'#cd7f32',silver:'#c0c0c0',gold:'#ffd700',platinum:'#4fc3f7',diamond:'#ce93d8',champion:'var(--accent)'};
+    progressFill.style.background = colors[rank.cls] || 'var(--accent)';
+  } else {
+    progressFill.style.width = '100%';
+    progressFill.style.background = 'var(--accent)';
+  }
+}
+
+// ===== PUNCH GOAL =====
+function renderPunchGoal(){
+  const todaySessions = appData.sessions.filter(s => new Date(s.date).toDateString() === new Date().toDateString());
+  const todayP = todaySessions.reduce((sum, s) => sum + s.punches, 0);
+  const goal = appData.settings.goalPunches || 500;
+
+  document.getElementById('todayPunches').textContent = todayP;
+  document.getElementById('punchGoal').textContent = goal;
+
+  const pct = Math.min(todayP / goal, 1);
+  const circumference = 2 * Math.PI * 52;
+  const offset = circumference * (1 - pct);
+  document.getElementById('punchArc').style.strokeDashoffset = offset;
+}
+
+// ===== PUNCH DONUT CHART =====
+function renderPunchDonut(){
+  if(!appData.punchTypes) appData.punchTypes = {jab:0, cross:0, hook:0, uppercut:0};
+  const pt = appData.punchTypes;
+  const total = pt.jab + pt.cross + pt.hook + pt.uppercut;
+  document.getElementById('donutTotal').textContent = formatNum(total);
+
+  if(total === 0) return;
+
+  const circumference = 2 * Math.PI * 55;
+  const values = [pt.jab, pt.cross, pt.hook, pt.uppercut];
+  const ids = ['donutJab','donutCross','donutHook','donutUppercut'];
+  let offset = 0;
+
+  for(let i = 0; i < 4; i++){
+    const pct = values[i] / total;
+    const len = circumference * pct;
+    const el = document.getElementById(ids[i]);
+    el.setAttribute('stroke-dasharray', len + ' ' + (circumference - len));
+    el.setAttribute('stroke-dashoffset', -offset);
+    offset += len;
+  }
+}
+
+// ===== MONTHLY HEATMAP =====
+function renderHeatmap(){
+  const grid = document.getElementById('heatmapGrid');
+  grid.innerHTML = '';
+
+  const today = new Date();
+  const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+  const firstDayOfWeek = startOfMonth.getDay();
+  const daysInMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0).getDate();
+
+  // Empty cells before month start
+  for(let i = 0; i < firstDayOfWeek; i++){
+    const cell = document.createElement('div');
+    cell.className = 'heatmap-cell';
+    cell.style.opacity = '0.2';
+    grid.appendChild(cell);
+  }
+
+  for(let d = 1; d <= daysInMonth; d++){
+    const date = new Date(today.getFullYear(), today.getMonth(), d);
+    const dateStr = date.toDateString();
+    const daySessions = appData.sessions.filter(s => new Date(s.date).toDateString() === dateStr);
+    const totalP = daySessions.reduce((sum, s) => sum + s.punches, 0);
+
+    const cell = document.createElement('div');
+    let lvl = '';
+    if(totalP > 0 && totalP < 100) lvl = 'l1';
+    else if(totalP >= 100 && totalP < 300) lvl = 'l2';
+    else if(totalP >= 300 && totalP < 500) lvl = 'l3';
+    else if(totalP >= 500) lvl = 'l4';
+    cell.className = 'heatmap-cell ' + lvl;
+    cell.title = d + '&#51068;: ' + totalP + '&#54144;&#52824;';
+    grid.appendChild(cell);
+  }
+}
+
+// ===== WEEKLY PLANNER =====
+const PLAN_SCHEDULE = [
+  {day:'&#51068;', icon:'&#128716;', type:'&#55092;&#49885;', desc:'&#54924;&#48373; &#48143; &#49828;&#53944;&#47112;&#52845;'},
+  {day:'&#50900;', icon:'&#129354;', type:'&#51105;+&#53356;&#47196;&#49828;', desc:'&#44592;&#48376;&#44592; &#54984;&#47144;'},
+  {day:'&#54868;', icon:'&#128170;', type:'&#54028;&#50892;', desc:'&#54756;&#48708;&#48177;+&#50612;&#54140;'},
+  {day:'&#49688;', icon:'&#127939;', type:'&#52404;&#47141;', desc:'&#51460;&#45335;&#44592;+&#49828;&#54588;&#46300;'},
+  {day:'&#47785;', icon:'&#128165;', type:'&#53092;&#48372;', desc:'&#53092;&#48708;&#45348;&#51060;&#49496;'},
+  {day:'&#44552;', icon:'&#129340;', type:'&#49828;&#54028;&#47553;', desc:'AI &#45824;&#51204;'},
+  {day:'&#53664;', icon:'&#127775;', type:'&#51333;&#54633;', desc:'&#51088;&#50976; &#54984;&#47144;'}
+];
+
+function renderPlanner(){
+  const grid = document.getElementById('plannerGrid');
+  grid.innerHTML = '';
+  const todayIdx = new Date().getDay();
+
+  PLAN_SCHEDULE.forEach((plan, i) => {
+    const el = document.createElement('div');
+    el.className = 'planner-day' + (i === todayIdx ? ' today' : '');
+    el.innerHTML = '<div class="planner-day-name">' + plan.day + '</div>' +
+      '<div class="planner-day-icon">' + plan.icon + '</div>' +
+      '<div class="planner-day-type">' + plan.type + '</div>';
+    el.title = plan.desc;
+    grid.appendChild(el);
+  });
+}
+
+// ===== TRAINING TIPS =====
+const TIPS = [
+  {icon:'&#129354;', title:'&#51105; &#44592;&#48376;&#44592;', text:'&#51105;&#51008; &#48373;&#49905;&#51032; &#44592;&#48376;&#51077;&#45768;&#45796;. &#50612;&#44648;&#47484; &#45230;&#44172; &#50976;&#51648;&#54616;&#44256; &#49552;&#51012; &#48736;&#47476;&#44172; &#48824;&#50612; &#50896;&#47000; &#50948;&#52824;&#47196; &#46028;&#47140;&#48372;&#49464;&#50836;.'},
+  {icon:'&#128170;', title:'&#54028;&#50892; &#54144;&#52824;', text:'&#54144;&#52824;&#51032; &#54028;&#50892;&#51008; &#54036;&#51060; &#50500;&#45772; &#50628;&#45929;&#51060;&#50640;&#49436; &#45208;&#50741;&#45768;&#45796;. &#48156;&#50640;&#49436; &#49884;&#51089;&#54644; &#50644;&#45929;&#51060;&#47484; &#54924;&#51204;&#49884;&#53412;&#49464;&#50836;.'},
+  {icon:'&#128737;&#65039;', title:'&#48169;&#50612;&#51032; &#51473;&#50836;&#49457;', text:'&#44032;&#46300;&#47484; &#50732;&#47532;&#44256; &#53556;&#51012; &#45817;&#44592;&#49464;&#50836;. &#49836;&#47549;&#44284; &#45909;&#51004;&#47196; &#49345;&#45824;&#51032; &#44277;&#44201;&#51012; &#54588;&#54624; &#49688; &#51080;&#49845;&#45768;&#45796;.'},
+  {icon:'&#128293;', title:'&#50892;&#48141;&#50629;', text:'&#54984;&#47144; &#51204; 5&#48516;&#44036; &#44032;&#48316;&#50868; &#49828;&#53944;&#47112;&#52845;&#44284; &#49100;&#46497;&#51012; &#54644;&#51452;&#49464;&#50836;. &#48512;&#49345; &#50696;&#48169;&#50640; &#54596;&#49688;&#51077;&#45768;&#45796;.'},
+  {icon:'&#128167;', title:'&#49688;&#48516; &#48372;&#52649;', text:'&#54984;&#47144; &#51473; &#52649;&#48516;&#54620; &#49688;&#48516;&#51012; &#49453;&#52712;&#54616;&#49464;&#50836;. &#46972;&#50868;&#46300; &#49324;&#51060; &#49548;&#47049;&#50472; &#47560;&#49884;&#45716; &#44163;&#51012; &#52628;&#52380;&#54633;&#45768;&#45796;.'},
+  {icon:'&#9889;', title:'&#53092;&#48372; &#50672;&#49845;', text:'1-2(&#51105;-&#53356;&#47196;&#49828;)&#45716; &#44032;&#51109; &#44592;&#48376;&#51201;&#51064; &#53092;&#48372;&#51077;&#45768;&#45796;. &#47676;&#51200; &#52380;&#52380;&#55176; &#50672;&#49845;&#54620; &#54980; &#49549;&#46020;&#47484; &#45458;&#51060;&#49464;&#50836;.'},
+  {icon:'&#127919;', title:'&#51221;&#54869;&#46020; &#50864;&#49440;', text:'&#49549;&#46020;&#48372;&#45796; &#51221;&#54869;&#54620; &#54268;&#51060; &#51473;&#50836;&#54633;&#45768;&#45796;. &#50732;&#48148;&#47480; &#51088;&#49464;&#47196; &#52380;&#52380;&#55176; &#49884;&#51089;&#54616;&#49464;&#50836;.'},
+  {icon:'&#127939;', title:'&#54411;&#50892;&#53356;', text:'&#48373;&#49905;&#50640;&#49436; &#48156;&#45459;&#47548;&#51008; &#47588;&#50864; &#51473;&#50836;&#54633;&#45768;&#45796;. &#50526;&#48156;-&#46263;&#48156;&#51012; &#48264;&#44040;&#50500; &#44032;&#47728; &#51060;&#46041;&#54644;&#48372;&#49464;&#50836;.'}
+];
+
+let currentTip = 0;
+
+function renderTip(){
+  const tip = TIPS[currentTip];
+  document.getElementById('tipIcon').innerHTML = tip.icon;
+  document.getElementById('tipTitle').textContent = tip.title;
+  document.getElementById('tipText').textContent = tip.text;
+
+  const nav = document.getElementById('tipNav');
+  nav.innerHTML = '';
+  TIPS.forEach((_, i) => {
+    const dot = document.createElement('span');
+    dot.className = 'tip-dot' + (i === currentTip ? ' active' : '');
+    dot.onclick = function(e){ e.stopPropagation(); currentTip = i; renderTip(); };
+    nav.appendChild(dot);
+  });
+}
+
+function nextTip(){
+  currentTip = (currentTip + 1) % TIPS.length;
+  renderTip();
+}
+
+// ===== DATA EXPORT =====
+function exportData(){
+  const exportObj = {
+    exportDate: new Date().toISOString(),
+    version: '7.0',
+    totalPunches: appData.totalPunches,
+    totalTime: appData.totalTime,
+    totalCombos: appData.totalCombos,
+    totalCalories: appData.totalCalories,
+    streak: appData.streak,
+    bestStreak: appData.bestStreak,
+    punchTypes: appData.punchTypes,
+    sessionsCount: appData.sessions.length,
+    achievementsUnlocked: Object.keys(appData.achievements).length,
+    recentSessions: appData.sessions.slice(0, 10)
+  };
+
+  const text = JSON.stringify(exportObj, null, 2);
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(text).then(function(){
+      showToast('&#128203; &#45936;&#51060;&#53552;&#44032; &#53364;&#47549;&#48372;&#46300;&#50640; &#48373;&#49324;&#46104;&#50632;&#49845;&#45768;&#45796;!');
+    }).catch(function(){
+      showToast('&#45936;&#51060;&#53552; &#45236;&#48372;&#45236;&#44592; &#49892;&#54056;');
+    });
+  } else {
+    showToast('&#48652;&#46972;&#50864;&#51200;&#44032; &#53364;&#47549;&#48372;&#46300;&#47484; &#51648;&#50896;&#54616;&#51648; &#50506;&#49845;&#45768;&#45796;');
+  }
+}
+
+function resetAllData(){
+  if(confirm('&#47784;&#46304; &#54984;&#47144; &#45936;&#51060;&#53552;&#47484; &#52488;&#44592;&#54868;&#54616;&#49884;&#44192;&#49845;&#45768;&#44620;?')){
+    localStorage.removeItem(STORAGE_KEY);
+    appData = getDefaultData();
+    renderAll();
+    showToast('&#128260; &#45936;&#51060;&#53552;&#44032; &#52488;&#44592;&#54868;&#46104;&#50632;&#49845;&#45768;&#45796;');
+  }
+}
+
+// ===== TOAST =====
+function showToast(msg){
+  const container = document.getElementById('toastContainer');
+  const toast = document.createElement('div');
+  toast.className = 'toast';
+  toast.innerHTML = msg;
+  container.appendChild(toast);
+  setTimeout(function(){ toast.remove(); }, 3000);
 }
 
 // ===== THEME =====
@@ -1157,6 +1675,13 @@ document.getElementById('vibrationToggle').addEventListener('click', function(){
 document.getElementById('settingsOverlay').addEventListener('click', function(e){
   if(e.target === this) closeSettings();
 });
+
+// Tip card click
+document.getElementById('tipCard').addEventListener('click', nextTip);
+
+// Export / Reset
+document.getElementById('exportBtn').addEventListener('click', exportData);
+document.getElementById('resetBtn').addEventListener('click', resetAllData);
 
 // ===== INIT =====
 checkReturnFromTraining();
