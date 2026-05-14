@@ -1,7 +1,7 @@
 {
   "name": "Boxing Trainer Pro",
   "short_name": "BoxingPro",
-  "description": "3D AI 복싱 트레이닝 앱 v7 - 랭크시스템, 24업적, 히트맵, 펀치분석, 훈련플래너",
+  "description": "3D AI 복싱 트레이닝 앱 v8 - 일일챌린지, 개인기록, 체형히트맵, 워밍업가이드, 공유카드, 테크닉도감, 랭크시스템, 24업적",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",

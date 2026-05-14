@@ -327,3 +327,91 @@ punch analytics are their biggest retention drivers.
 | FightCamp gap items resolved | - | 10/10 | 100% |
 
 ---
+
+## 2026-05-14 &mdash; Pass #8 (v8.0)
+
+### Stage 1. Benchmarking vs FightCamp / BOXX / Fitness Boxing
+
+v7 Training Hub was comprehensive (24 achievements, rank system, heatmap,
+punch donut, planner, BGM, data export) but still lacked key engagement
+features that FightCamp/BOXX ship:
+
+| Feature | FightCamp | BOXX | v7 (before) |
+| --- | --- | --- | --- |
+| Daily Challenge | YES | YES | **NO** |
+| Personal Records (PR) dashboard | YES | - | **NO** |
+| Body Zone targeting heatmap | YES | - | **NO** |
+| Warm-up / Cool-down guide | YES | YES | **NO** |
+| Shareable stats card (image) | YES | YES | **NO** |
+| Motivational quotes | YES | YES | Tips only |
+| Technique encyclopedia/library | YES | - | **NO** |
+| OG/Twitter SEO meta tags | YES | YES | **NO** |
+| Skip-to-content accessibility | YES | - | **NO** |
+| Keyboard shortcuts on Hub | - | - | **NO** |
+
+**Gap verdict**: v7 was strong on stats tracking but lacked daily engagement
+hooks, social sharing, warmup safety features, and discoverability (SEO).
+10/10 new gap items identified.
+
+### Stage 2. Full-team development
+
+**v8_patch.js: ~580 lines NEW self-contained module**
+
+**Frontend / UX**
+- Skip-to-content accessibility link (WCAG 2.1)
+- ARIA role/labels on all sections (section-title, icon-btn, container)
+- Keyboard shortcuts 6 keys (T/D/S/M/W/?) + helper overlay
+- Keyboard shortcut help button (bottom-right, hidden on mobile)
+- v8 section slideUp animation (0.5s ease-out)
+- Footer version v7.0 &rarr; v8.0 auto-update
+- Responsive: PR grid 2col, tech grid 2col, body zone column on mobile
+
+**Backend / Logic**
+- **Daily Challenge**: date-seed rotation of 14 challenges, progress bar + countdown timer + XP reward
+- **Personal Records (PR)**: best punches/combos/duration/calories/score per session with date
+- **Body Zone Heatmap**: punch-type analysis mapped to body zones (head/body/left/right) SVG silhouette
+- **Warm-up Guide**: 6-step warmup timer (neck/shoulder/arm/body/jump/shadow 3.5min total) with Web Audio API beep + completion cascade sound
+- **Share Card**: Canvas 600x380 stats card generation with download + clipboard copy
+- **Motivational Quotes**: 8 boxing quotes daily rotation (Ali, Mayweather, Tyson, Pacquiao, etc.)
+- **Technique Library**: 9 techniques with step-by-step guide (jab/cross/hook/uppercut/slip/roll/1-2/1-2-3/1-2-3-6), difficulty color coding, expandable detail + tip cards
+
+**SEO / Meta**
+- OG meta tags (title/description/type)
+- Twitter Card meta tags (card/title/description)
+- JSON-LD WebApplication schema (schema.org)
+
+**Audio Engine**
+- Warmup step beep (880Hz sine, 0.2s)
+- Warmup complete 3-note cascade (523/659/784 Hz)
+
+**Infrastructure**
+- sw.js v7 &rarr; v8: PRECACHE includes v8_patch.js
+- manifest.json: v8 description update
+
+### Stage 3. QA verification
+
+| Check | Result |
+| --- | --- |
+| JS syntax (node -c) | **PASS** |
+| External CDN violations | **0** |
+| Personal info exposure | **0** |
+| HTML tag balance | **BALANCED** |
+| File deletion | **0** |
+
+### Metrics
+
+| Metric | v7 | v8 | Delta |
+| --- | --- | --- | --- |
+| index.html lines | 1703 | 1705 | +2 |
+| v8_patch.js | - | ~580 lines | **NEW** |
+| sw.js cache | v7 | v8 | +1 |
+| New sections | 0 | 7 | +7 |
+| Techniques | 0 | 9 | +9 |
+| Daily challenges | 0 | 14 | +14 |
+| Quotes | 0 | 8 | +8 |
+| Keyboard shortcuts | 0 | 6 | +6 |
+| SEO meta tags | 0 | 7 | +7 |
+| Accessibility | 0 | 4 | +4 |
+| Gap resolved | - | 10/10 | 100% |
+
+---
