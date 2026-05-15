@@ -1,0 +1,6 @@
+﻿soldier
+Source: Three.js examples
+URL: https://threejs.org/examples/models/gltf/Soldier.glb
+License: CC-BY 4.0 (T. Choonyung) - via Three.js examples
+Description: Animated soldier - walk/run/idle baked
+Downloaded: 2026-05-15 13:51:56

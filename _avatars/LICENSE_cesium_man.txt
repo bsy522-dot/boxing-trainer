@@ -1,0 +1,6 @@
+﻿cesium_man
+Source: KhronosGroup glTF-Sample-Models
+URL: https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF-Binary/CesiumMan.glb
+License: CC-BY 4.0 (Cesium / Analytical Graphics Inc.)
+Description: Walking man with skinned animation - reference humanoid
+Downloaded: 2026-05-15 13:51:51

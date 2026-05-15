@@ -1,0 +1,93 @@
+﻿[
+    {
+        "Name":  "cesium_man.glb",
+        "Status":  "OK",
+        "Version":  2,
+        "Nodes":  22,
+        "Meshes":  1,
+        "Skins":  1,
+        "Joints":  19,
+        "Animations":  1,
+        "Materials":  1,
+        "Generator":  "COLLADA2GLTF",
+        "AnimNames":  ""
+    },
+    {
+        "Name":  "rigged_figure.glb",
+        "Status":  "OK",
+        "Version":  2,
+        "Nodes":  22,
+        "Meshes":  1,
+        "Skins":  1,
+        "Joints":  19,
+        "Animations":  1,
+        "Materials":  1,
+        "Generator":  "COLLADA2GLTF",
+        "AnimNames":  ""
+    },
+    {
+        "Name":  "rigged_simple.glb",
+        "Status":  "OK",
+        "Version":  2,
+        "Nodes":  5,
+        "Meshes":  1,
+        "Skins":  1,
+        "Joints":  2,
+        "Animations":  1,
+        "Materials":  1,
+        "Generator":  "COLLADA2GLTF",
+        "AnimNames":  ""
+    },
+    {
+        "Name":  "brain_stem.glb",
+        "Status":  "OK",
+        "Version":  2,
+        "Nodes":  22,
+        "Meshes":  1,
+        "Skins":  1,
+        "Joints":  18,
+        "Animations":  1,
+        "Materials":  59,
+        "Generator":  "COLLADA2GLTF",
+        "AnimNames":  ""
+    },
+    {
+        "Name":  "soldier.glb",
+        "Status":  "OK",
+        "Version":  2,
+        "Nodes":  68,
+        "Meshes":  2,
+        "Skins":  2,
+        "Joints":  49,
+        "Animations":  4,
+        "Materials":  2,
+        "Generator":  "blendergltf v1.2.0",
+        "AnimNames":  "Idle, Run, TPose, Walk"
+    },
+    {
+        "Name":  "xbot.glb",
+        "Status":  "OK",
+        "Version":  2,
+        "Nodes":  70,
+        "Meshes":  2,
+        "Skins":  1,
+        "Joints":  67,
+        "Animations":  7,
+        "Materials":  2,
+        "Generator":  "Khronos glTF Blender I/O v1.1.46",
+        "AnimNames":  "agree, headShake, idle, run, sad_pose, sneak_pose, walk"
+    },
+    {
+        "Name":  "michelle.glb",
+        "Status":  "OK",
+        "Version":  2,
+        "Nodes":  67,
+        "Meshes":  1,
+        "Skins":  1,
+        "Joints":  65,
+        "Animations":  2,
+        "Materials":  1,
+        "Generator":  "Khronos glTF Blender I/O v3.4.50",
+        "AnimNames":  "SambaDance, TPose"
+    }
+]

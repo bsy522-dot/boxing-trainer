@@ -1,0 +1,6 @@
+﻿rigged_figure
+Source: KhronosGroup glTF-Sample-Models
+URL: https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/RiggedFigure/glTF-Binary/RiggedFigure.glb
+License: CC-BY 4.0 (Khronos Group)
+Description: Rigged generic humanoid figure (T-pose)
+Downloaded: 2026-05-15 13:51:51

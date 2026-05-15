@@ -1,0 +1,6 @@
+﻿brain_stem
+Source: KhronosGroup glTF-Sample-Assets
+URL: https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/BrainStem/glTF-Binary/BrainStem.glb
+License: CC0 1.0 / Public Domain (Keith Hunter via Khronos)
+Description: Animated humanoid - good for boxing pose tests
+Downloaded: 2026-05-15 13:51:54

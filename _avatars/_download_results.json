@@ -1,0 +1,112 @@
+﻿[
+    {
+        "Name":  "rpm_demo_male1",
+        "Url":  "https://models.readyplayer.me/64bfa15b0e72c63d7c3934a3.glb",
+        "SizeMB":  0,
+        "License":  "ReadyPlayerMe public avatar (Sample/community use OK per RPM ToS)",
+        "Source":  "ReadyPlayerMe",
+        "Description":  "RPM half-body humanoid avatar id=64bfa15b0e72c63d7c3934a3",
+        "MagicOk":  false,
+        "Status":  "FAIL: 원격 이름을 확인할 수 없습니다.: \u0027models.readyplayer.me\u0027"
+    },
+    {
+        "Name":  "rpm_demo_male2",
+        "Url":  "https://models.readyplayer.me/6185a4acfb622cf1cdc49348.glb",
+        "SizeMB":  0,
+        "License":  "ReadyPlayerMe public avatar (Sample/community use OK per RPM ToS)",
+        "Source":  "ReadyPlayerMe",
+        "Description":  "RPM half-body humanoid avatar id=6185a4acfb622cf1cdc49348",
+        "MagicOk":  false,
+        "Status":  "FAIL: 원격 이름을 확인할 수 없습니다.: \u0027models.readyplayer.me\u0027"
+    },
+    {
+        "Name":  "rpm_demo_athlete1",
+        "Url":  "https://models.readyplayer.me/6409cdd45ec1278fcab9bbf2.glb",
+        "SizeMB":  0,
+        "License":  "ReadyPlayerMe public avatar (Sample/community use OK per RPM ToS)",
+        "Source":  "ReadyPlayerMe",
+        "Description":  "RPM half-body humanoid avatar id=6409cdd45ec1278fcab9bbf2",
+        "MagicOk":  false,
+        "Status":  "FAIL: 원격 이름을 확인할 수 없습니다.: \u0027models.readyplayer.me\u0027"
+    },
+    {
+        "Name":  "rpm_demo_athlete2",
+        "Url":  "https://models.readyplayer.me/64184ec361fd07eaae087a4b.glb",
+        "SizeMB":  0,
+        "License":  "ReadyPlayerMe public avatar (Sample/community use OK per RPM ToS)",
+        "Source":  "ReadyPlayerMe",
+        "Description":  "RPM half-body humanoid avatar id=64184ec361fd07eaae087a4b",
+        "MagicOk":  false,
+        "Status":  "FAIL: 원격 이름을 확인할 수 없습니다.: \u0027models.readyplayer.me\u0027"
+    },
+    {
+        "Name":  "cesium_man",
+        "Url":  "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/CesiumMan/glTF-Binary/CesiumMan.glb",
+        "SizeMB":  0.468,
+        "License":  "CC-BY 4.0 (Cesium / Analytical Graphics Inc.)",
+        "Source":  "KhronosGroup glTF-Sample-Models",
+        "Description":  "Walking man with skinned animation - reference humanoid",
+        "MagicOk":  true,
+        "Status":  "OK"
+    },
+    {
+        "Name":  "rigged_figure",
+        "Url":  "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/RiggedFigure/glTF-Binary/RiggedFigure.glb",
+        "SizeMB":  0.048,
+        "License":  "CC-BY 4.0 (Khronos Group)",
+        "Source":  "KhronosGroup glTF-Sample-Models",
+        "Description":  "Rigged generic humanoid figure (T-pose)",
+        "MagicOk":  true,
+        "Status":  "OK"
+    },
+    {
+        "Name":  "rigged_simple",
+        "Url":  "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/RiggedSimple/glTF-Binary/RiggedSimple.glb",
+        "SizeMB":  0.014,
+        "License":  "CC-BY 4.0 (Khronos Group)",
+        "Source":  "KhronosGroup glTF-Sample-Models",
+        "Description":  "Minimal rigged figure for tests",
+        "MagicOk":  true,
+        "Status":  "OK"
+    },
+    {
+        "Name":  "brain_stem",
+        "Url":  "https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Assets/main/Models/BrainStem/glTF-Binary/BrainStem.glb",
+        "SizeMB":  3.047,
+        "License":  "CC0 1.0 / Public Domain (Keith Hunter via Khronos)",
+        "Source":  "KhronosGroup glTF-Sample-Assets",
+        "Description":  "Animated humanoid - good for boxing pose tests",
+        "MagicOk":  true,
+        "Status":  "OK"
+    },
+    {
+        "Name":  "soldier",
+        "Url":  "https://threejs.org/examples/models/gltf/Soldier.glb",
+        "SizeMB":  2.06,
+        "License":  "CC-BY 4.0 (T. Choonyung) - via Three.js examples",
+        "Source":  "Three.js examples",
+        "Description":  "Animated soldier - walk/run/idle baked",
+        "MagicOk":  true,
+        "Status":  "OK"
+    },
+    {
+        "Name":  "xbot",
+        "Url":  "https://threejs.org/examples/models/gltf/Xbot.glb",
+        "SizeMB":  2.794,
+        "License":  "Mixamo (Adobe) free-for-use - via Three.js examples",
+        "Source":  "Three.js examples",
+        "Description":  "Mixamo X-Bot character with rig",
+        "MagicOk":  true,
+        "Status":  "OK"
+    },
+    {
+        "Name":  "michelle",
+        "Url":  "https://threejs.org/examples/models/gltf/Michelle.glb",
+        "SizeMB":  3.125,
+        "License":  "Mixamo (Adobe) free-for-use - via Three.js examples",
+        "Source":  "Three.js examples",
+        "Description":  "Mixamo Michelle character (skinned)",
+        "MagicOk":  true,
+        "Status":  "OK"
+    }
+]

@@ -1,0 +1,6 @@
+﻿michelle
+Source: Three.js examples
+URL: https://threejs.org/examples/models/gltf/Michelle.glb
+License: Mixamo (Adobe) free-for-use - via Three.js examples
+Description: Mixamo Michelle character (skinned)
+Downloaded: 2026-05-15 13:52:00

@@ -258,6 +258,7 @@ html,body{background:var(--bg);color:var(--text);font-family:'Segoe UI',sans-ser
 <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"
   onerror="tryFallbackThree()"></script>
 <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="_avatars/demo_avatar_loader.js"></script>
 <script>
 function tryFallbackThree(){
   if(window.THREE)return;
@@ -3169,6 +3170,7 @@ function gameLoop() {
   else if (currentScreen === 'combo') updateComboTraining(dt);
 
   update3DScene(time, dt);
+  if (window.DemoAvatars) window.DemoAvatars.update(dt);
   renderer.render(scene, camera);
 }
 

@@ -1,0 +1,6 @@
+﻿xbot
+Source: Three.js examples
+URL: https://threejs.org/examples/models/gltf/Xbot.glb
+License: Mixamo (Adobe) free-for-use - via Three.js examples
+Description: Mixamo X-Bot character with rig
+Downloaded: 2026-05-15 13:51:58

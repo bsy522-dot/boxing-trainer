@@ -1,0 +1,6 @@
+﻿rigged_simple
+Source: KhronosGroup glTF-Sample-Models
+URL: https://raw.githubusercontent.com/KhronosGroup/glTF-Sample-Models/master/2.0/RiggedSimple/glTF-Binary/RiggedSimple.glb
+License: CC-BY 4.0 (Khronos Group)
+Description: Minimal rigged figure for tests
+Downloaded: 2026-05-15 13:51:52
