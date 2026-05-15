@@ -998,24 +998,91 @@ function buildBoxer(gloveColor, isPlayer) {
   chin.position.set(0, -0.02, 0.07);
   headGrp.add(chin);
 
-  // Eyes
-  const eyeGeo = new THREE.SphereGeometry(0.02, 6, 6);
-  const leftEye = new THREE.Mesh(eyeGeo, eyeMat);
-  leftEye.position.set(-0.04, 0.08, 0.08);
-  headGrp.add(leftEye);
-  const rightEye = new THREE.Mesh(eyeGeo, eyeMat);
-  rightEye.position.set(0.04, 0.08, 0.08);
-  headGrp.add(rightEye);
+  // Eyes (sclera white + pupil)
+  const scleraGeo = new THREE.SphereGeometry(0.022, 8, 6);
+  const scleraMat = new THREE.MeshStandardMaterial({ color: 0xeeeae0, roughness: 0.3 });
+  const leftSclera = new THREE.Mesh(scleraGeo, scleraMat);
+  leftSclera.position.set(-0.04, 0.08, 0.08);
+  headGrp.add(leftSclera);
+  const rightSclera = new THREE.Mesh(scleraGeo, scleraMat);
+  rightSclera.position.set(0.04, 0.08, 0.08);
+  headGrp.add(rightSclera);
+  const pupilGeo = new THREE.SphereGeometry(0.012, 6, 5);
+  const leftPupil = new THREE.Mesh(pupilGeo, eyeMat);
+  leftPupil.position.set(-0.04, 0.08, 0.094);
+  headGrp.add(leftPupil);
+  const rightPupil = new THREE.Mesh(pupilGeo, eyeMat);
+  rightPupil.position.set(0.04, 0.08, 0.094);
+  headGrp.add(rightPupil);
 
-  // Nose
-  const nose = new THREE.Mesh(new THREE.BoxGeometry(0.02, 0.03, 0.03), skinMat);
-  nose.position.set(0, 0.05, 0.1);
-  headGrp.add(nose);
+  // Eyebrows (angled boxes)
+  const browMat = new THREE.MeshStandardMaterial({ color: 0x141414, roughness: 0.85 });
+  const lBrow = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.012, 0.018), browMat);
+  lBrow.position.set(-0.04, 0.105, 0.092); lBrow.rotation.z = -0.18;
+  headGrp.add(lBrow);
+  const rBrow = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.012, 0.018), browMat);
+  rBrow.position.set(0.04, 0.105, 0.092); rBrow.rotation.z = 0.18;
+  headGrp.add(rBrow);
 
-  // Mouthguard
-  const mg = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.015, 0.03), mouthguardMat);
-  mg.position.set(0, 0.0, 0.09);
+  // Cheekbones
+  const cheekboneGeo = new THREE.SphereGeometry(0.028, 6, 5);
+  const lCheekbone = new THREE.Mesh(cheekboneGeo, skinMat);
+  lCheekbone.position.set(-0.062, 0.045, 0.076); lCheekbone.scale.set(1.0, 0.7, 0.7);
+  headGrp.add(lCheekbone);
+  const rCheekbone = new THREE.Mesh(cheekboneGeo, skinMat);
+  rCheekbone.position.set(0.062, 0.045, 0.076); rCheekbone.scale.set(1.0, 0.7, 0.7);
+  headGrp.add(rCheekbone);
+
+  // Ears
+  const earGeo = new THREE.SphereGeometry(0.03, 6, 5);
+  const lEar = new THREE.Mesh(earGeo, skinMat);
+  lEar.position.set(-0.105, 0.05, 0); lEar.scale.set(0.4, 1.0, 0.7);
+  headGrp.add(lEar);
+  const rEar = new THREE.Mesh(earGeo, skinMat);
+  rEar.position.set(0.105, 0.05, 0); rEar.scale.set(0.4, 1.0, 0.7);
+  headGrp.add(rEar);
+
+  // Nose (more anatomical)
+  const noseBridge = new THREE.Mesh(new THREE.BoxGeometry(0.018, 0.05, 0.025), skinMat);
+  noseBridge.position.set(0, 0.06, 0.1);
+  headGrp.add(noseBridge);
+  const noseTip = new THREE.Mesh(new THREE.SphereGeometry(0.018, 6, 5), skinMat);
+  noseTip.position.set(0, 0.04, 0.115); noseTip.scale.set(1.1, 0.8, 1.0);
+  headGrp.add(noseTip);
+
+  // Mouth — upper lip + lower lip
+  const lipMat = new THREE.MeshStandardMaterial({ color: 0x9c5050, roughness: 0.6 });
+  const upperLip = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.008, 0.015), lipMat);
+  upperLip.position.set(0, 0.005, 0.098);
+  headGrp.add(upperLip);
+  const lowerLip = new THREE.Mesh(new THREE.BoxGeometry(0.05, 0.011, 0.018), lipMat);
+  lowerLip.position.set(0, -0.008, 0.098);
+  headGrp.add(lowerLip);
+
+  // Mouthguard (visible behind lips when open)
+  const mg = new THREE.Mesh(new THREE.BoxGeometry(0.045, 0.012, 0.025), mouthguardMat);
+  mg.position.set(0, -0.002, 0.094);
   headGrp.add(mg);
+
+  // Hair cap (under the headgear)
+  const hairCap = new THREE.Mesh(new THREE.SphereGeometry(0.10, 12, 8, 0, Math.PI * 2, 0, Math.PI * 0.55), hairMat);
+  hairCap.position.set(0, 0.075, 0);
+  hairCap.scale.set(1.02, 1.0, 1.05);
+  headGrp.add(hairCap);
+  // Sideburns
+  const sideburnGeo = new THREE.BoxGeometry(0.012, 0.03, 0.015);
+  const lSideburn = new THREE.Mesh(sideburnGeo, hairMat);
+  lSideburn.position.set(-0.085, 0.04, 0.05);
+  headGrp.add(lSideburn);
+  const rSideburn = new THREE.Mesh(sideburnGeo, hairMat);
+  rSideburn.position.set(0.085, 0.04, 0.05);
+  headGrp.add(rSideburn);
+
+  // Jawline accent
+  const jawGeo = new THREE.BoxGeometry(0.105, 0.015, 0.03);
+  const jaw = new THREE.Mesh(jawGeo, darkSkinMat);
+  jaw.position.set(0, -0.025, 0.06);
+  headGrp.add(jaw);
 
   // Headgear ring (open-face boxing headgear)
   const headgearRing = new THREE.Mesh(new THREE.TorusGeometry(0.115, 0.025, 8, 18), headgearMat);
@@ -2585,7 +2652,7 @@ function updateComboTraining(dt) {
       oppPunchAnim(p);
       renderComboHud();
     }
-    if (c.phaseTime > cycleTime * 2 + 0.5) {
+    if (c.phaseTime > cycleTime * 3 + 1.0) {
       c.phase = 'guide'; c.phaseTime = 0; c.seqIdx = 0; renderComboHud();
     }
   } else if (c.phase === 'guide') {
