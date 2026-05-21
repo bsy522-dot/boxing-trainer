@@ -415,3 +415,123 @@ hooks, social sharing, warmup safety features, and discoverability (SEO).
 | Gap resolved | - | 10/10 | 100% |
 
 ---
+
+---
+
+## 2026-05-21 — v9.0 Pass (boxing-trainer)
+
+### Stage 1. Benchmarking vs FightCamp / BOXX
+
+| Feature | FightCamp | BOXX | Boxing Trainer v8 | v9 (after) |
+| --- | --- | --- | --- | --- |
+| AI Training Advisor | YES | YES | NO | **YES** |
+| Recovery/Cooldown Guide | YES | YES | NO | **YES** |
+| Training Intensity Tracking | YES | YES | NO | **YES** |
+| Punch Speed Analysis/Grade | YES | - | NO | **YES** |
+| Hydration Tracking | - | YES | NO | **YES** |
+| Boxing Knowledge Quiz | - | - | NO | **YES (15Q)** |
+| Progress Milestones | YES | YES | Partial (ranks) | **YES (9 milestones)** |
+| Workout Templates | YES | YES | 3 presets | **YES (6 templates)** |
+| Post-workout Stretching | YES | YES | Warm-up only | **YES (Cooldown 6-step)** |
+| Multiple Sound Effects | YES | YES | 5 SFX | **YES (+6 = 11 SFX)** |
+
+**Gap verdict**: v8 had warm-up but no cooldown, no AI insights, no speed grading, no quiz, no hydration tracking. v9 closes 10 major gaps vs FightCamp/BOXX.
+
+### Stage 2. Full-team Development
+
+**AI Training Advisor (신규)**
+- Training history analysis engine: punch type distribution, recent session duration, PPM, streak tracking
+- 4 priority-ranked personalized recommendations (high/medium/low)
+- Weak punch type detection (hook/uppercut ratio alerts)
+- Speed improvement suggestions based on PPM average
+
+**Recovery Cooldown Guide (신규)**
+- 6-step post-workout stretching routine (3.3min total)
+- Interactive timer with step-by-step progression
+- Skip/stop controls, completion tracking in localStorage
+- SFX on step transitions and completion
+
+**Training Intensity Chart (신규)**
+- Canvas 600x160 line chart with area fill
+- 7-day intensity score trend (punches*0.3 + duration*5)
+- Grid lines, value labels, dot markers, gradient fill
+
+**Punch Speed Grade (신규)**
+- PPM (Punches Per Minute) calculation from session data
+- Letter grading system: S(60+)/A(45+)/B(30+)/C(20+)/D(10+)/F
+- SVG ring progress indicator with grade-specific colors
+- Average PPM, Best PPM, Session count display
+
+**Hydration Tracker (신규)**
+- 8-bottle visual tracker (250ml each, 2L target)
+- Click to fill/unfill, daily reset
+- localStorage persistence per date
+
+**Boxing Knowledge Quiz (신규)**
+- 15 questions covering rules, history, technique, famous boxers
+- Interactive answer selection with correct/wrong highlighting
+- Explanation shown after each answer
+- Score summary with letter grade at completion
+- Retry functionality
+
+**Progress Milestones (신규)**
+- 9 milestone nodes in horizontal track
+- Milestones: 첫훈련, 100/500/1K/5K/10K펀치, 3일/7일/30일연속
+- Gold-colored reached state with connector lines
+
+**Workout Templates (신규)**
+- 6 pre-configured workout templates (빠른번/기본기/프리스타일/속도/파워/섀도우)
+- Direct link to boxing-trainer-v5.html with preset params
+- Difficulty badges (초급/중급/고급)
+
+**SFX 6종 추가 (5→11)**
+- quiz_correct: ascending sine sweep
+- quiz_wrong: descending sawtooth
+- hydration: 3-note bubble chime (660/880/1100 Hz)
+- cooldown: triangle wave descending (440→330 Hz)
+- advisor: 3-note sequence (G4/B4/D5)
+- milestone: 4-note fanfare (C5/E5/G5/C6)
+
+**Keyboard Shortcuts +5종 (6→11)**
+- A: AI Advisor scroll
+- Q: Quiz scroll
+- H: Hydration scroll
+- C: Cooldown scroll
+- I: Intensity chart scroll
+
+**SEO 강화**
+- title 업데이트 (v9 + 기능 키워드)
+- meta description 추가 (v9 기능 상세)
+- meta keywords 추가 (복싱/트레이너/3D/AI/PWA 등)
+
+**인프라**
+- sw.js: v8→v9 (v9_patch.js PRECACHE 추가)
+- manifest.json: v9 설명, shortcuts 2종 추가
+
+### Stage 3. QA Verification
+
+| Check | Result |
+| --- | --- |
+| JS Syntax (node -c) | **PASS** |
+| v9_patch.js bracket balance | () 656/656, {} 275/275, [] 56/56 — **ALL OK** |
+| HTML tag balance | div 108/108, section 12/12, span 66/66, a 4/4, button 4/4 — **ALL OK** |
+| External CDN | **0건** (Three.js/Tone.js/Leaflet만 허용) |
+| Personal info exposure | **0건** |
+| Duplicate HTML IDs | **0건** |
+| v9_patch.js functions | **32 functions** |
+| v9_patch.js size | **699줄, 45KB** |
+
+### Stage 4. Metrics
+
+- index.html: 1704→1707줄 (+3, SEO meta + v9 script tag)
+- v9_patch.js: 699줄 45KB (신규, 자기완결형 IIFE 모듈)
+- sw.js: v8→v9 (v9_patch.js PRECACHE)
+- manifest.json: v9 설명 + shortcuts 2종
+- 총 신규 기능: 8개
+- 총 SFX: 5+6 = 11종
+- 총 키보드 단축키: 6+5 = 11종
+- 퀴즈: 15문제
+- 마일스톤: 9단계
+- 워크아웃 템플릿: 6종
+- 쿨다운 스텝: 6단계
+

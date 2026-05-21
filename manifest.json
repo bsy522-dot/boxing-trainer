@@ -1,7 +1,7 @@
 {
   "name": "Boxing Trainer Pro",
   "short_name": "BoxingPro",
-  "description": "3D AI 복싱 트레이닝 앱 v8 - 일일챌린지, 개인기록, 체형히트맵, 워밍업가이드, 공유카드, 테크닉도감, 랭크시스템, 24업적",
+  "description": "3D AI &#48373;&#49905; &#53944;&#47112;&#51060;&#45789; v9 - AI&#50612;&#46300;&#48148;&#51060;&#51200;, &#54144;&#52824;&#49828;&#54588;&#46300;&#46321;&#44553;, &#48373;&#49905;&#53300;&#51592;15&#47928;, &#47532;&#52964;&#48260;&#47532;&#53216;&#45796;&#50868;, &#49688;&#48516;&#53944;&#47000;&#52964;, &#50892;&#53356;&#50500;&#50883;&#53596;&#54540;&#47551;6&#51333;, &#47560;&#51068;&#49828;&#53668;9&#45800;&#44228;, 34&#50629;&#51201;",
   "start_url": "./index.html",
   "display": "standalone",
   "orientation": "portrait",
@@ -9,6 +9,20 @@
   "theme_color": "#FF4444",
   "lang": "ko",
   "categories": ["fitness", "health", "sports"],
+  "shortcuts": [
+    {
+      "name": "AI &#50612;&#46300;&#48148;&#51060;&#51200;",
+      "short_name": "AI&#53076;&#52824;",
+      "url": "./index.html#advisor",
+      "icons": []
+    },
+    {
+      "name": "&#48373;&#49905; &#53300;&#51592;",
+      "short_name": "&#53300;&#51592;",
+      "url": "./index.html#quiz",
+      "icons": []
+    }
+  ],
   "icons": [
     {
       "src": "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='40' fill='%230f0a1e'/%3E%3Cdefs%3E%3ClinearGradient id='g' x1='0' y1='0' x2='1' y2='1'%3E%3Cstop offset='0%25' stop-color='%23FF4444'/%3E%3Cstop offset='100%25' stop-color='%23CC2222'/%3E%3C/linearGradient%3E%3C/defs%3E%3Cellipse cx='96' cy='90' rx='48' ry='42' fill='url(%23g)'/%3E%3Cellipse cx='96' cy='90' rx='39' ry='33' fill='none' stroke='%23FF6666' stroke-width='3'/%3E%3Cpath d='M66 68c6-8 18-14 30-14s24 6 30 14' stroke='%23AA1111' stroke-width='5' fill='none'/%3E%3Crect x='120' y='114' width='24' height='36' rx='12' fill='%23CC2222'/%3E%3Cpath d='M126 150v12M138 150v12' stroke='%23FFD700' stroke-width='6' stroke-linecap='round'/%3E%3Ccircle cx='156' cy='44' r='10' fill='%23FFD700' opacity='0.8'/%3E%3C/svg%3E",
