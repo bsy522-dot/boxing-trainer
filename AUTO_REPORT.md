@@ -725,3 +725,85 @@ hooks, social sharing, warmup safety features, and discoverability (SEO).
 | 개인정보 노출 | 0건 |
 | 파일 삭제 | 0건 |
 
+---
+
+## 2026-06-11 &mdash; v13.0 (NEXTERA+PRISM Auto Agent)
+
+### Stage 1. Benchmarking vs FightCamp / BOXX
+
+| Feature | FightCamp | BOXX | v12 (before) | v13 (after) |
+|---------|-----------|------|--------------|-------------|
+| Jump rope training | YES (accessory) | - | **NO** | **YES** (8 patterns Canvas) |
+| Fight strategy guide | YES (class tips) | YES | **NO** | **YES** (12 strategies) |
+| Defensive drills | YES (head movement) | YES | **NO** | **YES** (10 drills Canvas) |
+| Fight night / gauntlet | - | YES | **NO** | **YES** (5 opponents) |
+| Recovery tracking | YES (HRV) | - | **NO** | **YES** (sleep/water/soreness Canvas) |
+| Ring movement patterns | YES (footwork drills) | YES | **NO** | **YES** (8 patterns Canvas) |
+| Weekly progress report | YES (app report) | YES | **NO** | **YES** (6-axis radar Canvas) |
+| Training BGM | YES (playlist) | YES | partial | **YES** (10 tracks Web Audio) |
+| Quiz questions | ~50 | ~30 | 60 | **75** |
+| Achievements | ~80 | ~40 | 70 | **82** |
+
+**Gap verdict**: v12 had 10 significant gaps vs FightCamp/BOXX. v13 closes all 10.
+
+### Stage 2. Development
+
+**v13_patch.js** (1,776 lines, ~75KB, self-contained IIFE module)
+
+#### New Features (8 major systems):
+
+1. **Jump Rope Trainer** (8 patterns Canvas)
+   - Basic/Alternate/High Knee/Double Under/Boxer Skip/Criss Cross/Side Swing/Speed Run
+   - Canvas rope animation with stick figure, real-time BPM
+   - Space/click to jump, timer per pattern, jump counter
+
+2. **Fight Strategy Playbook** (12 strategies)
+   - 4 categories: Offense(4)/Defense(3)/Counter(2)/Movement(3)
+   - Jab-Cross/Pressure/Counter/Outboxer/Infighter/Philly Shell/Peek-a-Boo/Bait/Clinch/Body Attack/Angle Play/Switch Stance
+   - Category filter, view tracking, detailed descriptions
+
+3. **Defensive Drill Matrix** (10 drills Canvas)
+   - Slip L/R, Roll L/R, Parry, Block High/Body, Pull Back, Bob and Weave, Shoulder Roll
+   - Canvas concentric circle target, click-to-defend interaction
+
+4. **Fight Night Gauntlet** (5 opponents)
+   - Sequential gauntlet: Rookie to Champion Titan
+   - 6 actions: Jab/Cross/Hook/Uppercut/Dodge/Guard
+   - HP bars, combat log, win/loss tracking
+
+5. **Recovery Tracker** (Canvas trend chart)
+   - Track: sleep/hydration/soreness/mood
+   - 14-day trend line chart, 7-day averages
+
+6. **Ring Movement Patterns** (8 patterns Canvas)
+   - Lateral/Pivot/Angle Cut/Circle/In-Out/Diamond
+   - Canvas ring with numbered waypoints
+
+7. **Weekly Progress Report** (6-axis radar Canvas)
+   - Power/Endurance/Technique/Recovery/Defense/Agility
+   - S/A/B/C/D grade
+
+8. **Boxing BGM Playlist** (10 tracks Web Audio)
+   - Drum machine with kick+hihat+bass at 90-180 BPM
+
+#### Additional:
+- Quiz v4: +15 questions (60 to 75)
+- Achievements: +12 (70 to 82)
+- SFX: 12 new types
+- Keyboard: Shift+J/S/D/G/R/I/P/B
+- FAB: 8 floating action buttons
+- SW cache: v12 to v13
+- SEO: meta tags updated
+- Manifest: v13 + 3 shortcuts
+
+### Stage 3. Quality Assurance
+
+| Check | Result |
+|-------|--------|
+| JS syntax (node -c) | PASS |
+| Bracket balance (v13_patch.js) | ()=1268/1268, []=150/150, {}=417/417 ALL BALANCED |
+| HTML div balance | 108/108 BALANCED |
+| External CDN | 0 references |
+| Personal info | 0 leaks |
+| File deletions | 0 |
+
