@@ -807,3 +807,59 @@ hooks, social sharing, warmup safety features, and discoverability (SEO).
 | Personal info | 0 leaks |
 | File deletions | 0 |
 
+
+---
+
+## 2026-06-17 — Pass #9
+
+### Stage 1. Benchmarking vs FightCamp / BOXX
+
+| Feature | FightCamp | BOXX | Boxing Trainer v13 | v14 Plan |
+|---------|-----------|------|-------------------|----------|
+| Punch accuracy training | Sensor-based hit detection | Basic target drills | None | Canvas 10-zone accuracy trainer with streak system |
+| Body shot zone map | Guided body targeting | Anatomical zone training | None | Interactive Canvas 12-zone body map with scoring |
+| Weight class guide | N/A | Class-based workouts | None | 17 boxing weight classes with training tips |
+| HIIT interval timer | Built-in HIIT | Advanced interval system | Basic timer | 8 presets (Tabata/Classic/Boxing Round/Speed/Power/Endurance/Pro 12R/Burnout) |
+| Technique library | Video instruction library | Technique breakdowns | None | 12 techniques in 4 categories with mastery tracking |
+| Reflex training | Reaction drills | Speed bag tracking | None | Canvas reaction time test with SS-D grading |
+| Power trend tracking | Punch power metrics | Real-time power data | None | Canvas line chart with gradient, avg line, last 20 entries |
+| Coach AI analysis | AI form coaching | Post-workout analysis | None | 6-axis radar chart with personalized tips |
+| Quiz system | N/A | N/A | 75 questions | +15 = 90 questions |
+| Achievements | Basic milestones | Streak badges | 82 | +12 = 94 |
+
+### Stage 2. Development
+
+**v14_patch.js** — 8 new systems, self-contained IIFE module (1468 lines):
+
+1. **Punch Accuracy Trainer** — Canvas 30s target game, 10 zones, hit/miss/streak tracking, best score persistence
+2. **Body Shot Zone Map** — Canvas with 12 anatomical zones, point values 5-20
+3. **Weight Class Guide** — 17 classes from Minimumweight to Heavyweight, training tips per class
+4. **HIIT Interval Timer** — 8 presets with configurable work/rest/rounds, visual progress ring, audio cues
+5. **Fight Technique Lab** — 12 techniques in 4 categories (punch/defense/footwork/combo), mastery system
+6. **Reflex Training Game** — Reaction time Canvas test, green-screen click, SS-D grade scale
+7. **Punch Power Trend** — Canvas line chart, gradient fill, average line, dot markers, last 20 entries
+8. **Coach AI Analysis** — 6-axis radar chart (power/speed/accuracy/defense/stamina/technique), coaching tips
+
+Additional:
+- +15 quiz questions (75 -> 90 total)
+- +12 achievements (82 -> 94 total)
+- +12 SFX (accuracy_hit/miss, hiit_bell/rest, technique, power_log, reflex_go/hit, coach, bodyshot, weight_view, achieve_v14)
+- +8 keyboard shortcuts (Shift+A/B/W/I/T/X/P/C)
+- FAB bottom navigation bar with 8 feature buttons
+
+### Stage 3. Quality Verification
+
+| Check | Result |
+|-------|--------|
+| JS syntax (node -c) | PASS |
+| Bracket balance (v14_patch.js) | ()=1021/1021, []=67/67, {}=346/346 ALL BALANCED |
+| External CDN | 0 references |
+| Personal info | 0 leaks |
+| File deletions | 0 |
+
+### Stage 4. Finalization
+
+- index.html: v14 script tag added, SEO meta updated, footer -> v14.0 / 94 Achievements / 90 Quiz
+- sw.js: cache name -> boxing-trainer-v14, v14_patch.js added to PRECACHE_URLS
+- manifest.json: description -> v14, +4 new shortcuts (accuracy/HIIT/reflex/coach AI)
+
