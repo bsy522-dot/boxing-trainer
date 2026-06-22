@@ -863,3 +863,60 @@ Additional:
 - sw.js: cache name -> boxing-trainer-v14, v14_patch.js added to PRECACHE_URLS
 - manifest.json: description -> v14, +4 new shortcuts (accuracy/HIIT/reflex/coach AI)
 
+---
+
+## 2026-06-22 &mdash; Pass #8 (Opus 4.6)
+
+### Stage 1. Benchmarking vs FightCamp / BOXX
+
+| Feature | FightCamp | BOXX | v14 (before) | v15 (after) |
+| --- | --- | --- | --- | --- |
+| Punch combo builder / planner | - | YES | **NO** | **YES** Canvas drag&amp;drop combo builder |
+| Stance analysis / comparison | - | YES (basic) | **NO** | **YES** 6 stances + radar chart Canvas |
+| Virtual sandbag / heavy bag drills | YES (real bag) | - | **NO** | **YES** Canvas 30s timed hit-zone workout |
+| Injury prevention guide | YES (video) | YES (text) | **NO** | **YES** 12 injury types with prevention tips |
+| Judge scoring simulator | - | - | **NO** | **YES** 10-round scoring with 3 judges |
+| Training diary / log | YES (cloud) | YES (app) | **NO** | **YES** 50-entry diary with mood tracking |
+| Combat power dashboard | - | YES (basic) | **NO** | **YES** 6-axis radar Canvas dashboard |
+| Legendary fights library | - | - | **NO** | **YES** 12 historic fights with analysis |
+
+**Gap verdict**: v14 lacked combo planning, stance comparison, bag drill interaction, and structured training journaling that both FightCamp and BOXX offer. v15 closes these gaps with 8 interactive features including 4 Canvas-based visualizations. The judge scoring simulator and legendary fights library go beyond what either competitor offers.
+
+### Stage 2. Full-team development
+
+**Frontend / UX (v15_patch.js)**
+- Punch Combo Builder: Canvas-based drag-and-drop combo creation with 8 punch types, visual timeline, play animation with SFX
+- Boxing Stance Analyzer: 6 stances (Orthodox/Southpaw/Peek-a-boo/Philly Shell/Mexican/Crab) with radar chart comparison Canvas
+- Virtual Sandbag Workout: 30-second timed Canvas workout with 5 hit zones, combo counter, accuracy tracking
+- Injury Prevention Guide: 12 injury types (hand/wrist/shoulder/elbow/back/knee/ankle/neck/rib/eye/nose/thumb) with causes, prevention, and recovery info
+- Judge Scoring Simulator: 10-round bout simulation with 3 judges, 10-point-must scoring, round-by-round breakdown
+- Training Diary: Mood-based logging (5 moods), 50-entry persistent storage, date/mood/content/duration tracking
+- Combat Power Dashboard: 6-axis radar Canvas (speed/power/stamina/defense/technique/ring IQ) with animated scan effect
+- Legendary Fights Review: 12 historic matches (Ali-Frazier III, Leonard-Hearns, Pac-Marquez IV, etc.) with round/result/significance
+
+**Content**
+- +15 quiz questions (90 -> 105 total): covers combo theory, stance mechanics, injury prevention, judge scoring, power metrics
+- +12 achievements (94 -> 106 total): combo_first, combo_5, combo_long, stance_3, stance_all, bag_first, bag_high, injury_6, injury_all, judge_first, diary_5, v15_explorer
+- +12 SFX (combo_build, combo_play, stance_view, bag_hit, bag_combo, injury_open, judge_bell, judge_score, diary_save, radar_scan, legend_open, achieve_v15)
+- +8 keyboard shortcuts (Shift+Q/N/G/J/U/Y/R/L)
+- FAB bottom navigation bar with 8 v15 feature buttons
+- Responsive CSS grid layout for all new sections
+
+### Stage 3. Quality Verification
+
+| Check | Result |
+|-------|--------|
+| JS syntax (node -c) | PASS |
+| Bracket balance (v15_patch.js) | ()=941/941, []=102/102, {}=317/317 ALL BALANCED |
+| External CDN | 0 references |
+| Personal info | 0 leaks |
+| File deletions | 0 |
+| manifest.json JSON validity | PASS |
+
+### Stage 4. Finalization
+
+- index.html: v15 script tag added, SEO meta updated to v15 features and counts
+- sw.js: cache name -> boxing-trainer-v15, v15_patch.js added to PRECACHE_URLS
+- manifest.json: description -> v15, +5 new shortcuts (combo builder/stance analyzer/sandbag/judge scoring/power dashboard)
+- v15_patch.js: ~1000+ lines, complete IIFE module with 8 features, 15 quiz questions, 12 achievements, 12 SFX, 8 keyboard shortcuts
+
