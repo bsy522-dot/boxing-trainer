@@ -1000,3 +1000,83 @@ Additional:
 - manifest.json: description -> v16, +6 new shortcuts (타이밍마스터/체력측정기/파워래더/뮤직펀치/디펜스IQ/자세교정클리닉)
 - v16_patch.js: ~1449 lines, complete IIFE module with 8 features, 15 quiz questions, 12 achievements, 12 SFX, 8 keyboard shortcuts
 
+---
+
+## 2026-07-02 &mdash; Pass #8 (Opus 4.6)
+
+### Stage 1. Benchmarking vs FightCamp / BOXX
+
+| Feature | FightCamp | BOXX | v16 (before) | v17 (after) |
+| --- | --- | --- | --- | --- |
+| Punch speed tracking / PPS | YES (tracker) | - | **NO** | **YES** (Punch Speed Radar Canvas) |
+| Shadow boxing routines | - | YES (8+) | **NO** | **YES** (8 choreographed routines w/ BPM) |
+| Body composition / BMI | YES (app integration) | - | **NO** | **YES** (BMI/BMR/BFP Canvas tracker) |
+| Weight class reference | - | - | **NO** | **YES** (17 weight classes encyclopedia) |
+| Recovery timer / cooldown | YES | YES | **NO** | **YES** (4-phase recovery zone timer) |
+| Strategy / IQ training | - | - | **NO** | **YES** (Ring IQ 12 scenarios quiz) |
+| AI sparring profiles | YES (real) | - | **NO** | **YES** (8 AI fighters w/ 6-axis radar) |
+| Training journal / log | YES (calendar) | YES | **NO** | **YES** (30-day heatmap journal) |
+
+**Gap verdict**: v16 lacked holistic training tools &mdash; speed measurement, body tracking, strategy training, recovery management, and journaling. v17 fills all 8 gaps to reach feature parity with FightCamp/BOXX on training ecosystem completeness.
+
+### Stage 2. Development
+
+**Frontend UI/UX**:
+- 8 new feature panels with consistent dark glass-morphism design
+- Bottom navigation bar with 8 feature quick-access buttons
+- Touch-optimized Canvas interactions (min 44px targets)
+- Responsive layout: max-width containers, flexible Canvas sizing
+
+**Backend Logic**:
+- IIFE module pattern (V17KEY localStorage isolation)
+- Punch Speed Radar: 30-sec timed test with random target spawning, PPS calculation
+- Shadow Boxing Choreographer: BPM-controlled move sequencing, 8 difficulty-graded routines
+- Body Composition Tracker: BMI/BMR/BFP calculation with 14-entry history line chart
+- Weight Class Encyclopedia: 17 official boxing weight classes with kg/lb data
+- Recovery Zone Timer: 4-phase sequential timer (Active Recovery / Hydration / Deep Stretch / Breathing)
+- Ring IQ Strategy Quiz: 12 boxing scenarios with 4-option multiple choice, scoring
+- Sparring Partner AI: 8 AI fighters with 6-axis attribute radar (speed/power/defense/stamina/technique/IQ)
+- Fight Camp Journal: 30-day heatmap, mood/intensity/note entry system
+
+**Content Creation**:
+- 15 new quiz questions (120 &rarr; 135) covering speed training, recovery, weight classes, ring strategy
+- 12 new achievements (118 &rarr; 130) with unlock conditions for all 8 new features
+
+**Audio (Web Audio API)**:
+- 12 SFX sounds: speed_beep, speed_hit, speed_complete, shadow_move, shadow_beat, body_save, recovery_phase, recovery_tick, ringiq_correct, ringiq_wrong, sparring_punch, journal_save
+
+**Visuals (CSS/SVG/Canvas)**:
+- Punch Speed Radar: Animated target circles on canvas with hit detection
+- Shadow Boxing: Move indicator with BPM-synced visual beat
+- Body Composition: Multi-line chart (weight/BMI) with gradient fills
+- Recovery Timer: Circular progress arc with phase-colored segments
+- Ring IQ: Scenario card with animated option highlighting
+- Sparring AI: 6-axis radar chart with fighter profile overlay
+- Fight Camp Journal: 30-day calendar heatmap with intensity color grading
+
+**Keyboard Shortcuts**:
+- Shift+R (Speed Radar), Shift+H (Shadow Boxing), Shift+B (Body Comp), Shift+W (Weight Class)
+- Shift+V (Recovery), Shift+I (Ring IQ), Shift+P (Sparring AI), Shift+L (Journal)
+
+### Stage 3. Quality Verification
+
+| Check | Result |
+| --- | --- |
+| JS syntax (`node -c v17_patch.js`) | PASS |
+| Bracket balance `() {} []` | PASS (all zero) |
+| External CDN / link scan | PASS (0 external links in v17_patch.js) |
+| Personal info (PII) scan | PASS (no phone/email/SSN patterns) |
+| manifest.json JSON validity | PASS |
+| HTML entities encoding | All Korean text uses numeric entities |
+| Canvas rendering | All Canvas operations use direct draw calls |
+| Mobile responsive | All containers max-width:100%, touch targets min 44px |
+| File deletions | 0 |
+| v17 sections rendered | 37 DOM elements with v17- prefix |
+
+### Stage 4. Finalization
+
+- index.html: v17 script tag added, SEO meta (title/description/keywords) updated to v17, hero subtitle v13 &rarr; v17, footer v14.0 &rarr; v17.0 (130 achievements, 135 quiz)
+- sw.js: cache name &rarr; boxing-trainer-v17, v17_patch.js added to PRECACHE_URLS
+- manifest.json: description &rarr; v17, +8 new shortcuts (펀치스피드레이더/섀도복싱코리오그래퍼/체성분트래커/체급백과/회복존타이머/RingIQ전략퍼즐/스파링AI프로필/훈련캠프일지)
+- v17_patch.js: ~1157 lines, complete IIFE module with 8 features, 15 quiz questions, 12 achievements, 12 SFX, 8 keyboard shortcuts
+
