@@ -1080,3 +1080,68 @@ Additional:
 - manifest.json: description &rarr; v17, +8 new shortcuts (펀치스피드레이더/섀도복싱코리오그래퍼/체성분트래커/체급백과/회복존타이머/RingIQ전략퍼즐/스파링AI프로필/훈련캠프일지)
 - v17_patch.js: ~1157 lines, complete IIFE module with 8 features, 15 quiz questions, 12 achievements, 12 SFX, 8 keyboard shortcuts
 
+---
+
+## 2026-07-05 &mdash; Pass #17 (v18.0)
+
+### Stage 1. Benchmarking vs FightCamp / BOXX
+
+| Feature | FightCamp | BOXX | v17 (before) | v18 (after) |
+| --- | --- | --- | --- | --- |
+| Punch analytics dashboard | YES (premium) | partial | **NO** | **YES** Canvas |
+| Combo chain builder | YES | YES | partial (combo builder) | **YES** 10 presets Canvas |
+| Belt/ranking progression | YES (leaderboard) | - | **NO** | **YES** 8 belts Canvas |
+| Round-by-round performance | YES | YES | partial (round planner) | **YES** 12R Canvas |
+| Heart rate zone training | YES (sensor) | - | **NO** | **YES** 5-zone Canvas |
+| Technique mastery tree | - | - | **NO** | **YES** 18 nodes Canvas |
+| Daily challenge system | YES | YES | **NO** | **YES** 7 challenges |
+| AI corner coach advice | YES (premium) | - | partial (coach AI) | **YES** 6-axis Radar Canvas |
+
+**Gap closed**: v18 adds punch analytics, belt ranking, HR zone training, technique mastery tree, daily challenges &mdash; all absent in v17. Combo builder upgraded from simple list to 10-preset chain builder with Canvas visualization.
+
+### Stage 2. Development (v18_patch.js ~1400 lines)
+
+**8 new features implemented:**
+
+1. **Punch Analytics Dashboard** (Canvas) &mdash; 6-punch type bar chart with accuracy %, session history sparkline, total punch counter
+2. **Combo Chain Builder** (Canvas) &mdash; 10 preset combos (Jab-Cross to Ali Shuffle), 8 punch types, visual chain flow Canvas, custom combo builder
+3. **Fighter Belt Ranking** (Canvas) &mdash; 8 belts (White&rarr;Yellow&rarr;Orange&rarr;Green&rarr;Blue&rarr;Purple&rarr;Brown&rarr;Black), XP progression bar Canvas, promotion effects
+4. **Round Performance Tracker** (Canvas) &mdash; 12-round line chart with fatigue curve, output/defense/accuracy per round, session comparison
+5. **Heart Rate Zone Simulator** (Canvas) &mdash; 5 zones (Rest&rarr;Fat Burn&rarr;Cardio&rarr;Peak&rarr;VO2 Max), auto-advancing simulation, zone time pie chart Canvas
+6. **Technique Mastery Tree** (Canvas) &mdash; 18 technique nodes with dependency graph, 4 tiers (Foundation&rarr;Intermediate&rarr;Advanced&rarr;Elite), drill-to-unlock system
+7. **Daily Challenge System** &mdash; 7 rotating challenges (speed, power, combo, endurance, defense, technique, wildcard), daily reset with streak tracking, rewards XP
+8. **AI Corner Coach** (Canvas) &mdash; 6-axis Radar chart (Speed/Power/Defense/Stamina/Technique/Ring IQ), round-by-round tactical advice, fight strategy recommendations
+
+**Cross-feature integration:**
+- Quiz answers award belt XP and technique mastery XP
+- Daily challenges track across analytics, belt, and technique features
+- Coach recommendations reference belt rank and mastery progress
+
+**Additional content:**
+- +15 quiz questions (135&rarr;150 total)
+- +12 achievements (130&rarr;142 total)
+- +12 SFX (oscillator/noise-based via Web Audio API)
+- +8 keyboard shortcuts (Shift+key combinations)
+
+### Stage 3. Quality Verification
+
+| Check | Result |
+| --- | --- |
+| JS syntax (node --check) | PASS |
+| Bracket/paren balance | PASS |
+| External CDN references | 0 (clean) |
+| Personal info exposure | 0 |
+| JSON validity (manifest.json) | PASS |
+| HTML entities encoding | All Korean text uses numeric entities |
+| Canvas rendering | All Canvas operations use direct draw calls |
+| Mobile responsive | All containers max-width:100%, touch targets min 44px |
+| File deletions | 0 |
+| v18 sections rendered | 8 new DOM sections with v18- prefix |
+
+### Stage 4. Finalization
+
+- index.html: v18 script tag added, SEO meta (title/description) updated to v18
+- sw.js: cache name &rarr; boxing-trainer-v18, v18_patch.js added to PRECACHE_URLS
+- manifest.json: description &rarr; v18, +8 new shortcuts (펀치분석대시보드/콤보체인빌더/파이터벨트랭킹/라운드퍼포먼스/심박존시뮬/테크닉마스터리/데일리챌린지/AI코너코치)
+- v18_patch.js: ~1400 lines, complete IIFE module with 8 Canvas features, 15 quiz questions, 12 achievements, 12 SFX, 8 keyboard shortcuts
+
