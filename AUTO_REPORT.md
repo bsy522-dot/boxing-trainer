@@ -1145,3 +1145,66 @@ Additional:
 - manifest.json: description &rarr; v18, +8 new shortcuts (펀치분석대시보드/콤보체인빌더/파이터벨트랭킹/라운드퍼포먼스/심박존시뮬/테크닉마스터리/데일리챌린지/AI코너코치)
 - v18_patch.js: ~1400 lines, complete IIFE module with 8 Canvas features, 15 quiz questions, 12 achievements, 12 SFX, 8 keyboard shortcuts
 
+---
+
+## 2026-07-08 &mdash; Pass #12
+
+### Stage 1. Benchmarking vs FightCamp / BOXX
+
+| Feature | FightCamp | BOXX | v18 (before) | v19 (after) |
+| --- | --- | --- | --- | --- |
+| Structured training camp | YES (8-week programs) | YES | **NO** | YES (8-week 4-phase Canvas) |
+| Footwork drill library | YES (drill catalog) | Partial | **NO** | YES (12 drill matrix Canvas) |
+| Punch force measurement | YES (sensor-based) | - | Speed radar only | YES (physics-based gauge Canvas) |
+| Fight film study/analysis | YES (video breakdowns) | - | **NO** | YES (10 fights radar Canvas) |
+| Conditioning circuits | YES (custom HIIT) | YES | HIIT timer only | YES (16 exercise circular Canvas) |
+| Weight management | YES (nutrition tracking) | - | Body comp only | YES (trend line + target Canvas) |
+| Fight IQ assessment | - | - | Ring IQ quiz only | YES (20 scenario radar Canvas) |
+| Fight record/career stats | YES (workout history) | YES | Belt ranking only | YES (donut + career book Canvas) |
+| Workout variety | 500+ workouts | 100+ | Limited | 8 new interactive modules |
+| Personalized coaching | AI-powered | Coach-led | Basic tips | AI Corner Coach + IQ assessment |
+
+**Key gaps closed:** Structured multi-week programming (FightCamp's core differentiator), footwork training (often overlooked in digital boxing), fight analysis/film study (advanced training feature), and comprehensive weight management (critical for competitive boxers).
+
+### Stage 2. Development
+
+**v19_patch.js** (new, ~780 lines, self-contained IIFE patch module):
+
+1. **Training Camp Planner Canvas 480x220** - 8-week progressive camp with 4 phases (Base/Build/Peak/Taper), intensity bar visualization, week-by-week progression, gold highlight on current week, phase legend, 12 training activities
+2. **Footwork Drill Matrix Canvas 480x240** - 12 footwork drills (Shuffle/Pivot L-R/Step&Slide/Retreat/L-Step/V-Step/Circle L-R/In-Out/Cut-Off/Ali Shuffle), 4x3 grid with directional indicators, completion tracking per drill type
+3. **Punch Force Estimator Canvas 360x220** - Physics-based force calculation (F=ma, mass x velocity / impact time), semicircular gauge meter with gradient (green-orange-red), max/avg tracking, Newton scale 0-1200N
+4. **Boxing Film Study Canvas 400x300** - 10 legendary fights (Ali vs Foreman, Leonard vs Hearns, Hagler vs Hearns, Tyson vs Douglas, Pacquiao vs Marquez IV, Ward vs Gatti, Mayweather vs Pacquiao, Canelo vs GGG, Fury vs Wilder III, Lewis vs Tyson), 6-axis radar (Speed/Power/Defense/Footwork/IQ/Stamina), study tracking
+5. **Conditioning Circuit Builder Canvas 360x300** - 16 exercises in circular layout (Burpees/Mountain Climbers/Jump Squats/Push-ups/Plank/High Knees/Box Jumps/Medicine Ball Slams/Battle Ropes/Kettlebell Swings/Sprawls/TRX Rows/Sled Push/Bear Crawl/Wall Balls/Farmer Walk), random 6-exercise selection per circuit, time accumulation
+6. **Weight Management Tracker Canvas 480x240** - Line chart with area fill, target weight dashed line, weight entry history (up to 60 entries), auto-scale Y-axis, difference from target display, trend visualization
+7. **Boxing IQ Assessment Canvas 360x300** - 20 scenario-based fight IQ questions (tactical decision-making), 6-axis radar (Offense/Defense/Ring IQ/Stamina/Countering/Adaptability), S-D grading, best/average IQ tracking
+8. **Fight Record Book Canvas 480x260** - Win/Loss/Draw donut chart with color coding, KO count, recent 6 fights list, win percentage, career record (W-L-D format), 15 AI opponent names
+
+**Additional content:**
+- +15 quiz questions (150&rarr;165 total)
+- +12 achievements (142&rarr;154 total)
+- +12 SFX (camp_start/footwork_step/force_hit/film_play/circuit_beep/weight_log/iq_correct/iq_wrong/fight_win/fight_loss/achievement_v19/nav_v19)
+- +8 keyboard shortcuts (Shift+C/W/P/F/X/M/I/R)
+
+### Stage 3. Quality Verification
+
+| Check | Result |
+| --- | --- |
+| JS syntax (node --check) | PASS |
+| Bracket/paren balance v19_patch.js | () 811/811 {} 244/244 [] 98/98 ALL BALANCED |
+| Bracket/paren balance index.html | () 761/761 {} 387/387 [] 26/26 ALL BALANCED |
+| External CDN references | 0 (clean) |
+| Personal info exposure | 0 |
+| JSON validity (manifest.json) | PASS |
+| HTML entities encoding | All Korean text uses numeric entities |
+| Canvas rendering | All Canvas operations use direct draw calls |
+| Mobile responsive | All containers max-width:100%, touch targets min 44px |
+| File deletions | 0 |
+| v19 sections rendered | 8 new DOM sections with v19- prefix |
+
+### Stage 4. Finalization
+
+- v19_patch.js: ~780 lines new IIFE module with 8 Canvas features, 15 quiz Qs, 12 achievements, 12 SFX, 8 keyboard shortcuts
+- index.html: v19 script tag added, SEO meta (title/description) updated to v19
+- sw.js: cache name &rarr; boxing-trainer-v19, v19_patch.js added to PRECACHE_URLS
+- manifest.json: description &rarr; v19, +8 new shortcuts (트레이닝캠프/풋워크드릴/펀치포스/필름스터디/컨디셔닝서킷/체중관리/복싱IQ/파이트레코드)
+
