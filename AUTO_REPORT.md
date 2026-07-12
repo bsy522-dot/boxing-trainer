@@ -1208,3 +1208,65 @@ Additional:
 - sw.js: cache name &rarr; boxing-trainer-v19, v19_patch.js added to PRECACHE_URLS
 - manifest.json: description &rarr; v19, +8 new shortcuts (트레이닝캠프/풋워크드릴/펀치포스/필름스터디/컨디셔닝서킷/체중관리/복싱IQ/파이트레코드)
 
+
+---
+
+## 2026-07-12 — Pass #11 (v20.0)
+
+### Stage 1. Benchmarking vs FightCamp / BOXX / Fitness Boxing
+
+| Feature | FightCamp | BOXX | Boxing Trainer v19 | v20 (after) |
+| --- | --- | --- | --- | --- |
+| Tactical style analysis/matchups | YES (AI coach) | partial | **NO** | **YES** (8 styles radar) |
+| Rhythm/timing training | YES (beat-sync) | YES | **NO** | **YES** (8 patterns BPM) |
+| Detailed punch count per round | YES (sensors) | YES | partial | **YES** (7 types 12R) |
+| Muscle group training guide | YES | YES | **NO** | **YES** (12 muscles) |
+| Energy/pacing management | YES (zones) | - | **NO** | **YES** (12R zones) |
+| Legend comparison/study | - | - | partial (film study) | **YES** (10 legends dual radar) |
+| Custom workout builder | YES (daily) | YES | **NO** | **YES** (configurable gen) |
+| Nutrition planning | YES | YES | **NO** | **YES** (macros+hydration) |
+
+**Gap analysis**: v19 lacked structured tactical analysis (counter vs pressure), rhythm-specific training, detailed per-round punch analytics, anatomy education, energy pacing strategy, comprehensive legend comparisons, customizable workout generation, and nutrition planning. All 8 gaps now addressed.
+
+### Stage 2. Full-team development
+
+**v20_patch.js** (new, 813 lines, self-contained IIFE patch module):
+
+1. **Sparring Tactics Simulator Canvas 580x360** — 8 tactical styles (Counter-Puncher/Pressure Fighter/Outside Boxer/Brawler/Switch Hitter/Defensive Wizard/Body Puncher/Clinch Fighter), 6-axis radar (Speed/Power/Defense/Footwork/IQ/Stamina), W/L tracking, style matchup simulation
+2. **Boxing Rhythm Trainer Canvas 560x340** — 8 rhythm patterns (2-Beat/3-Beat/4-Beat/Syncopated/Broken/Tempo Change/Staccato/Legato), BPM 80-180, tap timing bars, accuracy percentage tracking
+3. **Punch Counter Dashboard Canvas 620x380** — 7 punch types (Jab/Cross/Hook/Upper/Body/Lead/Rear) x 12 rounds stacked bar chart, color-coded legend, round simulation, total punch accumulation
+4. **Boxing Anatomy Guide Canvas 580x360** — 12 muscle groups (Deltoids/Biceps/Triceps/Pectorals/Core/Obliques/Quads/Calves/Lats/Glutes/Forearms/Neck), importance percentage horizontal bars, color-coded by priority, exercise recommendations
+5. **Round Energy Management Canvas 560x340** — 12-round energy plan with Green/Yellow/Red zones, line chart with dot markers, strategy variation (early rounds moderate, middle conserve, championship rounds max output)
+6. **Boxing Legend Comparator Canvas 600x380** — 10 legends (Ali/Tyson/Mayweather/Pacquiao/Leonard/Robinson/Louis/Marciano/Hagler/Hearns), dual 6-axis radar overlay (red vs blue), switchable A/B fighters
+7. **Custom Workout Generator Canvas 580x360** — 16 exercises database, 5 focus areas (Speed/Power/Endurance/Defense/Combo), 5 duration options (15-60min), difficulty 1-5, generated exercise list with sets/reps
+8. **Boxing Nutrition Planner Canvas 560x340** — 4 meal plans (Pre-Fight/Post-Fight/Training/Rest), macros pie chart (Protein/Carbs/Fat), calorie targets, hydration tracker bar (250ml increments), streak counter
+
+**Additional content:**
+- +15 quiz questions (165→180 total)
+- +12 achievements (154→166 total)
+- +12 SFX (spar_hit/rhythm_beat/punch_count/anatomy_flex/energy_burst/legend_select/workout_gen/nutrition_log/quiz_correct20/quiz_wrong20/achieve20/nav_v20)
+- +8 keyboard shortcuts (Shift+1/2/3/4/5/6/7/8)
+
+### Stage 3. Quality Verification
+
+| Check | Result |
+| --- | --- |
+| JS syntax (node --check) | PASS |
+| Bracket balance v20_patch.js | () 0, [] 0, {} 0 — ALL BALANCED |
+| Bracket balance index.html | () 0, [] 0, {} 0 — ALL BALANCED |
+| External CDN references | 0 (clean) |
+| Personal info exposure | 0 |
+| JSON validity (manifest.json) | PASS |
+| HTML entities encoding | All Korean text uses numeric entities |
+| Canvas rendering | All Canvas operations use direct draw calls |
+| Mobile responsive | All containers width:100%, touch targets appropriate |
+| File deletions | 0 |
+| Bottom fixed navbar | NOT created (UI rule compliance) |
+| v20 sections rendered | 8 new DOM sections with v20- prefix |
+
+### Stage 4. Finalization
+
+- v20_patch.js: 813 lines new IIFE module with 8 Canvas features, 15 quiz Qs, 12 achievements, 12 SFX, 8 keyboard shortcuts
+- index.html: v20 script tag added, SEO meta (title/description) updated to v20
+- sw.js: cache name → boxing-trainer-v20, v20_patch.js added to PRECACHE_URLS
+- manifest.json: description → v20, +8 new shortcuts (스파링전술/복싱리듬/펀치카운터/해부학가이드/에너지관리/레전드비교/워크아웃생성/영양플랜) — total 54 shortcuts
