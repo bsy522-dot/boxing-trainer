@@ -1270,3 +1270,64 @@ Additional:
 - index.html: v20 script tag added, SEO meta (title/description) updated to v20
 - sw.js: cache name → boxing-trainer-v20, v20_patch.js added to PRECACHE_URLS
 - manifest.json: description → v20, +8 new shortcuts (스파링전술/복싱리듬/펀치카운터/해부학가이드/에너지관리/레전드비교/워크아웃생성/영양플랜) — total 54 shortcuts
+
+---
+
+## v21.0 — 2026-07-15
+
+### Stage 1. Benchmarking
+
+**Competitors analyzed:** FightCamp, BOXX
+
+| Gap Identified | Competitor Reference | v21 Solution |
+|---|---|---|
+| Fight camp periodization planning | FightCamp multi-week training camps | Fight Camp Periodization Canvas — 12-week periodized plan with base/build/peak/taper phases |
+| Punch accuracy tracking heatmap | BOXX real-time accuracy feedback | Punch Accuracy Heatmap Canvas — target zone hit tracking with per-zone accuracy stats |
+| Cardio zone monitoring | FightCamp heart rate zone display | Boxing Cardio Zones Canvas — 5-zone cardio model with real-time zone tracking and calorie estimation |
+| Corner strategy communication | Pro boxing corner strategy boards | Corner Strategy Board Canvas — interactive round-by-round strategy planning with tactical instructions |
+| Fighter archetype identification | BOXX style-matching system | Fighter Archetype Quiz Canvas — 10-question assessment to identify fighter archetype (swarmer/out-boxer/brawler/boxer-puncher/counter-puncher) |
+| Defensive drill sequencing | FightCamp defensive combo drills | Defensive Drill Sequencer Canvas — progressive defense drill chains with timing and block-type training |
+| Injury prevention guidance | Both competitors' warm-up/cooldown | Boxing Injury Prevention Canvas — body-part specific injury risk assessment with prevention exercises |
+| Match scoring analysis | Pro boxing judge scorecards | Match Analysis Scorecard Canvas — 12-round scoring with criteria (clean punches/defense/aggression/ring generalship) |
+
+### Stage 2. Development
+
+**v21_patch.js** — Self-contained IIFE module (~850 lines)
+
+| Component | Count | Details |
+|---|---|---|
+| Canvas Features | 8 | Fight Camp Periodization, Punch Accuracy Heatmap, Boxing Cardio Zones, Corner Strategy Board, Fighter Archetype Quiz, Defensive Drill Sequencer, Boxing Injury Prevention, Match Analysis Scorecard |
+| Quiz Questions | 15 | Boxing training periodization, accuracy, cardio zones, corner strategy, fighter types, defense, injury prevention, match scoring |
+| Achievements | 12 | camp_planner, sharpshooter, cardio_king, corner_master, self_aware, iron_defense, safety_first, judge_eye, quiz_v21_s, quiz_v21_clear, multi_tool_v21, v21_complete |
+| SFX (Web Audio) | 12 | period_plan, accuracy_hit, accuracy_miss, cardio_beep, corner_call, archetype_reveal, defense_block, injury_scan, match_score, quiz_correct21, quiz_wrong21, achieve21 |
+| Keyboard Shortcuts | 8 | Shift+Q/W/E/R/T/Y/U/I |
+| Nav Integration | Scrollable button row appended to existing nav container (no fixed bottom bar) |
+
+**Cumulative Totals (v8-v21):**
+- Achievements: 178
+- Quiz Questions: 195
+- Canvas Features: 112+
+- Keyboard Shortcuts: 100+
+
+### Stage 3. Quality Verification
+
+| Check | Result |
+|---|---|
+| `node -c v21_patch.js` | PASS — no syntax errors |
+| Bracket balance | { 279/279, ( 882/882, [ 148/148 — all balanced |
+| manifest.json | Valid JSON |
+| External CDN references | 0 found (compliant) |
+| Personal info exposure | 0 found (compliant) |
+| HTML entities encoding | All Korean text uses numeric entities |
+| Canvas rendering | All Canvas operations use direct draw calls |
+| Mobile responsive | All containers width:100%, touch targets appropriate |
+| File deletions | 0 |
+| Bottom fixed navbar | NOT created (UI rule compliance) |
+| v21 sections rendered | 8 new DOM sections with v21- prefix |
+
+### Stage 4. Finalization
+
+- v21_patch.js: ~850 lines new IIFE module with 8 Canvas features, 15 quiz Qs, 12 achievements, 12 SFX, 8 keyboard shortcuts
+- index.html: v21 script tag added, SEO meta (title/description) updated to v21, hero-sub v21, footer v21.0 | 178 Achievements | 195 Quiz
+- sw.js: cache name boxing-trainer-v21, v21_patch.js added to PRECACHE_URLS
+- manifest.json: description v21, +8 new shortcuts (캠프주기화/정확도히트맵/카디오존/코너전략/아키타입퀴즈/방어드릴/부상예방/매치스코어) — total 62 shortcuts
