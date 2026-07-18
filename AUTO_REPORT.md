@@ -1331,3 +1331,57 @@ Additional:
 - index.html: v21 script tag added, SEO meta (title/description) updated to v21, hero-sub v21, footer v21.0 | 178 Achievements | 195 Quiz
 - sw.js: cache name boxing-trainer-v21, v21_patch.js added to PRECACHE_URLS
 - manifest.json: description v21, +8 new shortcuts (캠프주기화/정확도히트맵/카디오존/코너전략/아키타입퀴즈/방어드릴/부상예방/매치스코어) — total 62 shortcuts
+
+---
+
+## v22.0 — 2026-07-18
+
+### 1차: 벤치마킹 (FightCamp / BOXX 대비)
+
+| 열위점 | FightCamp/BOXX | boxing-trainer v21 | v22 해결 |
+|--------|---------------|-------------------|----------|
+| 펀치 속도 분석 | 센서 기반 실시간 측정 | 없음 | ⚡ Punch Speed Radar Canvas 7종 |
+| 멘탈 트레이닝 | AI 코칭 멘탈 프로그램 | 없음 | 🧠 Mental Toughness 8축 Radar |
+| 스파링 매치메이킹 | AI 매칭 시스템 | 없음 | 🥊 Sparring Partner 10인 AI |
+| 회복 최적화 | 수면/얼음목욕 추적 | 없음 | 💤 Recovery Optimizer 8방법 |
+| 콤보 프로그레션 | 난이도별 단계적 학습 | 없음 | 🔥 Combo Ladder 10티어 |
+| 경기 전 준비 | 체크리스트/루틴 | 없음 | ✅ Fight Night 20항목 |
+| 반응 속도 훈련 | 반응 속도 게임 | 없음 | ⏱ Reaction Time Trainer |
+| 체성분 추적 | 체중/체지방 관리 | 없음 | 📊 Body Composition Tracker |
+
+### 2차: 개발 (v22_patch.js 1077줄)
+
+**8 신규 Canvas 기능:**
+1. **Punch Speed Radar** (580x360) — 7종 펀치(Jab/Cross/Hook/Uppercut/Body Hook/Lead Upper/Overhand) 속도 바차트, 30세션 트렌드, 자동 등급
+2. **Mental Toughness Trainer** (600x380) — Focus/Confidence/Aggression/Pressure/Recovery/Calm/Ring IQ/Intimidation 8축 Radar, 멘탈 운동 가이드, S~D등급
+3. **Sparring Partner Matchmaker** (580x360) — 10명 AI 파트너(Iron Mike/Sugar Ray/Hitman/Prince/Pacman/Money/GGG/Canelo/Fury/Tank) 6축 Radar, 호환성% 매칭
+4. **Recovery Optimizer** (560x340) — 8종 회복(Sleep/Ice Bath/Active Recovery/Stretching/Nutrition/Hydration/Massage/Mental Rest) 수평바, S~D등급, 팁
+5. **Combo Difficulty Ladder** (600x380) — 10티어 (Basic Jab → Perfect 10) 콤보 진행률 바, 현재 티어 하이라이트, 자동 승급
+6. **Fight Night Checklist** (580x360) — 4카테고리(Equipment/Nutrition/Warmup/Mental) 20항목, 진행률 원형 프로그레스, 완료 이벤트 카운트
+7. **Reaction Time Trainer** (560x340) — 시각 자극 반응 게임, 30회 트렌드 라인차트, 최고/평균/백분위, 200ms 프로 기준선
+8. **Body Composition Tracker** (580x360) — Weight/Body Fat/Muscle Mass 듀얼 라인차트, BMI, 체급(17클래스) 자동 추천
+
+**추가:**
+- Quiz v22 +15문 (195→210): 펀치속도/회복법/롤링/반응시간/체지방%/주기화/멘탈/헤비급/잽사용/원투/라운드수/필리쉘/근력/스탠딩8카운트/BMI
+- 업적 +12종 (178→190): speed_demon/iron_mind/spar_veteran/recovery_pro/combo_king/fight_ready/fast_reflex/body_tracker/quiz_v22_master/multi_tool_v22/lightning_hands/v22_complete
+- SFX 14종 Web Audio API: speed_punch/speed_record/mental_train/mental_level/spar_match/recovery_log/combo_hit/combo_tier/checklist_check/reaction_go/reaction_fast/body_log/quiz_correct22/quiz_wrong22/achieve22/nav_v22
+- 키보드 Shift+1~8 (8섹션) + Shift+0 (퀴즈)
+
+### 3차: 품질 검증
+
+| 항목 | 결과 |
+|------|------|
+| JS Syntax (node -c) | PASS |
+| 괄호 밸런스 | ( ) 904/904, { } 253/253, [ ] 125/125 — ALL BALANCED |
+| 외부 CDN/URL | 0건 |
+| 개인정보 | 0건 |
+| 하단 고정 네비바 | 0건 (UI불가침 규칙 준수) |
+| 파일 삭제 | 0건 |
+
+### 4차: 배포
+
+- `v22_patch.js` 신규 (1077줄)
+- `index.html` SEO v22 갱신 + v22 스크립트태그
+- `sw.js` v21→v22 (boxing-trainer-v22 캐시, v22_patch.js PRECACHE)
+- `manifest.json` v22 설명 + shortcuts 8종 추가 (총62종)
+- `AUTO_REPORT.md` v22 보고서 추가
