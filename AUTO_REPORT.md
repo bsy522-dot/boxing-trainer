@@ -1385,3 +1385,58 @@ Additional:
 - `sw.js` v21→v22 (boxing-trainer-v22 캐시, v22_patch.js PRECACHE)
 - `manifest.json` v22 설명 + shortcuts 8종 추가 (총62종)
 - `AUTO_REPORT.md` v22 보고서 추가
+
+---
+
+## v23.0 (2026-07-21)
+
+### 1차: 벤치마킹+분석
+**비교 대상**: FightCamp, BOXX, Precision Boxing Coach
+
+| 열위점 | FightCamp/BOXX 기준 | v23 해결 |
+|--------|---------------------|----------|
+| 콤보 시각화 부재 | FightCamp 콤보 플로우 가이드 | Shadow Boxing Combo Visualizer (12종 콤보, Lv1~5, 플로우 다이어그램) |
+| 펀치 힘 분석 없음 | BOXX 임팩트 센서 데이터 | Power Punch Force Curve (7종 펀치 Force-Time 커브, 피크N 비교) |
+| 링 포지셔닝 추적 없음 | FightCamp 무브먼트 데이터 | Ring Movement Heatmap (8x8 링 존 히트맵, 풋워크 패턴) |
+| 라운드별 전략 기능 없음 | BOXX 라운드 플래너 | Round Strategy Planner (12R 에너지/공격성 듀얼라인, 6전술) |
+| 정확도 존 분석 없음 | FightCamp 타겟존 트래커 | Punch Accuracy Zone (9존 바디 실루엣 히트맵, 정밀도 드릴) |
+| VO2max 존 훈련 없음 | BOXX 심박존 모니터 | Cardio VO2max Zone (5 HR 존 도넛, 칼로리 라인차트) |
+| 헤드무브먼트 훈련 없음 | FightCamp 디펜스 드릴 | Head Movement Drill (6패턴 슬립/롤/덕 Radar, 반응등급) |
+| 전술 시나리오 없음 | 복싱 코치 앱 전략 트레이닝 | Fight IQ Scenario Trainer (15 시나리오 결정트리, IQ 게이지) |
+
+### 2차: 개발팀 전체 투입
+
+**v23_patch.js** 신규 (1161줄, 자기완결형 IIFE 패치 모듈)
+
+#### 8 Canvas 기능:
+1. **Shadow Boxing Combo Visualizer** Canvas 620x380 - 12종 콤보 시퀀스(Basic Jab-Cross~Champion Combo), Lv.1~5 난이도, 컬러코딩 플로우 노드+화살표, 전체 난이도 바차트, 드릴 타이머
+2. **Power Punch Force Curve** Canvas 600x380 - Jab/Cross/Hook/Uppercut/Body Hook/Lead Upper/Overhand 7종, Force-Time 곡선 오버레이, 350~900N 물리기반, 30포인트 sin 모델
+3. **Ring Movement Heatmap** Canvas 620x400 - 8x8 링 존 히트맵(64셀), 코너포스트+3중 로프, 강도 컬러그라디언트, RED/BLUE CORNER 라벨
+4. **Round Strategy Planner** Canvas 600x380 - 12R 에너지(녹)+공격성(적) 듀얼라인차트, 6전술(Jab&Move/Pressure/Counter/Clinch/Body Work/Head Hunt) 색상코딩 타임라인
+5. **Punch Accuracy Zone** Canvas 580x380 - 바디 실루엣(머리원+토르소+다리) 9존(3x3) 히트맵, 존별 수평바차트, S~D정밀도 등급
+6. **Cardio VO2max Zone** Canvas 580x360 - 5 HR 존(Recovery/Aerobic/Tempo/Threshold/VO2max) 도넛차트, VO2max 중앙값, 최근 10세션 칼로리 라인차트
+7. **Head Movement Drill** Canvas 600x380 - 6패턴(Slip L/R, Roll L/R, Duck, Pull Back) 6축 Radar, 패턴별 설명+횟수, S~D종합등급
+8. **Fight IQ Scenario Trainer** Canvas 620x380 - 15 전술 시나리오 결정트리, 반원 IQ 게이지(5색 그라디언트+니들), 시나리오 완료 그리드
+
+#### 부가 콘텐츠:
+- **퀴즈 v23** +15문항 (210→225): shadow boxing/peak force/ring generalship/punch accuracy/VO2max/slip/HR zone/fight IQ/peek-a-boo/pull counter/12 rounds/footwork/sweet science/active recovery/ring cutting
+- **업적 +12종** (190→202): shadow_master/power_puncher/ring_general/strategist/sharpshooter/cardio_king/head_mover/fight_iq_pro/quiz_v23_master/v23_explorer/combo_virtuoso/v23_complete
+- **SFX 14종** Web Audio API: combo_start/combo_hit/power_impact/ring_step/strategy_plan/accuracy_hit/accuracy_miss/cardio_zone/head_dodge/head_hit/iq_correct/iq_wrong/quiz_v23/achieve_v23
+- **키보드** Shift+A/B/C/D/E/F/G/H (8섹션) + Shift+0 (퀴즈)
+- 기존 네비바에 9버튼 append (하단 네비바 신규생성 없음 - UI불가침 규칙 준수)
+
+### 3차: 품질팀 검증
+- **JS 구문**: `node -c v23_patch.js` → PASS
+- **괄호 밸런스**: String-aware 분석 → ALL BALANCED (0/0/0)
+- **CDN 참조**: 0건 (외부 리소스 없음)
+- **개인정보**: 0건
+- **하단 고정 네비바**: 미생성 (기존 네비바 탐색+append만 수행)
+- **sw.js**: `node -c` PASS
+- **manifest.json**: JSON.parse PASS
+
+### 4차: 마무리
+- `v23_patch.js` 신규 (1161줄)
+- `index.html` SEO v23 갱신 + v23 스크립트태그
+- `sw.js` v22→v23 (boxing-trainer-v23 캐시, v23_patch.js PRECACHE)
+- `manifest.json` v23 설명 + shortcuts 8종 추가 (총70종)
+- `AUTO_REPORT.md` v23 보고서 추가

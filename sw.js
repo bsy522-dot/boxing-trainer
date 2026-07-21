@@ -1,5 +1,5 @@
 // Boxing Trainer Pro - Service Worker v13
-const CACHE_NAME = 'boxing-trainer-v22';
+const CACHE_NAME = 'boxing-trainer-v23';
 const PRECACHE_URLS = [
   './',
   './index.html',
@@ -19,6 +19,7 @@ const PRECACHE_URLS = [
   './v20_patch.js',
   './v21_patch.js',
   './v22_patch.js',
+  './v23_patch.js',
   './manifest.json'
 ];
 
