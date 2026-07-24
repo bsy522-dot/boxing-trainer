@@ -1440,3 +1440,56 @@ Additional:
 - `sw.js` v22→v23 (boxing-trainer-v23 캐시, v23_patch.js PRECACHE)
 - `manifest.json` v23 설명 + shortcuts 8종 추가 (총70종)
 - `AUTO_REPORT.md` v23 보고서 추가
+
+---
+
+## 2026-07-24 &mdash; Pass #24 (Opus 4.6)
+
+### 1차: 벤치마킹 vs FightCamp / BOXX
+
+| 격차 (v23) | 경쟁사 기능 | v24 해결 |
+| --- | --- | --- |
+| 콤보 패턴 분석 없음 | FightCamp 콤보 인사이트 | Punch Combination DNA Analyzer (12 DNA 콤보, 이중나선 시각화) |
+| 스탠스 비교 없음 | BOXX 스탠스 가이드 | Fighter Stance Comparison (8 스탠스, 6축 Radar 오버레이) |
+| 구성형 라운드 타이머 없음 | FightCamp 라운드 타이머 | Boxing Round Timer Pro (1-12R, 2-3분, 원형 링, 벨 SFX) |
+| 근피로 추적 없음 | BOXX 근육 리커버리 | Muscle Fatigue Recovery Map (10 근육군 수평바, 회복추정) |
+| 클린치 기술 라이브러리 없음 | 복싱 코치 앱 클린치 가이드 | Clinch Technique Library (8 기술, Radar, 시나리오 드릴) |
+| 펀치 볼륨 추적 없음 | FightCamp 펀치 카운터 | Punch Volume Tracker (12R 라인차트, 프로 평균 비교) |
+| 코너 어드바이스 없음 | BOXX 코칭 시스템 | Corner Advice Simulator (AI 코너맨, 8 전략카드) |
+| 컨디셔닝 서킷 없음 | FightCamp 서킷 트레이닝 | Boxing Conditioning Circuit (12 스테이션, 완료 추적) |
+
+### 2차: 개발팀 전체 투입
+
+**v24_patch.js** 신규 (1305줄, 자기완결형 IIFE 패치 모듈)
+
+#### 8 Canvas 기능:
+1. **Punch Combination DNA Analyzer** Canvas 620x400 - 12종 DNA 콤보(Jab-Cross Basic~Legend Sequence), 이중나선 애니메이션, 패턴 빈도 수평바차트, 시그니처 콤보 감지, S~D 등급
+2. **Fighter Stance Comparison Tool** Canvas 600x380 - Orthodox/Southpaw/Switch/Peek-a-boo/Philly Shell/Cross-arm/Crouching/Square 8종, Defense/Offense/Mobility/Counter/Clinch/Endurance 6축 Radar, 듀얼 오버레이
+3. **Boxing Round Timer Pro** Canvas 580x360 - 1-12R 구성(2-3분 라운드, 30-60초 휴식), 원형 프로그레스 링(보라~핑크 그라디언트), 벨 SFX, 라운드별 강도 바차트
+4. **Muscle Fatigue Recovery Map** Canvas 620x380 - 10 근육군(Deltoids/Biceps/Triceps/Core/Quads/Calves/Lats/Glutes/Forearms/Trapezius) 수평바, 색상 4단계(Fresh/Mild/Moderate/High), 회복시간 추정
+5. **Clinch Technique Library** Canvas 600x380 - 8 클린치 기술(Inside Tie/Outside Tie/Underhook/Overhook/Collar Tie/Bear Hug/Double Underhook/Dirty Boxing), 6축 Radar, 시나리오 드릴
+6. **Punch Volume Tracker** Canvas 620x380 - 12R 라인차트, 데이터 포인트, 프로 평균선(75/R 점선), 누적 총계, Championship/Contender/Amateur 페이스 등급
+7. **Corner Advice Simulator** Canvas 600x380 - 8 전략카드(Body Attack/Stick and Move/Clinch and Rest/Cut the Ring/Counter Punch/Double Jab Power/Head Movement/Finish Strong), 상황별 전술 어드바이스
+8. **Boxing Conditioning Circuit** Canvas 620x400 - 12 스테이션 원형 레이아웃(Burpees/Mountain Climbers/Jump Rope/Shadow Boxing/Speed Bag/Heavy Bag/Push-ups/Sit-ups/Plank/High Knees/Box Jumps/Lateral Shuffles), 완료 추적, S~D 등급
+
+#### 부가 콘텐츠:
+- **퀴즈 v24** +15문항 (225&rarr;240): combo DNA/peek-a-boo/round duration/muscle recovery/inside tie/punch volume/corner advice/jump rope/Philly Shell/punch volume meaning/southpaw/dirty boxing/rest period/mountain climbers/ring cutting
+- **업적 +12종** (202&rarr;214): dna_analyst/stance_scholar/timer_warrior/muscle_mapper/clinch_master/volume_king/corner_listener/circuit_complete/quiz_v24_ace/v24_explorer/endurance_beast/v24_legend
+- **SFX 16종** Web Audio API: dna_scan/dna_match/stance_switch/timer_bell/timer_tick/fatigue_warn/fatigue_recover/clinch_grab/clinch_break/volume_punch/corner_advice/circuit_start/circuit_done/quiz_v24/achieve_v24/quiz_wrong_v24
+- **키보드** Shift+Q/W/E/R/T/Y/U/I (8섹션) + Shift+9 (퀴즈)
+- 기존 네비바에 9버튼 append (하단 네비바 신규생성 없음 - UI불가침 규칙 준수)
+
+### 3차: 품질팀 검증
+- **JS 구문**: `node -c v24_patch.js` &rarr; PASS
+- **CDN 참조**: 0건 (외부 리소스 없음)
+- **개인정보**: 0건
+- **하단 고정 네비바**: 미생성 (기존 네비바 탐색+append만 수행)
+- **sw.js**: `node -c` PASS
+- **manifest.json**: JSON.parse PASS
+
+### 4차: 마무리
+- `v24_patch.js` 신규 (1305줄)
+- `index.html` SEO v24 갱신 + v24 스크립트태그
+- `sw.js` v23&rarr;v24 (boxing-trainer-v24 캐시, v24_patch.js PRECACHE)
+- `manifest.json` v24 설명 + shortcuts 8종 추가 (총78종)
+- `AUTO_REPORT.md` v24 보고서 추가
