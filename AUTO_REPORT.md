@@ -1493,3 +1493,70 @@ Additional:
 - `sw.js` v23&rarr;v24 (boxing-trainer-v24 캐시, v24_patch.js PRECACHE)
 - `manifest.json` v24 설명 + shortcuts 8종 추가 (총78종)
 - `AUTO_REPORT.md` v24 보고서 추가
+
+---
+
+## 2026-07-27 &mdash; v25.0 (Opus 4.6)
+
+### Stage 1. Benchmarking vs FightCamp / BOXX
+
+| Feature | FightCamp | BOXX | BoxingTrainerPro v24 | v25 Gap Filled |
+|---|---|---|---|---|
+| Punch Power Analytics | Real-time sensor | BT sensor | Simulated stats | &check; Bar chart 7 punch types + peak force |
+| Workout History Calendar | Monthly overview | Weekly log | Per-session record only | &check; 90-day GitHub-style heatmap |
+| Glove Selection Guide | Not offered | Size only | Not offered | &check; 6 types &times; weight class matrix |
+| Fitness Profiling | Basic metrics | Heart zone | Body comp tracker | &check; 6-axis Radar (S~D grading) |
+| Footwork Training | Video-based | Mirror drills | Footwork drill matrix | &check; 8-direction radar pattern drills |
+| Combo Efficiency | Rep counter | Set tracker | Combo builder | &check; 10 combos time/power/stamina chart |
+| Weight Class Strategy | Not offered | Not offered | Weight class encyclopedia | &check; 17 classes stacked comparison |
+| Round Energy Management | Round timer | Basic timer | Energy management | &check; 12R optimal distribution overlay |
+
+### Stage 2. Dev Work &mdash; v25 Module (981 lines)
+
+**UI (Emerald Theme)**
+- 8 Canvas features with gradient #059669&rarr;#047857, accent #10b981
+- Nav buttons appended to existing navigation bar (no new fixed bottom nav)
+- Full-screen modal overlays with standard close (X / ESC / background click)
+- Responsive canvas sizing for mobile &amp; desktop
+
+**Canvas Features**
+1. **Punch Power Dynamics** (620&times;400) &mdash; 7 punch types bar chart with force curves, peak power labels, session trending
+2. **Workout Calendar** (620&times;380) &mdash; 90-day GitHub-style heatmap, streak counter, weekly goal tracking
+3. **Glove Fitting Guide** (600&times;380) &mdash; 6 glove types with oz/usage metric bars, weight class recommendations
+4. **Fighter Fitness Profile** (620&times;400) &mdash; 6-axis radar chart (Aerobic/Anaerobic/Strength/Flexibility/Reaction/Core), S~D grading
+5. **Footwork Drill Patterns** (600&times;380) &mdash; 8-direction movement radar, drill accuracy tracking
+6. **Combo Efficiency Analyzer** (620&times;400) &mdash; 10 combos horizontal bar comparison (time/power/stamina)
+7. **Weight Class Strategy** (620&times;380) &mdash; 17 weight classes stacked bar chart, tactical style recommendations
+8. **Round Energy Distribution** (620&times;400) &mdash; 12-round energy allocation with optimal overlay, strategy simulation
+
+**Audio (16 SFX)**
+- Web Audio API oscillator-based: power hit, calendar mark, glove select, radar ping, footwork step, combo chain, weight shift, energy pulse, quiz correct/wrong, achievement, nav click, modal open/close, feature start, data save
+
+**Quiz**
+- 15 new questions (240&rarr;255 total) covering punch dynamics, workout scheduling, glove fitting, fitness profiling, footwork, combo efficiency, weight class strategy, round energy management
+
+**Achievements**
+- 12 new achievements (214&rarr;226 total): Power Analyst, Calendar Master, Glove Expert, Fitness Profiler, Footwork Pro, Combo Optimizer, Weight Strategist, Energy Manager, Punch Scientist, Streak Champion, Pattern Master, Efficiency King
+
+**Keyboard Shortcuts**
+- Shift+A/S/D/F/G/H/J/K (8 features), Shift+0 (quiz)
+
+### Stage 3. QA Checks
+
+| Check | Result |
+|---|---|
+| `node -c v25_patch.js` | &check; Syntax valid |
+| External CDN references | &check; None found |
+| Personal info exposure | &check; None found |
+| New fixed bottom nav bar | &check; None (buttons append to existing nav) |
+| localStorage persistence | &check; boxingV25Patch key |
+| Service worker cache | &check; boxing-trainer-v25, v25_patch.js precached |
+| Manifest shortcuts | &check; 8 new shortcuts added (total 86) |
+
+### Stage 4. Deliverables
+
+- `v25_patch.js` &mdash; new (981 lines)
+- `index.html` &mdash; title/meta v25 update + v25 script tag
+- `sw.js` &mdash; v24&rarr;v25 (boxing-trainer-v25 cache, v25_patch.js PRECACHE)
+- `manifest.json` &mdash; v25 description + 8 shortcuts added (total 86)
+- `AUTO_REPORT.md` &mdash; v25 report appended
