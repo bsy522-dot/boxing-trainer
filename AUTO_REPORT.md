@@ -1560,3 +1560,61 @@ Additional:
 - `sw.js` &mdash; v24&rarr;v25 (boxing-trainer-v25 cache, v25_patch.js PRECACHE)
 - `manifest.json` &mdash; v25 description + 8 shortcuts added (total 86)
 - `AUTO_REPORT.md` &mdash; v25 report appended
+
+---
+
+## v26.0 &mdash; 2026-07-30
+
+### Stage 1. Benchmarking (10%)
+
+| Metric | Boxing Trainer v25 | FightCamp | BOXX | v26 Target |
+|---|---|---|---|---|
+| Canvas features | 80 | ~12 | ~8 | 88 |
+| Quiz questions | 255 | 0 | 0 | 270 |
+| Achievements | 226 | ~30 | ~20 | 238 |
+| SFX types | 128+ | ~15 | ~10 | 144+ |
+| Offline (PWA) | Yes | No | No | Yes |
+| Keyboard nav | Shift combos | None | None | Shift+Q/W/E/R/T/Y/U/I/9 |
+
+Gap identified: no punch accuracy progression tracking, no periodization planner, no defensive reaction analytics, no punch biomechanics visualization, no training load monitoring (ACWR), no boxing-specific nutrition periodization, no ring generalship tactical analysis.
+
+### Stage 2. Development (50%)
+
+**New file: `v26_patch.js` (1300 lines)**
+
+8 Canvas interactive features (purple theme `#a78bfa`):
+
+1. **Punch Accuracy Progression** (`#v26-accuracy`, Shift+Q) &mdash; 620&times;400 Canvas. 9-zone body target with per-zone hit/miss tracking, 30-session line chart progression, S&sim;D letter grade system.
+2. **Fight Camp Periodization Planner** (`#v26-camp`, Shift+W) &mdash; 620&times;380 Canvas. 16-week macro cycle across 4 phases (Base/Build/Peak/Taper), weekly volume bar chart, readiness gauge.
+3. **Defensive Reaction Matrix** (`#v26-defense`, Shift+E) &mdash; 620&times;400 Canvas. 8-attack &times; 6-defense heatmap, reaction time tracking, defensive efficiency percentage.
+4. **Punch Biomechanics Analyzer** (`#v26-biomech`, Shift+R) &mdash; 600&times;380 Canvas. 7 punch types, 6-segment kinetic chain force flow visualization, biomechanics efficiency score.
+5. **Sparring Performance Radar** (`#v26-sparring`, Shift+T) &mdash; 620&times;400 Canvas. 8-axis radar chart (offense/defense/ring control/stamina/timing/power/speed/accuracy), previous session overlay comparison.
+6. **Training Load Monitor** (`#v26-load`, Shift+Y) &mdash; 600&times;380 Canvas. ACWR (Acute:Chronic Workload Ratio), acute/chronic 28-day line chart, injury risk zone gauge.
+7. **Boxing Nutrition Periodizer** (`#v26-nutrition`, Shift+U) &mdash; 620&times;400 Canvas. Fight week 7-day meal plan, macro donut chart (protein/carb/fat), hydration tracker bar.
+8. **Ring Generalship Analyzer** (`#v26-ring`, Shift+I) &mdash; 620&times;380 Canvas. 8 tactics bar chart, 4&times;4 ring zone heatmap, tactical IQ semi-circle gauge.
+
+- Quiz: 15 new questions (255&rarr;270 total), Shift+9 shortcut
+- Achievements: 12 new (226&rarr;238 total)
+- SFX: 16 new types via Web Audio API (AudioContext + OscillatorNode)
+- State: localStorage key `boxingV26Patch`, load/save/default pattern
+- Init: 700ms delayed initialization via setTimeout
+
+### Stage 3. Quality Verification (30%)
+
+| Check | Result |
+|---|---|
+| `node -c v26_patch.js` | PASS &mdash; syntax OK |
+| `node -c sw.js` | PASS &mdash; syntax OK |
+| `manifest.json` parse | PASS &mdash; valid JSON |
+| External CDN scan | PASS &mdash; 0 external URLs |
+| `position:fixed;bottom:0` scan | PASS &mdash; no new bottom nav |
+| Personal info scan | PASS &mdash; none found |
+| IIFE pattern | PASS &mdash; self-contained closure |
+
+### Stage 4. Deliverables
+
+- `v26_patch.js` &mdash; new (1300 lines)
+- `index.html` &mdash; title/meta v25&rarr;v26 update + v26 script tag
+- `sw.js` &mdash; v25&rarr;v26 (boxing-trainer-v26 cache, v26_patch.js PRECACHE)
+- `manifest.json` &mdash; v26 description + 8 shortcuts added (total 104)
+- `AUTO_REPORT.md` &mdash; v26 report appended
