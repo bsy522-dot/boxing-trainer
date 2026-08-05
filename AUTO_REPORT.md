@@ -1682,3 +1682,102 @@ Gap identified: no punch accuracy progression tracking, no periodization planner
 - `sw.js` &mdash; v26&rarr;v27 (boxing-trainer-v27 cache, v27_patch.js PRECACHE)
 - `manifest.json` &mdash; v27 description + 8 shortcuts added (total 112)
 - `AUTO_REPORT.md` &mdash; v27 report appended
+
+---
+
+## v28.0 &mdash; 2026-08-05
+
+**Rotation target**: boxing-trainer (oldest [AUTO] commit: 2026-08-02)
+
+### Stage 1. Competitive Benchmarking (10%)
+
+| Competitor | Feature Gap Identified |
+|---|---|
+| FightCamp | Heart-rate zone training with real-time calorie burn tracking |
+| BOXX | Punch speed radar with pro-level comparison analytics |
+| Precision Striking | Shadow boxing choreography with beat-synced combos |
+| Fight Camp Pro | Fighter archetype profiling with evolving style analysis |
+| Boxing Timer Pro | Multi-week training camp periodization planner |
+| Haymakers | Boxing mind games &amp; psychological warfare simulator |
+| PunchLab | Punch impact power mapping across body zones |
+| Corner Man AI | Comprehensive fighter growth tracking with KPI dashboards |
+
+### Stage 2. Development (50%)
+
+**8 Canvas features created in `v28_patch.js`:**
+
+1. **Heart Rate Zone Training Simulator** (Canvas 620&times;400)
+   - 5-zone donut chart (Rest/Fat-Burn/Cardio/Peak/VO2Max)
+   - 12-round heart rate timeline with zone color bands
+   - Calorie burn bar chart by zone with gradient fills
+   - Real-time zone transitions with heartbeat SFX
+
+2. **Punch Speed Radar Analyzer** (Canvas 620&times;400)
+   - 7 punch type speed comparison bar chart
+   - Hexagonal radar overlay with pro athlete benchmarks
+   - 30-session trend line graph with personal records
+   - Speed burst &amp; record SFX feedback
+
+3. **Shadow Boxing Choreography Builder** (Canvas 640&times;400)
+   - 8-beat &times; 8-round choreography grid
+   - 3 difficulty levels (Beginner/Intermediate/Advanced)
+   - Beat-synced visual sequencer with color-coded moves
+   - Choreography completion SFX system
+
+4. **Fighter Archetype Profiler** (Canvas 620&times;400)
+   - 6 archetype radar chart (Swarmer/Slugger/Boxer-Puncher/Counter/Out-Fighter/Switch)
+   - 6-axis attribute visualization (Speed/Power/Defense/Stamina/Ring IQ/Chin)
+   - Archetype evolution tracking with reveal SFX
+   - Dynamic trait comparison overlays
+
+5. **Training Camp Season Planner** (Canvas 620&times;380)
+   - 12-week Gantt chart with 4 training phases
+   - Phase markers: Base/Intensify/Peak/Taper
+   - Weekly volume bars with progressive overload curves
+   - Phase transition &amp; completion SFX
+
+6. **Boxing Mind Games Simulator** (Canvas 600&times;380)
+   - 8 psychological tactics radar (Feint/Pressure/Rhythm-Break/Trash-Talk/Body-Language/Eye-Contact/Pace-Control/Ring-Cut)
+   - Mind game effectiveness heatmap
+   - Win probability gauge with tactical scoring
+   - Feint trigger &amp; mind-win SFX
+
+7. **Punch Impact Power Map** (Canvas 620&times;400)
+   - Body silhouette with 12 impact zones
+   - Heatmap overlay with power gradient (blue&rarr;yellow&rarr;red)
+   - Zone-specific force readings in Newtons
+   - Impact hit &amp; KO-power SFX
+
+8. **Comprehensive Fighter Growth Report** (Canvas 620&times;400)
+   - 8 KPI half-circle gauges (Overall/Speed/Power/Defense/Stamina/Technique/Ring IQ/Mental)
+   - Color-coded performance tiers
+   - Growth trajectory arrows
+   - Level-up celebration SFX
+
+**Additional content:**
+- 16 SFX types via Web Audio API oscillators &amp; noise buffers
+- 15 new quiz questions (total: 285&rarr;300)
+- 12 new achievements (total: 250&rarr;262)
+- Keyboard shortcuts: Shift+Q/W/E/R/T/Y/U/I/9
+
+### Stage 3. Quality Verification (30%)
+
+| Check | Result |
+|---|---|
+| `node --check v28_patch.js` | &check; Pass (0 syntax errors) |
+| `JSON.parse(manifest.json)` | &check; Valid |
+| External CDN/links | &check; None found |
+| Personal info exposure | &check; None |
+| New bottom nav bar creation | &check; None (appends to existing `.v10-bottom-bar`) |
+| File deletions | &check; None |
+| HTML entity encoding | &check; All Korean text uses numeric entities |
+| IIFE encapsulation | &check; Self-contained, no global leaks |
+| localStorage key | &check; Unique `boxingV28Patch` |
+
+### Stage 4. Deliverables
+
+- `v28_patch.js` &mdash; new (943 lines)
+- `index.html` &mdash; title/meta v27&rarr;v28 update + v28 script tag
+- `sw.js` &mdash; v27&rarr;v28 (boxing-trainer-v28 cache, v28_patch.js PRECACHE)
+- `manifest.json` &mdash; v28 description + 8 shortcuts added (total 119)
+- `AUTO_REPORT.md` &mdash; v28 report appended
