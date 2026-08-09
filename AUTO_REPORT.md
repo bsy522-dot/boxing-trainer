@@ -1781,3 +1781,93 @@ Gap identified: no punch accuracy progression tracking, no periodization planner
 - `sw.js` &mdash; v27&rarr;v28 (boxing-trainer-v28 cache, v28_patch.js PRECACHE)
 - `manifest.json` &mdash; v28 description + 8 shortcuts added (total 119)
 - `AUTO_REPORT.md` &mdash; v28 report appended
+
+## v29.0 — 2026-08-09
+
+**Rotation target**: boxing-trainer (oldest [AUTO] commit tracked in repo)
+
+### Stage 1. Competitive Benchmarking (10%)
+
+| Competitor | Feature Gap Identified |
+|---|---|
+| FightCamp | Punch combination chain analysis with node-link transition mapping |
+| FightCamp | Round-by-round fatigue curve modeling with recovery/second-wind detection |
+| BOXX | Opponent pattern scouting with style-specific weakness exploitation |
+| BOXX | Combo transition smoothness / flow-state quality tracking |
+| FightCamp | Round-by-round momentum & win-probability tracking |
+| Precision Striking | Defensive reaction speed analytics vs pro benchmarks |
+| PunchLab | Body composition correlation with in-ring performance |
+| Corner Man AI | Fighter legacy comparison against 10 all-time greats |
+
+### Stage 2. Development (50%)
+
+**8 Canvas features created in `v29_patch.js`:**
+
+1. **Punch Combination Chain Analyzer** (Canvas 620&times;400)
+   - 12-combo node-link network diagram, circular layout
+   - Edge width = transition frequency, node radius = usage frequency
+   - Click-to-highlight chain paths, S~D combo efficiency grade
+
+2. **Fatigue Curve Modeling Simulator** (Canvas 620&times;400)
+   - 12-round power/speed/accuracy 3-axis line chart
+   - Recovery window markers, second-wind star marker, optimal pacing dashed overlay
+   - Session comparison bars (last 10), retention-rate S~D grade
+
+3. **Opponent Pattern Scouting System** (Canvas 640&times;400)
+   - 8 opponent styles (slugger/counter/outboxer/brawler/pressure/switch/slick/volume)
+   - 6-axis radar (attack/defense/speed/power/endurance/ring-IQ) with clickable style list
+   - 8&times;6 weakness heatmap across all styles, per-style strategy recommendation text
+
+4. **Combo Transition Smoothness Tracker** (Canvas 620&times;400)
+   - 8 combo-transition horizontal smoothness bars
+   - Timing-precision scatter plot (ms deviation), 30-session trend line
+   - Automatic bottleneck detection with drill recommendation
+
+5. **Round-by-Round Momentum Tracker** (Canvas 640&times;400)
+   - 12-round offense/defense/control 3-line area chart with critical-round shading
+   - Momentum shift arrow markers on large offense/defense swings
+   - Round win/draw/loss probability stacked bar chart
+
+6. **Defensive Reaction Speed Analyzer** (Canvas 620&times;400)
+   - 8 defense types (slip/roll/block/parry/pull/lean-back/shoulder-roll/clinch) reaction-time bars
+   - Aggregate success-rate donut chart, dashed pro-average comparison overlay
+   - Session improvement trend line, ms-based S~D grade
+
+7. **Body Composition Impact Analyzer** (Canvas 620&times;400)
+   - 8 body metrics (weight/muscle/fat/BMI/reach/height/hand-speed/power-ratio)
+   - 8&times;4 correlation heatmap vs performance dims (power/speed/defense/stamina)
+   - Optimal-range indicator bars, automatic weight-class matching
+
+8. **Fighter Legacy Comparison Dashboard** (Canvas 620&times;400)
+   - 8 KPI half-circle gauges in 4&times;2 grid (record/KO-ratio/title-defenses/longevity/peak-rating/versatility/chin/heart)
+   - Overlay marker comparing vs 10 legendary fighters (Ali/Tyson/Mayweather/Pacquiao/Leonard/Robinson/Louis/Marciano/Frazier/Foreman)
+   - Weighted overall S~D grade, cyclable legend selector
+
+**Additional content:**
+- 16 SFX types via Web Audio API oscillators &amp; noise buffers
+- 15 new quiz questions (total: 300&rarr;315)
+- 12 new achievements (total: 262&rarr;274)
+- Keyboard shortcuts: Shift+A/S/D/F/G/H/J/K/0
+- Navigation buttons appended to existing bottom bar (no new bar created)
+
+### Stage 3. Quality Verification (30%)
+
+| Check | Result |
+|---|---|
+| `node --check v29_patch.js` | &check; Pass (0 syntax errors) |
+| `json.load(manifest.json)` | &check; Valid |
+| External CDN/links | &check; None found |
+| Personal info exposure | &check; None (false-positive grep hits on `className` substring only) |
+| New bottom nav bar creation | &check; None (appends to existing `.v10-bottom-bar` / fixed-bottom detection) |
+| File deletions | &check; None |
+| localStorage key | &check; Unique `boxingV29Patch` |
+| IIFE encapsulation | &check; Self-contained, no global leaks |
+| Total manifest shortcuts | &check; 127 (119+8) |
+
+### Stage 4. Deliverables
+
+- `v29_patch.js` &mdash; new (1170 lines)
+- `index.html` &mdash; title/meta v28&rarr;v29 update + v29 script tag
+- `sw.js` &mdash; v28&rarr;v29 (boxing-trainer-v29 cache, v29_patch.js PRECACHE)
+- `manifest.json` &mdash; v29 description + 8 shortcuts added (total 127)
+- `AUTO_REPORT.md` &mdash; v29 report appended
