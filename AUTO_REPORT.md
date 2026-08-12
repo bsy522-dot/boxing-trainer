@@ -1871,3 +1871,95 @@ Gap identified: no punch accuracy progression tracking, no periodization planner
 - `sw.js` &mdash; v28&rarr;v29 (boxing-trainer-v29 cache, v29_patch.js PRECACHE)
 - `manifest.json` &mdash; v29 description + 8 shortcuts added (total 127)
 - `AUTO_REPORT.md` &mdash; v29 report appended
+
+---
+
+## 2026-08-12 &mdash; Pass #14 (boxing-trainer v30.0)
+
+### Stage 1. Benchmarking vs FightCamp / BOXX
+
+| Feature | FightCamp | BOXX | v29 (before) | v30 (after) |
+| --- | --- | --- | --- | --- |
+| Output Score system | YES (proprietary) | - | **NO** | **YES** (Output Score Engine Canvas) |
+| Target zone accuracy tracking | YES (sensor-based) | YES | partial | **YES** (8-zone Canvas accuracy analyzer) |
+| Heart rate zone training | YES | - | partial | **YES** (5-zone HR optimizer Canvas) |
+| Training periodization | YES (structured programs) | YES | partial | **YES** (4-phase periodization tracker Canvas) |
+| Fitness testing battery | YES | - | **NO** | **YES** (8-metric test battery Canvas) |
+| Clinch technique training | - | YES (technique focus) | partial | **YES** (6-type clinch strategy Canvas) |
+| Weight cut management | YES (nutrition plans) | - | **NO** | **YES** (weight cut simulator Canvas) |
+| Fighter intelligence dashboard | - | - | **NO** | **YES** (8-KPI unified dashboard Canvas) |
+
+**Gap verdict**: v29 lacked FightCamp&rsquo;s core Output Score metric and structured periodization, plus BOXX&rsquo;s technique-focused clinch training. v30 closes all major competitive gaps with 8 new Canvas-based analytical tools.
+
+### Stage 2. Development
+
+**8 New Canvas Features:**
+
+1. **Punch Target Zone Accuracy Analyzer** (Canvas 620&times;400)
+   - 8 target zones (head/chin/temple/body-left/body-right/liver/solar-plexus/shoulder) with color-coded accuracy bars
+   - Silhouette overlay with zone hit-markers, KO probability by zone
+   - Session accuracy trend line, S~D grade system
+
+2. **Training Periodization Tracker** (Canvas 640&times;400)
+   - 4 phases (Base/Build/Peak/Recovery) with timeline visualization
+   - Phase-specific metrics (volume/intensity/technique/sparring) as stacked bar chart
+   - Overtraining risk indicator, weekly load progression curve
+
+3. **Output Score Engine** (Canvas 620&times;400)
+   - FightCamp-style output scoring: weighted formula (power 30% + speed 25% + accuracy 25% + volume 20%)
+   - Real-time output gauge with color zones (green/yellow/red)
+   - Session comparison bar chart, personal best tracking
+
+4. **Heart Rate Zone Optimizer** (Canvas 620&times;400)
+   - 5 HR zones (Recovery/Fat-burn/Aerobic/Threshold/VO2max) with time-in-zone donut chart
+   - Target zone indicator with BPM range labels
+   - Training effect score, zone transition line graph
+
+5. **Fitness Test Battery** (Canvas 640&times;400)
+   - 8 test metrics (VO2max/reaction/agility/power/speed/endurance/flexibility/core-strength)
+   - Radar chart overlay with pro-benchmark comparison
+   - Historical test results trend, composite fitness grade
+
+6. **Clinch &amp; Break Strategy** (Canvas 620&times;400)
+   - 6 clinch types (double-under/over-under/headlock/dirty/muay-thai/rear) with effectiveness bars
+   - Defense/offense/stamina-drain triangle chart per clinch type
+   - Break technique success rate, referee warning probability
+
+7. **Weight Cut Simulator** (Canvas 620&times;400)
+   - Target vs current weight gauge with daily tracking line
+   - Water loading/cutting phase timeline with hydration status
+   - Safe weight loss rate indicator, rehydration protocol timer
+
+8. **Fighter Intelligence Dashboard** (Canvas 620&times;400)
+   - 8 KPI half-circle gauges (targeting/output/cardio/ring-IQ/clinch/weight-mgmt/periodization/test-battery)
+   - Weighted overall intelligence grade (S~D), each KPI 12.5% weight
+   - Historical trend sparklines, competitive ranking percentile
+
+**Additional content:**
+- 16 SFX types via Web Audio API oscillators &amp; noise buffers
+- 15 new quiz questions (total: 315&rarr;330)
+- 12 new achievements (total: 274&rarr;286)
+- Keyboard shortcuts: Shift+Q/W/E/R/T/Y/U/I/0
+- Navigation buttons appended to existing bottom bar (no new bar created)
+
+### Stage 3. Quality Verification (30%)
+
+| Check | Result |
+|---|---|
+| `node --check v30_patch.js` | &check; Pass (0 syntax errors) |
+| `json.load(manifest.json)` | &check; Valid |
+| External CDN/links | &check; None found |
+| Personal info exposure | &check; None |
+| New bottom nav bar creation | &check; None (appends to existing `.v10-bottom-bar` / fixed-bottom detection) |
+| File deletions | &check; None |
+| localStorage key | &check; Unique `boxingV30Patch` |
+| IIFE encapsulation | &check; Self-contained, no global leaks |
+| Total manifest shortcuts | &check; 135 (127+8) |
+
+### Stage 4. Deliverables
+
+- `v30_patch.js` &mdash; new (1361 lines)
+- `index.html` &mdash; title/meta v29&rarr;v30 update + v30 script tag
+- `sw.js` &mdash; v29&rarr;v30 (boxing-trainer-v30 cache, v30_patch.js PRECACHE)
+- `manifest.json` &mdash; v30 description + 8 shortcuts added (total 135)
+- `AUTO_REPORT.md` &mdash; v30 report appended
