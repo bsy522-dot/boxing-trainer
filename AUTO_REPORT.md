@@ -1963,3 +1963,98 @@ Gap identified: no punch accuracy progression tracking, no periodization planner
 - `sw.js` &mdash; v29&rarr;v30 (boxing-trainer-v30 cache, v30_patch.js PRECACHE)
 - `manifest.json` &mdash; v30 description + 8 shortcuts added (total 135)
 - `AUTO_REPORT.md` &mdash; v30 report appended
+
+---
+
+## 2026-08-15 &mdash; boxing-trainer v31.0
+
+### Stage 1. Benchmarking (10%)
+
+**Benchmark targets:** FightCamp, BOXX, Liteboxer
+
+| Feature | FightCamp | BOXX | Boxing Trainer v30 | Gap |
+|---|---|---|---|---|
+| Punch volume analytics | YES (per-round breakdown) | Basic | &cross; | Need detailed volume density analysis |
+| Footwork pattern tracking | &cross; | YES (step counting) | &cross; | Need pattern recognition &amp; diversity scoring |
+| Defense reaction matrix | Basic (dodge detection) | &cross; | &cross; | Need multi-defense vs multi-attack analysis |
+| Training intensity zones | YES (5-zone HR) | YES (3-zone) | HR zones only | Need comprehensive intensity periodization |
+| Combo sequence builder | YES (preset) | YES (visual) | &cross; | Need interactive builder with execution tracking |
+| Energy distribution by round | YES (pacing metrics) | Basic | &cross; | Need per-round optimization with ideal overlay |
+| Stance correction analysis | &cross; | &cross; | &cross; | Novel feature &mdash; competitive advantage |
+| Combat power dashboard | YES (output score) | YES (ranking) | Fighter Intelligence only | Need combat-specific KPI integration |
+
+**Gap verdict:** v30 lacks punch volume breakdown (FightCamp&rsquo;s top feature), footwork pattern tracking (BOXX strength), and real-time intensity zone analysis. Stance correction is a blue-ocean feature none offer.
+
+### Stage 2. Development (50%)
+
+**v31_patch.js: 8 new Canvas interactive tools (1638 lines)**
+
+1. **Punch Volume Density Analyzer** (Canvas 620&times;400)
+   - 12R punch volume stacked bar chart (jab/cross/hook/uppercut breakdown)
+   - Volume per minute calculation, round segment density heatmap
+   - Volume vs accuracy scatter overlay, S~D grade
+
+2. **Footwork Pattern Mapper** (Canvas 640&times;400)
+   - 8 footwork patterns (pivot-L/R, step-back, cut-angle, lateral-slide, advance, retreat, circle)
+   - Pattern frequency bar chart, transition flow diagram
+   - Agility score, footwork diversity index (Shannon entropy), S~D grade
+
+3. **Defense Reaction Matrix** (Canvas 620&times;400)
+   - 8 defense types &times; 6 attack types heatmap
+   - Success rate %, reaction time ms by defense type
+   - Optimal defense selection guide, S~D grade
+
+4. **Training Intensity Zone Analyzer** (Canvas 620&times;400)
+   - 5 intensity zones (recovery/endurance/tempo/threshold/max-effort) area chart
+   - Zone distribution donut chart, overtraining risk indicator
+   - Weekly intensity trend line, S~D grade
+
+5. **Punch Sequence Builder** (Canvas 640&times;400)
+   - 10 preset combo sequences with execution tracking
+   - Execution time comparison bar chart, success rate %
+   - Difficulty rating (1~6 stars), combo flow visualization
+
+6. **Round Energy Distribution Optimizer** (Canvas 620&times;400)
+   - 12R energy allocation (attack/defense/movement/rest %) stacked bar
+   - Optimal distribution overlay vs current, efficiency gap analysis
+   - Pacing strategy recommendation, S~D grade
+
+7. **Boxing Stance Corrector** (Canvas 620&times;400)
+   - 8 stance elements radar chart (foot-width/weight-dist/guard/chin/elbow/hip/knee/shoulder)
+   - Current vs ideal overlay, correction priority ranking
+   - Orthodox/southpaw mode, S~D grade
+
+8. **Comprehensive Fighter Combat Power Dashboard** (Canvas 620&times;400)
+   - 8 KPI half-circle gauges 4&times;2 (volume/footwork/defense/intensity/combos/energy/stance/combat-IQ)
+   - Weighted overall S~D grade, 20-session history line chart
+
+**Additional content:**
+- 16 SFX types via Web Audio API oscillators &amp; noise buffers
+- 15 new quiz questions (total: 330&rarr;345)
+- 12 new achievements (total: 286&rarr;298)
+- Keyboard shortcuts: Shift+Q/W/E/R/T/Y/U/I/0
+- Navigation buttons appended to existing bottom bar (no new bar created)
+
+### Stage 3. Quality Verification (30%)
+
+| Check | Result |
+|---|---|
+| `node --check v31_patch.js` | &check; Pass |
+| `node --check sw.js` | &check; Pass |
+| `json.load(manifest.json)` | &check; Valid |
+| External CDN/links | &check; None found |
+| Personal info exposure | &check; None |
+| New bottom nav bar creation | &check; None (appends to existing `.v10-bottom-bar`) |
+| File deletions | &check; None |
+| Math.random for fake data | &check; None |
+| localStorage key | &check; Unique `boxingV31Patch` |
+| IIFE encapsulation | &check; Self-contained, no global leaks |
+| Total manifest shortcuts | &check; 143 (135+8) |
+
+### Stage 4. Deliverables
+
+- `v31_patch.js` &mdash; new (1638 lines)
+- `index.html` &mdash; title/meta v30&rarr;v31 update + v31 script tag
+- `sw.js` &mdash; v30&rarr;v31 (boxing-trainer-v31 cache, v31_patch.js PRECACHE)
+- `manifest.json` &mdash; v31 description + 8 shortcuts added (total 143)
+- `AUTO_REPORT.md` &mdash; v31.0 report appended
