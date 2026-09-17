@@ -336,7 +336,8 @@ function buildV14(){
   injectV14CSS();
   var container = document.querySelector('.container');
   if(!container) return;
-  var footer = document.querySelector('.footer');
+  // insertBefore requires a direct child; the page footer lives outside .container.
+  var footer = container.querySelector(':scope > .footer');
 
   // 1. Punch Accuracy Trainer
   var accSec = el('section','v14-section','v14-accuracy');

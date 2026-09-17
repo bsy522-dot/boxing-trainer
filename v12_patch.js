@@ -491,7 +491,8 @@ var V12_ACHIEVEMENTS = [
 function buildV12Sections(){
   var container = document.querySelector('.container');
   if(!container) return;
-  var footer = document.querySelector('.footer');
+  // insertBefore requires a direct child; the page footer lives outside .container.
+  var footer = container.querySelector(':scope > .footer');
 
   // 1. Nutrition Guide
   var nutrHTML = '<section class="v12-section"><h2 class="v12-title"><span class="emoji">🍌</span> 영양 가이드</h2>';

@@ -997,7 +997,8 @@ function initV17Keyboard(){
 function buildV17(){
   var container = document.querySelector('.container');
   if(!container) return;
-  var footer = document.querySelector('.footer');
+  // insertBefore requires a direct child; the page footer lives outside .container.
+  var footer = container.querySelector(':scope > .footer');
 
   var html = '';
 
