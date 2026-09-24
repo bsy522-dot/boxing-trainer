@@ -385,9 +385,9 @@ var BOXING_DICT = [
   {term:'슬립(Slip)',cat:'방어기술',def:'상체를 좌우로 살짝 비틀어 퍼치를 피하는 기술.'},
   {term:'밥 앤 위브(Bob & Weave)',cat:'방어기술',def:'무릎을 굽혀 아래로 피한 후 U자로 몸을 일으켜 이동하는 방어.'},
   {term:'클린치(Clinch)',cat:'방어기술',def:'상대를 붙잡아 공격을 무력화하는 기술. 체력 회복에도 활용.'},
-  {term:'퐀워크(Footwork)',cat:'이동기술',def:'발놓림 기술. 공격과 방어의 기초. 전후좌우 이동.'},
+  {term:'풋워크(Footwork)',cat:'이동기술',def:'발놓림 기술. 공격과 방어의 기초. 전후좌우 이동.'},
   {term:'피봇(Pivot)',cat:'이동기술',def:'앞발을 축으로 몸을 회전하는 기술. 각도 변환에 활용.'},
-  {term:'컷오프(Cut Off)',cat:'이동기술',def:'상대의 이동 경로를 차단하는 퐀워크. 압박전술.'},
+  {term:'컷오프(Cut Off)',cat:'이동기술',def:'상대의 이동 경로를 차단하는 풋워크. 압박전술.'},
   {term:'스텝백(Step Back)',cat:'이동기술',def:'뒤로 빠르게 물러나며 거리를 벌리는 기술.'},
   {term:'사우스포(Southpaw)',cat:'스타일',def:'오른손이 앞에 오는 왼손잡이 스타일. 오솔독스와 반대.'},
   {term:'오솔독스(Orthodox)',cat:'스타일',def:'왼손이 앞에 오는 오른손잡이 기본 스타일.'},
@@ -421,7 +421,7 @@ var TIMER_PRESETS = [
   {id:'pro',icon:'🏆',name:'프로 12R',desc:'3분 운동 / 1분 휴식 \xD7 12라운드',work:180,rest:60,rounds:12,intensity:'high'},
   {id:'hiit',icon:'🔥',name:'HIIT',desc:'30초 운동 / 15초 휴식 \xD7 10세트',work:30,rest:15,rounds:10,intensity:'high'},
   {id:'endurance',icon:'💪',name:'지구력',desc:'5분 운동 / 1분 휴식 \xD7 5라운드',work:300,rest:60,rounds:5,intensity:'med'},
-  {id:'shadow',icon:'👤',name:'섭도복싱',desc:'2분 운동 / 30초 휴식 \xD7 6라운드',work:120,rest:30,rounds:6,intensity:'low'},
+  {id:'shadow',icon:'👤',name:'섀도복싱',desc:'2분 운동 / 30초 휴식 \xD7 6라운드',work:120,rest:30,rounds:6,intensity:'low'},
   {id:'speed',icon:'🏃',name:'스피드',desc:'15초 운동 / 15초 휴식 \xD7 12세트',work:15,rest:15,rounds:12,intensity:'high'},
   {id:'custom',icon:'⚙️',name:'커스텀',desc:'직접 설정하는 타이머',work:60,rest:30,rounds:5,intensity:'med'}
 ];
@@ -475,10 +475,10 @@ var QUIZ_V12 = [
 var V12_ACHIEVEMENTS = [
   {id:'nutrition_guide',icon:'🍌',name:'영양사',cond:'영양 가이드 첫 확인'},
   {id:'nutrition_all',icon:'🍽️',name:'완벽식단',cond:'영양 12종 모두 체크'},
-  {id:'footwork_first',icon:'👟',name:'첫발',cond:'퐀워크 드릴 첫 완료'},
-  {id:'footwork_master',icon:'🩰',name:'퐀워크마스터',cond:'퐀워크 6종 모두 완료'},
-  {id:'shadow_3',icon:'👤',name:'섭도복서',cond:'섭도복싱 3라운드 완료'},
-  {id:'shadow_8',icon:'🥊',name:'섭도챔피언',cond:'섭도복싱 8라운드 완료'},
+  {id:'footwork_first',icon:'👟',name:'첫발',cond:'풋워크 드릴 첫 완료'},
+  {id:'footwork_master',icon:'🩰',name:'풋워크마스터',cond:'풋워크 6종 모두 완료'},
+  {id:'shadow_3',icon:'👤',name:'섭도복서',cond:'섀도복싱 3라운드 완료'},
+  {id:'shadow_8',icon:'🥊',name:'섭도챔피언',cond:'섀도복싱 8라운드 완료'},
   {id:'hall_visit',icon:'🏅',name:'명예의전당방문객',cond:'명예의 전당 첫 방문'},
   {id:'hall_all',icon:'🏆',name:'복싱역사가',cond:'명예의 전당 12인 모두 확인'},
   {id:'body_first',icon:'📊',name:'체성분분석가',cond:'체성분 분석 첫 기록'},
@@ -510,7 +510,7 @@ function buildV12Sections(){
   nutrHTML += '</div></section>';
 
   // 2. Footwork Drills
-  var fwHTML = '<section class="v12-section"><h2 class="v12-title"><span class="emoji">👟</span> 퐀워크 드릴</h2>';
+  var fwHTML = '<section class="v12-section"><h2 class="v12-title"><span class="emoji">👟</span> 풋워크 드릴</h2>';
   fwHTML += '<div class="v12-card">';
   fwHTML += '<div class="fw-drill-list" id="v12FwDrills">';
   FOOTWORK_DRILLS.forEach(function(d){
@@ -526,7 +526,7 @@ function buildV12Sections(){
   fwHTML += '</div></div></section>';
 
   // 3. Shadowboxing Guide
-  var shHTML = '<section class="v12-section"><h2 class="v12-title"><span class="emoji">👤</span> 섭도복싱 가이드</h2>';
+  var shHTML = '<section class="v12-section"><h2 class="v12-title"><span class="emoji">👤</span> 섀도복싱 가이드</h2>';
   shHTML += '<div class="shadow-guide" id="v12ShadowGuide">';
   shHTML += '<div class="shadow-progress" id="v12ShadowProgress">';
   for(var i=1;i<=8;i++){
@@ -848,7 +848,7 @@ function bindV12Events(){
     if(!e.shiftKey) return;
     switch(e.key.toUpperCase()){
       case 'N': scrollToSection('영양'); break;
-      case 'F': scrollToSection('퐀워크'); break;
+      case 'F': scrollToSection('풋워크'); break;
       case 'O': scrollToSection('섭도'); break;
       case 'J': scrollToSection('명예'); break;
       case 'Y': scrollToSection('체성분'); break;
@@ -1516,8 +1516,8 @@ function addV12QuickActions(){
 
   var actions = [
     {icon:'🍌',label:'영양',key:'영양'},
-    {icon:'👟',label:'퐀워크',key:'퐀워크'},
-    {icon:'👤',label:'섭도복싱',key:'섭도'},
+    {icon:'👟',label:'풋워크',key:'풋워크'},
+    {icon:'👤',label:'섀도복싱',key:'섭도'},
     {icon:'🏅',label:'명예의전당',key:'명예'},
     {icon:'📊',label:'체성분',key:'체성분'},
     {icon:'📖',label:'용어사전',key:'용어'},

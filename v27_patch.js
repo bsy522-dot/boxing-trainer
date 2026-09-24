@@ -164,7 +164,7 @@ var COLORS27 = ['#ef4444','#f97316','#eab308','#22c55e','#06b6d4','#3b82f6','#8b
 var sec1 = document.createElement('div');
 sec1.id = 'v27-sec-1';
 sec1.style.cssText = 'display:none;padding:12px;max-width:700px;margin:0 auto;';
-sec1.innerHTML = '<div class="v27-card"><div class="v27-hdr">&#9889; &#52852;&#50868;&#53552;&#54144;&#52824; &#53440;&#51060;&#48141; &#48516;&#49437;&#44592;</div><div class="v27-sub">8&#44060; &#52852;&#50868;&#53552; &#49884;&#45208;&#47532;&#50724;&#48324; &#53440;&#51060;&#48141; &#50948;&#46020;&#50864; + &#49457;&#44277;&#47456; &#47001; &#52264;&#53944; + S~D&#46321;&#44553;</div><canvas id="v27-canvas-counter" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;margin:8px auto;display:block;cursor:pointer"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px"><button class="v27-btn" onclick="window._v27SimCounter()">&#52852;&#50868;&#53552; &#50672;&#49845;</button><button class="v27-btn-sec" onclick="window._v27ResetCounter()">&#52488;&#44592;&#54868;</button></div></div>';
+sec1.innerHTML = '<div class="v27-card"><div class="v27-hdr">⚡ 카운터펀치 타이밍 분석기</div><div class="v27-sub">8개 카운터 시나리오별 타이밍 위도우 + 성공률 랙 차트 + S~D등급</div><canvas id="v27-canvas-counter" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;margin:8px auto;display:block;cursor:pointer"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px"><button class="v27-btn" onclick="window._v27SimCounter()">카운터 연습</button><button class="v27-btn-sec" onclick="window._v27ResetCounter()">초기화</button></div></div>';
 document.body.appendChild(sec1);
 
 function drawCounterCanvas(){
@@ -174,7 +174,7 @@ function drawCounterCanvas(){
   var isDark = clr27(ctx,W,H);
   var fg = isDark ? '#f0f0f0' : '#1a1a2e';
   var dim = isDark ? '#8a8a9e' : '#555';
-  var scenarios = ['Jab&#52852;&#50868;&#53552;','Cross&#52852;&#50868;&#53552;','Hook&#49836;&#47549;','Upper&#54400;&#48177;','Body&#47204;','Jab&#54056;&#47532;','OH&#45909;','&#53092;&#48372;&#48260;&#49828;&#53944;'];
+  var scenarios = ['Jab카운터','Cross카운터','Hook슬립','Upper풀백','Body롤','Jab패리','OH덕','콤보버스트'];
   var keys = ['jabCounter','crossCounter','hookSlip','upperPull','bodyRoll','jabParry','overhandDuck','comboBurst'];
   var vals = keys.map(function(k){ return v27.counterTiming.scenarios[k] || 0; });
   var max = Math.max.apply(null, vals.concat([10]));
@@ -238,7 +238,7 @@ window._v27ResetCounter = function(){
 var sec2 = document.createElement('div');
 sec2.id = 'v27-sec-2';
 sec2.style.cssText = 'display:none;padding:12px;max-width:700px;margin:0 auto;';
-sec2.innerHTML = '<div class="v27-card"><div class="v27-hdr">&#9889; &#54144;&#52824; &#52636;&#47141; &#54952;&#50984; &#48516;&#49437;&#44592;</div><div class="v27-sub">7&#51333; &#54144;&#52824; &#54028;&#50892;/&#50640;&#45320;&#51648; &#48708;&#50984; + &#54952;&#50984; &#47112;&#51060;&#45908; + &#49464;&#49496; &#53944;&#47116;&#46300;</div><canvas id="v27-canvas-efficiency" width="600" height="380" style="width:100%;max-width:600px;border-radius:12px;margin:8px auto;display:block;cursor:pointer"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px"><button class="v27-btn" onclick="window._v27SimEfficiency()">&#54952;&#50984; &#52769;&#51221;</button><button class="v27-btn-sec" onclick="window._v27ResetEfficiency()">&#52488;&#44592;&#54868;</button></div></div>';
+sec2.innerHTML = '<div class="v27-card"><div class="v27-hdr">⚡ 펀치 출력 효율 분석기</div><div class="v27-sub">7종 펀치 파워/에너지 비율 + 효율 레이더 + 세션 트렌드</div><canvas id="v27-canvas-efficiency" width="600" height="380" style="width:100%;max-width:600px;border-radius:12px;margin:8px auto;display:block;cursor:pointer"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px"><button class="v27-btn" onclick="window._v27SimEfficiency()">효율 측정</button><button class="v27-btn-sec" onclick="window._v27ResetEfficiency()">초기화</button></div></div>';
 document.body.appendChild(sec2);
 
 function drawEfficiencyCanvas(){
@@ -318,7 +318,7 @@ window._v27ResetEfficiency = function(){
 var sec3 = document.createElement('div');
 sec3.id = 'v27-sec-3';
 sec3.style.cssText = 'display:none;padding:12px;max-width:700px;margin:0 auto;';
-sec3.innerHTML = '<div class="v27-card"><div class="v27-hdr">&#129302; AI &#49828;&#54028;&#47553; &#51204;&#47029; &#50612;&#46300;&#48148;&#51060;&#51200;</div><div class="v27-sub">6&#44060; &#49345;&#45824; &#49828;&#53440;&#51068; &#48324; &#51204;&#49696; &#47588;&#52845; + 8&#52629; &#51204;&#49696; &#47112;&#51060;&#45908; + &#46300;&#47540; &#52628;&#52380;</div><canvas id="v27-canvas-strategy" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;margin:8px auto;display:block;cursor:pointer"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px"><button class="v27-btn" onclick="window._v27SimStrategy()">&#51204;&#47029; &#48516;&#49437;</button><button class="v27-btn-sec" onclick="window._v27ResetStrategy()">&#52488;&#44592;&#54868;</button></div></div>';
+sec3.innerHTML = '<div class="v27-card"><div class="v27-hdr">🤖 AI 스파링 전략 어드바이저</div><div class="v27-sub">6개 상대 스타일 별 전술 매칭 + 8축 전술 레이더 + 드릴 추천</div><canvas id="v27-canvas-strategy" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;margin:8px auto;display:block;cursor:pointer"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px"><button class="v27-btn" onclick="window._v27SimStrategy()">전략 분석</button><button class="v27-btn-sec" onclick="window._v27ResetStrategy()">초기화</button></div></div>';
 document.body.appendChild(sec3);
 
 function drawStrategyCanvas(){
@@ -393,7 +393,7 @@ window._v27ResetStrategy = function(){
 var sec4 = document.createElement('div');
 sec4.id = 'v27-sec-4';
 sec4.style.cssText = 'display:none;padding:12px;max-width:700px;margin:0 auto;';
-sec4.innerHTML = '<div class="v27-card"><div class="v27-hdr">&#128170; &#48373;&#49905; &#47784;&#48716;&#47532;&#54000; &#54217;&#44032;&#44592;</div><div class="v27-sub">10&#44060; &#44288;&#51208;&#44032;&#46041;&#49457; &#53580;&#49828;&#53944; + &#49888;&#52404; &#50976;&#50672;&#49457; &#55176;&#53944;&#47605; + &#44060;&#49440; &#52628;&#51201;</div><canvas id="v27-canvas-mobility" width="600" height="380" style="width:100%;max-width:600px;border-radius:12px;margin:8px auto;display:block;cursor:pointer"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px"><button class="v27-btn" onclick="window._v27SimMobility()">&#47784;&#48716;&#47532;&#54000; &#53580;&#49828;&#53944;</button><button class="v27-btn-sec" onclick="window._v27ResetMobility()">&#52488;&#44592;&#54868;</button></div></div>';
+sec4.innerHTML = '<div class="v27-card"><div class="v27-hdr">💪 복싱 모빌리티 평가기</div><div class="v27-sub">10개 관절가동성 테스트 + 신체 유연성 히트맵 + 개선 추적</div><canvas id="v27-canvas-mobility" width="600" height="380" style="width:100%;max-width:600px;border-radius:12px;margin:8px auto;display:block;cursor:pointer"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px"><button class="v27-btn" onclick="window._v27SimMobility()">모빌리티 테스트</button><button class="v27-btn-sec" onclick="window._v27ResetMobility()">초기화</button></div></div>';
 document.body.appendChild(sec4);
 
 function drawMobilityCanvas(){
@@ -461,7 +461,7 @@ window._v27ResetMobility = function(){
 var sec5 = document.createElement('div');
 sec5.id = 'v27-sec-5';
 sec5.style.cssText = 'display:none;padding:12px;max-width:700px;margin:0 auto;';
-sec5.innerHTML = '<div class="v27-card"><div class="v27-hdr">&#9201; &#46972;&#50868;&#46300; &#54168;&#51060;&#49905; &#52572;&#51201;&#54868;&#44592;</div><div class="v27-sub">12R &#50640;&#45320;&#51648;/&#52636;&#47141; &#46272;&#50620; &#46972;&#51064; + &#54168;&#51060;&#49905; &#51316; &#48180;&#46300; + &#46972;&#50868;&#46300;&#48324; &#46321;&#44553;</div><canvas id="v27-canvas-pacing" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;margin:8px auto;display:block;cursor:pointer"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px"><button class="v27-btn" onclick="window._v27SimPacing()">&#54168;&#51060;&#49905; &#49884;&#48044;</button><button class="v27-btn-sec" onclick="window._v27ResetPacing()">&#52488;&#44592;&#54868;</button></div></div>';
+sec5.innerHTML = '<div class="v27-card"><div class="v27-hdr">⏱ 라운드 페이싱 최적화기</div><div class="v27-sub">12R 에너지/출력 듀얼 라인 + 페이싱 존 밴드 + 라운드별 등급</div><canvas id="v27-canvas-pacing" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;margin:8px auto;display:block;cursor:pointer"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px"><button class="v27-btn" onclick="window._v27SimPacing()">페이싱 시뮬</button><button class="v27-btn-sec" onclick="window._v27ResetPacing()">초기화</button></div></div>';
 document.body.appendChild(sec5);
 
 function drawPacingCanvas(){
@@ -543,7 +543,7 @@ window._v27ResetPacing = function(){
 var sec6 = document.createElement('div');
 sec6.id = 'v27-sec-6';
 sec6.style.cssText = 'display:none;padding:12px;max-width:700px;margin:0 auto;';
-sec6.innerHTML = '<div class="v27-card"><div class="v27-hdr">&#128260; &#54144;&#52824; &#54540;&#47196;&#50864; &#49373;&#53412; &#49884;&#44033;&#54868;</div><div class="v27-sub">Setup&#8594;Power&#8594;Follow-up 3&#52972;&#47100; Sankey + &#54540;&#47196;&#50864; &#46160;&#44760; = &#48712;&#46020;</div><canvas id="v27-canvas-flow" width="640" height="400" style="width:100%;max-width:640px;border-radius:12px;margin:8px auto;display:block;cursor:pointer"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px"><button class="v27-btn" onclick="window._v27SimFlow()">&#54540;&#47196;&#50864; &#52628;&#44032;</button><button class="v27-btn-sec" onclick="window._v27ResetFlow()">&#52488;&#44592;&#54868;</button></div></div>';
+sec6.innerHTML = '<div class="v27-card"><div class="v27-hdr">🔄 펀치 플로우 생키 시각화</div><div class="v27-sub">Setup→Power→Follow-up 3컬럼 Sankey + 플로우 두께 = 빈도</div><canvas id="v27-canvas-flow" width="640" height="400" style="width:100%;max-width:640px;border-radius:12px;margin:8px auto;display:block;cursor:pointer"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px"><button class="v27-btn" onclick="window._v27SimFlow()">플로우 추가</button><button class="v27-btn-sec" onclick="window._v27ResetFlow()">초기화</button></div></div>';
 document.body.appendChild(sec6);
 
 function drawFlowCanvas(){
@@ -623,7 +623,7 @@ window._v27ResetFlow = function(){
 var sec7 = document.createElement('div');
 sec7.id = 'v27-sec-7';
 sec7.style.cssText = 'display:none;padding:12px;max-width:700px;margin:0 auto;';
-sec7.innerHTML = '<div class="v27-card"><div class="v27-hdr">&#128681; &#48373;&#49905; &#48512;&#49345; &#47532;&#49828;&#53356; &#47588;&#53944;&#47533;&#49828;</div><div class="v27-sub">8&#48512;&#50948; x 6&#50948;&#54744;&#50836;&#49548; &#55176;&#53944;&#47605; + &#48512;&#50948;&#48324; &#50696;&#48169; &#46300;&#47540;</div><canvas id="v27-canvas-injury" width="620" height="380" style="width:100%;max-width:620px;border-radius:12px;margin:8px auto;display:block;cursor:pointer"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px"><button class="v27-btn" onclick="window._v27SimInjury()">&#47532;&#49828;&#53356; &#54217;&#44032;</button><button class="v27-btn-sec" onclick="window._v27ResetInjury()">&#52488;&#44592;&#54868;</button></div></div>';
+sec7.innerHTML = '<div class="v27-card"><div class="v27-hdr">🚩 복싱 부상 리스크 매트릭스</div><div class="v27-sub">8부위 x 6위험요소 히트맵 + 부위별 예방 드릴</div><canvas id="v27-canvas-injury" width="620" height="380" style="width:100%;max-width:620px;border-radius:12px;margin:8px auto;display:block;cursor:pointer"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px"><button class="v27-btn" onclick="window._v27SimInjury()">리스크 평가</button><button class="v27-btn-sec" onclick="window._v27ResetInjury()">초기화</button></div></div>';
 document.body.appendChild(sec7);
 
 function drawInjuryCanvas(){
@@ -698,7 +698,7 @@ window._v27ResetInjury = function(){
 var sec8 = document.createElement('div');
 sec8.id = 'v27-sec-8';
 sec8.style.cssText = 'display:none;padding:12px;max-width:700px;margin:0 auto;';
-sec8.innerHTML = '<div class="v27-card"><div class="v27-hdr">&#127183; &#54028;&#51060;&#53552; &#53944;&#47112;&#51060;&#46377; &#52852;&#46300;</div><div class="v27-sub">8&#52629; &#49828;&#53439; &#47112;&#51060;&#45908; + &#47021;&#53356; &#50656;&#48660;&#47100; + &#52964;&#47532;&#50612; &#54616;&#51060;&#46972;&#51060;&#53944;</div><canvas id="v27-canvas-card" width="600" height="400" style="width:100%;max-width:600px;border-radius:12px;margin:8px auto;display:block;cursor:pointer"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px"><button class="v27-btn" onclick="window._v27GenCard()">&#52852;&#46300; &#49373;&#49457;</button><button class="v27-btn" onclick="window._v27TrainCard()">&#53944;&#47112;&#51060;&#45789;</button><button class="v27-btn-sec" onclick="window._v27ResetCard()">&#52488;&#44592;&#54868;</button></div></div>';
+sec8.innerHTML = '<div class="v27-card"><div class="v27-hdr">🃏 파이터 트레이딩 카드</div><div class="v27-sub">8축 스킿 레이더 + 랭크 엠블럼 + 커리어 하이라이트</div><canvas id="v27-canvas-card" width="600" height="400" style="width:100%;max-width:600px;border-radius:12px;margin:8px auto;display:block;cursor:pointer"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin-top:8px"><button class="v27-btn" onclick="window._v27GenCard()">카드 생성</button><button class="v27-btn" onclick="window._v27TrainCard()">트레이닝</button><button class="v27-btn-sec" onclick="window._v27ResetCard()">초기화</button></div></div>';
 document.body.appendChild(sec8);
 
 function drawCardCanvas(){
@@ -831,7 +831,7 @@ var quizQuestions = [
   {q:'복싱에서 풀워크가 중요한 이유는?', o:['각도와 거리 조절로 공방 전환','단순히 움직이기','체력 소몪용','심판에게 잘 보이기'], a:0},
   {q:'Ring Generalship이란?', o:['링 안에서의 공간 지배력과 전술적 우위','횀쳘 운동','체중 관리','펀치 속도'], a:0}
 ];
-var quizHtml = '<div class="v27-card"><div class="v27-hdr">&#128218; &#48373;&#49905; &#53300;&#51592; v27 (15&#47928;)</div><div class="v27-sub">&#52852;&#50868;&#53552;&#54144;&#52824;, &#54952;&#50984;&#48516;&#49437;, &#51204;&#47029;, &#47784;&#48716;&#47532;&#54000;, &#54168;&#51060;&#49905;, &#54540;&#47196;&#50864;, &#48512;&#49345;, &#52852;&#46300;</div>';
+var quizHtml = '<div class="v27-card"><div class="v27-hdr">📚 복싱 퀴즈 v27 (15문)</div><div class="v27-sub">카운터펀치, 효율분석, 전략, 모빌리티, 페이싱, 플로우, 부상, 카드</div>';
 quizQuestions.forEach(function(qq,qi){
   quizHtml += '<div style="margin:10px 0;padding:10px;background:var(--surface);border-radius:10px"><div style="font-size:12px;font-weight:700;margin-bottom:6px">Q'+(qi+1)+'. '+qq.q+'</div>';
   qq.o.forEach(function(opt,oi){

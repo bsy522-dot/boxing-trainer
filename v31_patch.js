@@ -1472,7 +1472,7 @@ var quizV31Data = [
 var secQuiz31 = document.createElement('div');
 secQuiz31.id = 'v31-sec-9';
 secQuiz31.style.cssText = 'display:none;max-width:680px;margin:20px auto;padding:0 12px;';
-var quizHtml31 = '<div class="v31-card"><div class="v31-hdr">🎯 복싱 퀀즈 v31 (15문)</div>';
+var quizHtml31 = '<div class="v31-card"><div class="v31-hdr">🎯 복싱 퀴즈 v31 (15문)</div>';
 for(var qi=0;qi<quizV31Data.length;qi++){
   var qq = quizV31Data[qi];
   quizHtml31 += '<div style="margin:10px 0;padding:10px;background:var(--surface,rgba(255,255,255,0.03));border-radius:10px"><div style="font-size:12px;font-weight:700;margin-bottom:6px">Q'+(qi+1)+'. '+qq.q+'</div>';
@@ -1517,7 +1517,7 @@ var achieveV31Defs = [
   {id:'a31_energy_12r',name:'풀 라운드',desc:'12라운드 모두 체력 분배 기록',check:function(){for(var r=0;r<12;r++){var t=0;for(var e=0;e<4;e++)t+=v31.energyDist.rounds[r][energyKeys[e]];if(t<=0)return false;}return true}},
   {id:'a31_stance_good',name:'폼 완성',desc:'스탠스 점수 B등급 이상',check:function(){return v31.stanceCorrector.bestGrade==='S'||v31.stanceCorrector.bestGrade==='A'||v31.stanceCorrector.bestGrade==='B'}},
   {id:'a31_dashboard_eval',name:'전투력 평가',desc:'종합 대시보드 1회 평가',check:function(){return v31.combatDashboard.sessions>=1}},
-  {id:'a31_quiz_10',name:'퀀즈 도전자 v31',desc:'v31 퀀즈 10문 정답',check:function(){var cnt=0;for(var k in v31.quizV31Scores)if(v31.quizV31Scores[k]===1)cnt++;return cnt>=10}},
+  {id:'a31_quiz_10',name:'퀴즈 도전자 v31',desc:'v31 퀴즈 10문 정답',check:function(){var cnt=0;for(var k in v31.quizV31Scores)if(v31.quizV31Scores[k]===1)cnt++;return cnt>=10}},
   {id:'a31_all_features',name:'v31 마스터',desc:'v31 모든 기능 사용',check:function(){var keys=['punchVolume','footwork','defenseMatrix','intensityZone','punchSequence','energyDist','stanceCorrector','combatDashboard'];for(var i=0;i<keys.length;i++)if(!v31.featureUsage31[keys[i]])return false;return true}}
 ];
 
@@ -1548,7 +1548,7 @@ function addV31Nav(){
     {id:'energyDist',label:'체력분배',sec:sec6},
     {id:'stanceCorrector',label:'스탠스',sec:sec7},
     {id:'combatDashboard',label:'전투력',sec:sec8},
-    {id:'quizV31',label:'퀀즈v31',sec:secQuiz31}
+    {id:'quizV31',label:'퀴즈v31',sec:secQuiz31}
   ];
 
   var existingNav = document.querySelector('.v10-bottom-bar') || document.querySelector('[class*="bottom-bar"]');

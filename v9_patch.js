@@ -281,7 +281,7 @@ function renderCooldown(){
     var cls = 'cooldown-step';
     if(i === cdStep && cdRunning) cls += ' active';
     if(i < cdStep && cdRunning) cls += ' done';
-    html += '<div class="'+cls+'"><div class="cooldown-num">'+(i<cdStep&&cdRunning?'&#10003;':(i+1))+'</div><div class="cooldown-info"><div class="cooldown-name">'+step.name+'</div><div class="cooldown-desc">'+step.desc+'</div></div><div class="cooldown-dur">'+step.dur+'&#52488;</div></div>';
+    html += '<div class="'+cls+'"><div class="cooldown-num">'+(i<cdStep&&cdRunning?'✓':(i+1))+'</div><div class="cooldown-info"><div class="cooldown-name">'+step.name+'</div><div class="cooldown-desc">'+step.desc+'</div></div><div class="cooldown-dur">'+step.dur+'초</div></div>';
   });
   html += '</div><div class="cooldown-timer">';
   if(cdRunning){
@@ -289,15 +289,15 @@ function renderCooldown(){
     html += '<div class="cooldown-phase">'+COOLDOWN_STEPS[cdStep].name+'</div>';
   } else {
     var totalSec = COOLDOWN_STEPS.reduce(function(s,x){return s+x.dur;},0);
-    html += '<div class="cooldown-time-big" style="font-size:28px;color:var(--text-dim)">'+Math.ceil(totalSec/60)+'&#48516; &#53216;&#45796;&#50868;</div>';
-    html += '<div class="cooldown-phase">&#54984;&#47144; &#54980; &#49828;&#53944;&#47112;&#52845;&#51004;&#47196; &#44540;&#50977; &#54924;&#48373;&#51012; &#46020;&#50752;&#51452;&#49464;&#50836;</div>';
+    html += '<div class="cooldown-time-big" style="font-size:28px;color:var(--text-dim)">'+Math.ceil(totalSec/60)+'분 쿨다운</div>';
+    html += '<div class="cooldown-phase">훈련 후 스트레칭으로 근육 회복을 도와주세요</div>';
   }
   html += '</div><div class="cooldown-btns">';
   if(!cdRunning){
-    html += '<button class="cooldown-btn primary" id="cdStart">&#9654; &#53216;&#45796;&#50868; &#49884;&#51089;</button>';
+    html += '<button class="cooldown-btn primary" id="cdStart">▶ 쿨다운 시작</button>';
   } else {
-    html += '<button class="cooldown-btn secondary" id="cdStop">&#9632; &#51473;&#51648;</button>';
-    html += '<button class="cooldown-btn secondary" id="cdSkip">&#9193; &#44148;&#45320;&#46888;&#44592;</button>';
+    html += '<button class="cooldown-btn secondary" id="cdStop">■ 중지</button>';
+    html += '<button class="cooldown-btn secondary" id="cdSkip">⏩ 건너뜨기</button>';
   }
   html += '</div>';
   el.innerHTML = html;
@@ -310,7 +310,7 @@ function renderCooldown(){
 }
 function fmtTime(sec){ var m=Math.floor(sec/60),s=sec%60; return (m<10?'0':'')+m+':'+(s<10?'0':'')+s; }
 function startCooldown(){ cdStep=0;cdTimeLeft=COOLDOWN_STEPS[0].dur;cdRunning=true;renderCooldown();cdTimerId=setInterval(tickCooldown,1000);playSFX('cooldown'); }
-function tickCooldown(){ cdTimeLeft--;if(cdTimeLeft<=0){cdStep++;if(cdStep>=COOLDOWN_STEPS.length){stopCooldown();playSFX('milestone');var k=new Date().toISOString().slice(0,10);v9.cooldownDone[k]=true;saveV9(v9);toastV9('&#10024; &#53216;&#45796;&#50868; &#50756;&#47308;! &#44540;&#50977;&#51060; &#48736;&#47476;&#44172; &#54924;&#48373;&#46121;&#45768;&#45796;.');return;}cdTimeLeft=COOLDOWN_STEPS[cdStep].dur;playSFX('cooldown');}renderCooldown(); }
+function tickCooldown(){ cdTimeLeft--;if(cdTimeLeft<=0){cdStep++;if(cdStep>=COOLDOWN_STEPS.length){stopCooldown();playSFX('milestone');var k=new Date().toISOString().slice(0,10);v9.cooldownDone[k]=true;saveV9(v9);toastV9('✨ 쿨다운 완료! 근육이 빠르게 회복됩니다.');return;}cdTimeLeft=COOLDOWN_STEPS[cdStep].dur;playSFX('cooldown');}renderCooldown(); }
 function stopCooldown(){ cdRunning=false;cdStep=0;if(cdTimerId){clearInterval(cdTimerId);cdTimerId=null;}renderCooldown(); }
 function skipCooldownStep(){ cdStep++;if(cdStep>=COOLDOWN_STEPS.length){stopCooldown();playSFX('milestone');return;}cdTimeLeft=COOLDOWN_STEPS[cdStep].dur;playSFX('cooldown');renderCooldown(); }
 
@@ -410,7 +410,7 @@ function renderSpeedGrade(){
 
   var circ = 2*Math.PI*55;
   var offset = circ*(1-pct/100);
-  el.innerHTML = '<div class="speed-grade-wrap"><div class="speed-ring"><svg width="140" height="140" viewBox="0 0 140 140"><circle cx="70" cy="70" r="55" fill="none" stroke="var(--glass-border)" stroke-width="14"/><circle cx="70" cy="70" r="55" fill="none" stroke="'+color+'" stroke-width="14" stroke-dasharray="'+circ+'" stroke-dashoffset="'+offset+'" stroke-linecap="round"/></svg><div class="speed-ring-text"><div class="speed-grade-letter" style="color:'+color+'">'+grade+'</div><div class="speed-grade-label">&#46321;&#44553;</div></div></div><div class="speed-stats"><div class="speed-stat">&#128200; &#54217;&#44512; PPM <span class="speed-stat-val">'+avgPPM.toFixed(1)+'</span></div><div class="speed-stat">&#9889; &#52572;&#44256; PPM <span class="speed-stat-val">'+bestPPM.toFixed(1)+'</span></div><div class="speed-stat">&#128202; &#49464;&#49496; &#49688; <span class="speed-stat-val">'+sessions.length+'</span></div><div class="speed-stat" style="font-size:10px;color:var(--text-muted)">S:60+ A:45+ B:30+ C:20+ D:10+</div></div></div>';
+  el.innerHTML = '<div class="speed-grade-wrap"><div class="speed-ring"><svg width="140" height="140" viewBox="0 0 140 140"><circle cx="70" cy="70" r="55" fill="none" stroke="var(--glass-border)" stroke-width="14"/><circle cx="70" cy="70" r="55" fill="none" stroke="'+color+'" stroke-width="14" stroke-dasharray="'+circ+'" stroke-dashoffset="'+offset+'" stroke-linecap="round"/></svg><div class="speed-ring-text"><div class="speed-grade-letter" style="color:'+color+'">'+grade+'</div><div class="speed-grade-label">등급</div></div></div><div class="speed-stats"><div class="speed-stat">📈 평균 PPM <span class="speed-stat-val">'+avgPPM.toFixed(1)+'</span></div><div class="speed-stat">⚡ 최고 PPM <span class="speed-stat-val">'+bestPPM.toFixed(1)+'</span></div><div class="speed-stat">📊 세션 수 <span class="speed-stat-val">'+sessions.length+'</span></div><div class="speed-stat" style="font-size:10px;color:var(--text-muted)">S:60+ A:45+ B:30+ C:20+ D:10+</div></div></div>';
 }
 
 // ===== HYDRATION TRACKER =====
@@ -435,7 +435,7 @@ function renderHydration(){
     var filled = i < count;
     html += '<div class="hydration-bottle'+(filled?' filled':'')+'" data-idx="'+i+'"><div class="hydration-fill" style="height:'+(filled?'100':'0')+'%"></div></div>';
   }
-  html += '</div><div class="hydration-info"><div class="hydration-count">'+count+' / '+target+'</div><div class="hydration-label">&#52981; (250ml)</div><div class="hydration-target">&#47785;&#54364;: '+(target*250)+'ml</div></div></div>';
+  html += '</div><div class="hydration-info"><div class="hydration-count">'+count+' / '+target+'</div><div class="hydration-label">컵 (250ml)</div><div class="hydration-target">목표: '+(target*250)+'ml</div></div></div>';
   el.innerHTML = html;
   el.querySelectorAll('.hydration-bottle').forEach(function(bottle){
     bottle.addEventListener('click',function(){
@@ -451,21 +451,21 @@ function renderHydration(){
 
 // ===== BOXING KNOWLEDGE QUIZ =====
 var QUIZ = [
-  {q:'&#48373;&#49905;&#50640;&#49436; &#51105;(Jab)&#51012; &#45216;&#47532;&#45716; &#49552;&#51008;?',opts:['&#50526;&#49552;','&#46263;&#49552;','&#50577;&#49552; &#46041;&#49884;','&#44288;&#44228;&#50630;&#51020;'],ans:0,exp:'&#51105;&#51008; &#54637;&#49345; &#50526;&#49552;(&#47532;&#46300; &#54620;&#46300;)&#47196; &#45216;&#47549;&#45768;&#45796;. &#44032;&#51109; &#44592;&#48376;&#51201;&#51060;&#44256; &#48736;&#47480; &#54144;&#52824;&#51077;&#45768;&#45796;.'},
-  {q:'&#54532;&#47196;&#48373;&#49905; &#54620; &#46972;&#50868;&#46300;&#45716; &#47751; &#48516;&#51064;&#44032;?',opts:['2&#48516;','3&#48516;','5&#48516;','4&#48516;'],ans:1,exp:'&#54532;&#47196;&#48373;&#49905;&#51032; 1&#46972;&#50868;&#46300;&#45716; 3&#48516;&#51060;&#47728;, &#46972;&#50868;&#46300; &#49324;&#51060; 1&#48516; &#55092;&#49885;&#51060; &#51080;&#49845;&#45768;&#45796;.'},
-  {q:'&#53356;&#47196;&#49828;(Cross)&#51032; &#54028;&#50892;&#45716; &#50612;&#46356;&#50640;&#49436; &#45208;&#50724;&#45716;&#44032;?',opts:['&#54036;','&#50612;&#44648;','&#50628;&#45929;&#51060; &#54924;&#51204;','&#49552;&#47785;'],ans:2,exp:'&#53356;&#47196;&#49828;&#51032; &#54028;&#50892;&#45716; &#48156;&#50640;&#49436; &#49884;&#51089;&#54644; &#50628;&#45929;&#51060; &#54924;&#51204;&#51012; &#53685;&#54644; &#51204;&#45804;&#46121;&#45768;&#45796;.'},
-  {q:'&#48373;&#49905; &#44544;&#47084;&#48652;&#51032; &#47924;&#44172;&#45716; &#48372;&#53685; &#47751; &#50728;&#49828;&#51064;&#44032;?',opts:['4-6oz','8-10oz','12-16oz','18-20oz'],ans:1,exp:'&#54532;&#47196; &#48373;&#49905; &#44544;&#47084;&#48652;&#45716; &#48372;&#53685; 8-10oz(227-283g)&#51060;&#47728;, &#54984;&#47144;&#50857;&#51008; 12-16oz&#47484; &#49324;&#50857;&#54633;&#45768;&#45796;.'},
-  {q:'Muhammad Ali&#51032; &#48324;&#47749;&#51008;?',opts:['Iron Mike','The Greatest','Sugar Ray','The Hitman'],ans:1,exp:'Muhammad Ali&#45716; &ldquo;The Greatest&rdquo;&#46972;&#45716; &#48324;&#47749;&#51004;&#47196; &#50976;&#47749;&#54620; &#51204;&#49444;&#51201;&#51064; &#54756;&#48708;&#44553; &#48373;&#49436;&#51077;&#45768;&#45796;.'},
-  {q:'&#49836;&#47549;(Slip)&#51008; &#50612;&#46500; &#44592;&#49696;&#51064;&#44032;?',opts:['&#44277;&#44201; &#44592;&#49696;','&#54924;&#54588; &#44592;&#49696;','&#48156;&#45459;&#47548; &#44592;&#49696;','&#44536;&#47549;&#52824; &#44592;&#49696;'],ans:1,exp:'&#49836;&#47549;&#51008; &#49345;&#52404;&#47484; &#51340;&#50864;&#47196; &#44592;&#50872;&#50668; &#49345;&#45824;&#51032; &#54144;&#52824;&#47484; &#54588;&#54616;&#45716; &#48169;&#50612; &#44592;&#49696;&#51077;&#45768;&#45796;.'},
-  {q:'1-2 &#53092;&#48372;&#45716; &#50612;&#46500; &#54144;&#52824;&#51032; &#51312;&#54633;&#51064;&#44032;?',opts:['&#51105;-&#54985;','&#51105;-&#53356;&#47196;&#49828;','&#53356;&#47196;&#49828;-&#54985;','&#50612;&#54140;&#52983;-&#51105;'],ans:1,exp:'1-2&#45716; &#51105;(1)&#44284; &#53356;&#47196;&#49828;(2)&#51032; &#44592;&#48376; &#53092;&#48372;&#47196;, &#47784;&#46304; &#48373;&#49436;&#51032; &#54596;&#49688; &#44592;&#49696;&#51077;&#45768;&#45796;.'},
-  {q:'&#48373;&#49905;&#50640;&#49436; &#44032;&#46300;(Guard)&#51032; &#50669;&#54624;&#51008;?',opts:['&#44277;&#44201;','&#48169;&#50612;','&#51060;&#46041;','&#54168;&#51060;&#53944;'],ans:1,exp:'&#44032;&#46300;&#45716; &#50577;&#49552;&#51004;&#47196; &#50620;&#44404;&#44284; &#47800;&#53685;&#51012; &#48372;&#54840;&#54616;&#45716; &#48169;&#50612; &#51088;&#49464;&#51077;&#45768;&#45796;.'},
-  {q:'&#54984;&#47144; &#51204; &#50892;&#48141;&#50629;&#51060; &#51473;&#50836;&#54620; &#51060;&#50976;&#45716;?',opts:['&#44540;&#47141; &#51613;&#44032;','&#48512;&#49345; &#50696;&#48169;','&#52404;&#51473; &#44048;&#47049;','&#49549;&#46020; &#54693;&#49345;'],ans:1,exp:'&#50892;&#48141;&#50629;&#51008; &#44540;&#50977;&#44284; &#44288;&#51208;&#51012; &#46384;&#46907;&#54616;&#44172; &#54644; &#48512;&#49345;&#51012; &#50696;&#48169;&#54616;&#45716; &#45936; &#54596;&#49688;&#51077;&#45768;&#45796;.'},
-  {q:'&#48373;&#49905;&#50640;&#49436; &#54028;&#50892; &#54144;&#52824;(Power Punch)&#50640; &#54644;&#45817;&#54616;&#45716; &#44163;&#51008;?',opts:['&#51105;','&#53356;&#47196;&#49828;','&#49836;&#47549;','&#54028;&#47553;'],ans:1,exp:'&#53356;&#47196;&#49828;&#45716; &#46263;&#49552;&#51004;&#47196; &#45216;&#47532;&#45716; &#54028;&#50892; &#54144;&#52824;&#47196;, &#50628;&#45929;&#51060; &#54924;&#51204;&#51032; &#55192;&#51012; &#51204;&#45804;&#54633;&#45768;&#45796;.'},
-  {q:'Manny Pacquiao&#51032; &#44397;&#51201;&#51008;?',opts:['&#47701;&#49884;&#53076;','&#54596;&#47532;&#54592;','&#48120;&#44397;','&#54392;&#50640;&#47476;&#53664;&#47532;&#53076;'],ans:1,exp:'Manny Pacquiao&#45716; &#54596;&#47532;&#54592; &#52636;&#49888;&#51032; 8&#52404;&#44553; &#52380;&#54588;&#50616;&#51004;&#47196; &#51204;&#49444;&#51201;&#51064; &#48373;&#49436;&#51077;&#45768;&#45796;.'},
-  {q:'&#48373;&#49905; &#47553;&#51032; &#44508;&#44201;&#51008;?',opts:['4.9m x 4.9m','6.1m x 6.1m','7.3m x 7.3m','8m x 8m'],ans:1,exp:'&#54532;&#47196;&#48373;&#49905; &#47553;&#51008; &#48372;&#53685; 16-20 &#54588;&#53944;(4.88m-6.1m) &#49324;&#44033;&#54805;&#51077;&#45768;&#45796;.'},
-  {q:'&#50612;&#54140;&#52983;(Uppercut)&#51008; &#50612;&#46356;&#50640;&#49436; &#55192;&#51012; &#49884;&#51089;&#54616;&#45716;&#44032;?',opts:['&#50612;&#44648;','&#47924;&#47502;(&#45796;&#47532;)','&#54036;','&#49552;&#47785;'],ans:1,exp:'&#50612;&#54140;&#52983;&#51008; &#47924;&#47502;&#51012; &#44396;&#48512;&#47140; &#45796;&#47532;&#50640;&#49436; &#55192;&#51012; &#49884;&#51089;&#54644; &#50948;&#47196; &#51204;&#45804;&#54633;&#45768;&#45796;.'},
-  {q:'TKO&#45716; &#47924;&#50631;&#51032; &#50557;&#51088;&#51064;&#44032;?',opts:['Total Knock Out','Technical Knock Out','Trainer Knock Out','Time Knock Out'],ans:1,exp:'TKO(Technical Knock Out)&#45716; &#49900;&#54032;&#51060;&#45208; &#47553;&#45769;&#51060; &#49440;&#49688;&#51032; &#50504;&#51204;&#51012; &#50948;&#54644; &#44221;&#44592;&#47484; &#51473;&#45800;&#54616;&#45716; &#44163;&#51077;&#45768;&#45796;.'},
-  {q:'&#48373;&#49905;&#50640;&#49436; &#44032;&#51109; &#44596; &#49324;&#44144;&#47532;&#51032; &#54144;&#52824;&#45716;?',opts:['&#51105;','&#53356;&#47196;&#49828;','&#54985;','&#50612;&#54140;&#52983;'],ans:0,exp:'&#51105;&#51008; &#50526;&#49552;&#51004;&#47196; &#48736;&#47476;&#44172; &#45216;&#47532;&#44592; &#46412;&#47928;&#50640; &#44032;&#51109; &#44596; &#49324;&#44144;&#47532;&#51032; &#54144;&#52824;&#51077;&#45768;&#45796;.'}
+  {q:'복싱에서 잡(Jab)을 날리는 손은?',opts:['앞손','뒷손','양손 동시','관계없음'],ans:0,exp:'잡은 항상 앞손(리드 한드)로 날립니다. 가장 기본적이고 빠른 펀치입니다.'},
+  {q:'프로복싱 한 라운드는 몇 분인가?',opts:['2분','3분','5분','4분'],ans:1,exp:'프로복싱의 1라운드는 3분이며, 라운드 사이 1분 휴식이 있습니다.'},
+  {q:'크로스(Cross)의 파워는 어디에서 나오는가?',opts:['팔','어깨','엄덩이 회전','손목'],ans:2,exp:'크로스의 파워는 발에서 시작해 엄덩이 회전을 통해 전달됩니다.'},
+  {q:'복싱 글러브의 무게는 보통 몇 온스인가?',opts:['4-6oz','8-10oz','12-16oz','18-20oz'],ans:1,exp:'프로 복싱 글러브는 보통 8-10oz(227-283g)이며, 훈련용은 12-16oz를 사용합니다.'},
+  {q:'Muhammad Ali의 별명은?',opts:['Iron Mike','The Greatest','Sugar Ray','The Hitman'],ans:1,exp:'Muhammad Ali는 &ldquo;The Greatest&rdquo;라는 별명으로 유명한 전설적인 헤비급 복서입니다.'},
+  {q:'슬립(Slip)은 어떤 기술인가?',opts:['공격 기술','회피 기술','발놓림 기술','그립치 기술'],ans:1,exp:'슬립은 상체를 좌우로 기울여 상대의 펀치를 피하는 방어 기술입니다.'},
+  {q:'1-2 콤보는 어떤 펀치의 조합인가?',opts:['잡-훅','잡-크로스','크로스-훅','어퍼컷-잡'],ans:1,exp:'1-2는 잡(1)과 크로스(2)의 기본 콤보로, 모든 복서의 필수 기술입니다.'},
+  {q:'복싱에서 가드(Guard)의 역할은?',opts:['공격','방어','이동','페이트'],ans:1,exp:'가드는 양손으로 얼굴과 몸통을 보호하는 방어 자세입니다.'},
+  {q:'훈련 전 워밍업이 중요한 이유는?',opts:['근력 증가','부상 예방','체중 감량','속도 향상'],ans:1,exp:'워밍업은 근육과 관절을 따뜻하게 해 부상을 예방하는 데 필수입니다.'},
+  {q:'복싱에서 파워 펀치(Power Punch)에 해당하는 것은?',opts:['잡','크로스','슬립','파링'],ans:1,exp:'크로스는 뒷손으로 날리는 파워 펀치로, 엄덩이 회전의 힘을 전달합니다.'},
+  {q:'Manny Pacquiao의 국적은?',opts:['멕시코','필리핀','미국','푸에르토리코'],ans:1,exp:'Manny Pacquiao는 필리핀 출신의 8체급 천피언으로 전설적인 복서입니다.'},
+  {q:'복싱 링의 규격은?',opts:['4.9m x 4.9m','6.1m x 6.1m','7.3m x 7.3m','8m x 8m'],ans:1,exp:'프로복싱 링은 보통 16-20 피트(4.88m-6.1m) 사각형입니다.'},
+  {q:'어퍼컷(Uppercut)은 어디에서 힘을 시작하는가?',opts:['어깨','무릎(다리)','팔','손목'],ans:1,exp:'어퍼컷은 무릎을 구부려 다리에서 힘을 시작해 위로 전달합니다.'},
+  {q:'TKO는 무엇의 약자인가?',opts:['Total Knock Out','Technical Knock Out','Trainer Knock Out','Time Knock Out'],ans:1,exp:'TKO(Technical Knock Out)는 심판이나 링닉이 선수의 안전을 위해 경기를 중단하는 것입니다.'},
+  {q:'복싱에서 가장 긴 사거리의 펀치는?',opts:['잡','크로스','훅','어퍼컷'],ans:0,exp:'잡은 앞손으로 빠르게 날리기 때문에 가장 긴 사거리의 펀치입니다.'}
 ];
 
 var quizIdx = 0, quizAnswered = false, quizCorrectCount = 0, quizDone = false;
@@ -479,7 +479,7 @@ function renderQuiz(){
     var k = new Date().toISOString().slice(0,10);
     if(!v9.quizScores[k]) v9.quizScores[k] = pct;
     saveV9(v9);
-    el.innerHTML = '<div class="quiz-result"><div class="quiz-score-big">'+quizCorrectCount+' / '+QUIZ.length+'</div><div class="quiz-score-label">&#51221;&#45813; ('+pct+'%)</div><div class="quiz-grade" style="color:'+(pct>=80?'var(--green)':pct>=60?'var(--orange)':'var(--accent)')+'">&#46321;&#44553;: '+grade+'</div><div class="quiz-nav" style="margin-top:16px"><button class="quiz-nav-btn primary" id="quizRetry">&#45796;&#49884; &#54400;&#44592;</button></div></div>';
+    el.innerHTML = '<div class="quiz-result"><div class="quiz-score-big">'+quizCorrectCount+' / '+QUIZ.length+'</div><div class="quiz-score-label">정답 ('+pct+'%)</div><div class="quiz-grade" style="color:'+(pct>=80?'var(--green)':pct>=60?'var(--orange)':'var(--accent)')+'">등급: '+grade+'</div><div class="quiz-nav" style="margin-top:16px"><button class="quiz-nav-btn primary" id="quizRetry">다시 풀기</button></div></div>';
     document.getElementById('quizRetry').addEventListener('click',function(){quizIdx=0;quizAnswered=false;quizCorrectCount=0;quizDone=false;renderQuiz();});
     return;
   }
@@ -488,9 +488,9 @@ function renderQuiz(){
   qq.opts.forEach(function(opt,i){
     html += '<div class="quiz-option'+(quizAnswered?(i===qq.ans?' correct':(i===quizIdx._userAns?' wrong':' disabled')):'')+'" data-idx="'+i+'">'+opt+'</div>';
   });
-  html += '</div><div class="quiz-explanation'+(quizAnswered?' show':'')+'">&#128161; '+qq.exp+'</div>';
+  html += '</div><div class="quiz-explanation'+(quizAnswered?' show':'')+'">💡 '+qq.exp+'</div>';
   if(quizAnswered){
-    html += '<div class="quiz-nav"><button class="quiz-nav-btn primary" id="quizNext">'+(quizIdx<QUIZ.length-1?'&#45796;&#51020; &#47928;&#51228; &#8594;':'&#44208;&#44284; &#48372;&#44592;')+'</button></div>';
+    html += '<div class="quiz-nav"><button class="quiz-nav-btn primary" id="quizNext">'+(quizIdx<QUIZ.length-1?'다음 문제 →':'결과 보기')+'</button></div>';
   }
   el.innerHTML = html + '</div>';
   if(!quizAnswered){
@@ -517,15 +517,15 @@ function renderQuiz(){
 
 // ===== PROGRESS MILESTONES =====
 var MILESTONES = [
-  {id:'m_first',label:'&#52395;&#54984;&#47144;',icon:'&#127937;',check:function(a){return (a.sessions||[]).length>=1;}},
-  {id:'m_100p',label:'100&#54144;&#52824;',icon:'&#128074;',check:function(a){return (a.totalPunches||0)>=100;}},
-  {id:'m_500p',label:'500&#54144;&#52824;',icon:'&#129354;',check:function(a){return (a.totalPunches||0)>=500;}},
-  {id:'m_1k',label:'1K&#54144;&#52824;',icon:'&#128165;',check:function(a){return (a.totalPunches||0)>=1000;}},
-  {id:'m_5k',label:'5K&#54144;&#52824;',icon:'&#128170;',check:function(a){return (a.totalPunches||0)>=5000;}},
-  {id:'m_10k',label:'&#47112;&#51204;&#46300;',icon:'&#128081;',check:function(a){return (a.totalPunches||0)>=10000;}},
-  {id:'m_3day',label:'3&#51068;&#50672;&#49549;',icon:'&#128293;',check:function(a){return (a.bestStreak||0)>=3;}},
-  {id:'m_7day',label:'7&#51068;&#50672;&#49549;',icon:'&#11088;',check:function(a){return (a.bestStreak||0)>=7;}},
-  {id:'m_30day',label:'30&#51068;&#50672;&#49549;',icon:'&#127942;',check:function(a){return (a.bestStreak||0)>=30;}}
+  {id:'m_first',label:'첫훈련',icon:'🏁',check:function(a){return (a.sessions||[]).length>=1;}},
+  {id:'m_100p',label:'100펀치',icon:'👊',check:function(a){return (a.totalPunches||0)>=100;}},
+  {id:'m_500p',label:'500펀치',icon:'🥊',check:function(a){return (a.totalPunches||0)>=500;}},
+  {id:'m_1k',label:'1K펀치',icon:'💥',check:function(a){return (a.totalPunches||0)>=1000;}},
+  {id:'m_5k',label:'5K펀치',icon:'💪',check:function(a){return (a.totalPunches||0)>=5000;}},
+  {id:'m_10k',label:'레전드',icon:'👑',check:function(a){return (a.totalPunches||0)>=10000;}},
+  {id:'m_3day',label:'3일연속',icon:'🔥',check:function(a){return (a.bestStreak||0)>=3;}},
+  {id:'m_7day',label:'7일연속',icon:'⭐',check:function(a){return (a.bestStreak||0)>=7;}},
+  {id:'m_30day',label:'30일연속',icon:'🏆',check:function(a){return (a.bestStreak||0)>=30;}}
 ];
 
 function renderMilestones(){
@@ -535,7 +535,7 @@ function renderMilestones(){
   var reached = 0;
   MILESTONES.forEach(function(m){if(m.check(app)) reached++;});
   var pct = reached/MILESTONES.length*100;
-  var html = '<div style="text-align:center;margin-bottom:10px;font-size:12px;color:var(--text-dim)">'+reached+' / '+MILESTONES.length+' &#45804;&#49457; ('+Math.round(pct)+'%)</div>';
+  var html = '<div style="text-align:center;margin-bottom:10px;font-size:12px;color:var(--text-dim)">'+reached+' / '+MILESTONES.length+' 달성 ('+Math.round(pct)+'%)</div>';
   html += '<div class="milestone-track">';
   MILESTONES.forEach(function(m,i){
     var ok = m.check(app);
@@ -547,12 +547,12 @@ function renderMilestones(){
 
 // ===== WORKOUT TEMPLATES =====
 var TEMPLATES = [
-  {name:'&#48736;&#47480; &#48264;',desc:'3R&#215;1&#48516;',icon:'&#9889;',diff:'beginner',diffLabel:'&#52488;&#44553;',params:'preset=beginner'},
-  {name:'&#44592;&#48376;&#44592; &#53945;&#53945;',desc:'5R&#215;2&#48516;',icon:'&#129354;',diff:'intermediate',diffLabel:'&#51473;&#44553;',params:'preset=intermediate'},
-  {name:'&#54532;&#47532;&#49828;&#53440;&#51068;',desc:'8R&#215;3&#48516;',icon:'&#128293;',diff:'advanced',diffLabel:'&#44256;&#44553;',params:'preset=advanced'},
-  {name:'&#49549;&#46020; &#53944;&#47112;&#51060;&#45789;',desc:'4R&#215;1&#48516; &#49549;&#44277;',icon:'&#9889;',diff:'intermediate',diffLabel:'&#51473;&#44553;',params:'preset=beginner&focus=speed'},
-  {name:'&#54028;&#50892; &#54144;&#52824;',desc:'6R&#215;2&#48516; &#44053;&#53440;',icon:'&#128170;',diff:'advanced',diffLabel:'&#44256;&#44553;',params:'preset=intermediate&focus=power'},
-  {name:'&#49452;&#46020;&#50864; &#48373;&#49905;',desc:'5R&#215;2&#48516; &#53092;&#48372;',icon:'&#127775;',diff:'intermediate',diffLabel:'&#51473;&#44553;',params:'preset=intermediate&mode=shadow'}
+  {name:'빠른 번',desc:'3R×1분',icon:'⚡',diff:'beginner',diffLabel:'초급',params:'preset=beginner'},
+  {name:'기본기 특특',desc:'5R×2분',icon:'🥊',diff:'intermediate',diffLabel:'중급',params:'preset=intermediate'},
+  {name:'프리스타일',desc:'8R×3분',icon:'🔥',diff:'advanced',diffLabel:'고급',params:'preset=advanced'},
+  {name:'속도 트레이닝',desc:'4R×1분 속공',icon:'⚡',diff:'intermediate',diffLabel:'중급',params:'preset=beginner&focus=speed'},
+  {name:'파워 펀치',desc:'6R×2분 강타',icon:'💪',diff:'advanced',diffLabel:'고급',params:'preset=intermediate&focus=power'},
+  {name:'섬도우 복싱',desc:'5R×2분 콤보',icon:'🌟',diff:'intermediate',diffLabel:'중급',params:'preset=intermediate&mode=shadow'}
 ];
 
 function renderTemplates(){
@@ -598,16 +598,16 @@ function injectV9Sections(){
 
   var advisorSec = document.createElement('section');
   advisorSec.className = 'section v9-section';
-  advisorSec.innerHTML = '<h2 class="section-title"><span class="emoji">&#129302;</span> AI &#53944;&#47112;&#51060;&#45789; &#50612;&#46300;&#48148;&#51060;&#51200;</h2><div id="v9Advisor"></div>';
+  advisorSec.innerHTML = '<h2 class="section-title"><span class="emoji">🤖</span> AI 트레이닝 어드바이저</h2><div id="v9Advisor"></div>';
   allSections[0].parentNode.insertBefore(advisorSec, allSections[0]);
 
   var intensitySec = document.createElement('section');
   intensitySec.className = 'section v9-section';
-  intensitySec.innerHTML = '<h2 class="section-title"><span class="emoji">&#128200;</span> &#51452;&#44036; &#54984;&#47144; &#44053;&#46020;</h2><div class="card"><div id="v9IntensityCanvas"></div></div>';
+  intensitySec.innerHTML = '<h2 class="section-title"><span class="emoji">📈</span> 주간 훈련 강도</h2><div class="card"><div id="v9IntensityCanvas"></div></div>';
 
   var speedSec = document.createElement('section');
   speedSec.className = 'section v9-section';
-  speedSec.innerHTML = '<h2 class="section-title"><span class="emoji">&#9889;</span> &#54144;&#52824; &#49828;&#54588;&#46300; &#46321;&#44553;</h2><div class="card"><div id="v9SpeedGrade"></div></div>';
+  speedSec.innerHTML = '<h2 class="section-title"><span class="emoji">⚡</span> 펀치 스피드 등급</h2><div class="card"><div id="v9SpeedGrade"></div></div>';
 
   var calSection = null;
   for(var i=0;i<allSections.length;i++){
@@ -621,7 +621,7 @@ function injectV9Sections(){
 
   var hydrationSec = document.createElement('section');
   hydrationSec.className = 'section v9-section';
-  hydrationSec.innerHTML = '<h2 class="section-title"><span class="emoji">&#128167;</span> &#49688;&#48516; &#49453;&#52712; &#53944;&#47000;&#52964;</h2><div class="card"><div id="v9Hydration"></div></div>';
+  hydrationSec.innerHTML = '<h2 class="section-title"><span class="emoji">💧</span> 수분 섭취 트래커</h2><div class="card"><div id="v9Hydration"></div></div>';
 
   var programSection = null;
   var allSec2 = container.querySelectorAll('.section');
@@ -634,13 +634,13 @@ function injectV9Sections(){
 
     var templateSec = document.createElement('section');
     templateSec.className = 'section v9-section';
-    templateSec.innerHTML = '<h2 class="section-title"><span class="emoji">&#128221;</span> &#50892;&#53356;&#50500;&#50883; &#53596;&#54540;&#47551;</h2><div id="v9Templates"></div>';
+    templateSec.innerHTML = '<h2 class="section-title"><span class="emoji">📝</span> 워크아웃 템플릿</h2><div id="v9Templates"></div>';
     programSection.parentNode.insertBefore(templateSec, programSection.nextSibling);
   }
 
   var cooldownSec = document.createElement('section');
   cooldownSec.className = 'section v9-section';
-  cooldownSec.innerHTML = '<h2 class="section-title"><span class="emoji">&#129495;</span> &#47532;&#52964;&#48260;&#47532; &#53216;&#45796;&#50868;</h2><div class="card"><div id="v9Cooldown"></div></div>';
+  cooldownSec.innerHTML = '<h2 class="section-title"><span class="emoji">🧗</span> 리커버리 쿨다운</h2><div class="card"><div id="v9Cooldown"></div></div>';
 
   var historySec = null;
   var allSec3 = container.querySelectorAll('.section');
@@ -654,11 +654,11 @@ function injectV9Sections(){
 
   var quizSec = document.createElement('section');
   quizSec.className = 'section v9-section';
-  quizSec.innerHTML = '<h2 class="section-title"><span class="emoji">&#128218;</span> &#48373;&#49905; &#51648;&#49885; &#53300;&#51592;</h2><div class="card"><div id="v9Quiz"></div></div>';
+  quizSec.innerHTML = '<h2 class="section-title"><span class="emoji">📚</span> 복싱 지식 퀴즈</h2><div class="card"><div id="v9Quiz"></div></div>';
 
   var milestoneSec = document.createElement('section');
   milestoneSec.className = 'section v9-section';
-  milestoneSec.innerHTML = '<h2 class="section-title"><span class="emoji">&#127937;</span> &#51652;&#54665; &#47560;&#51068;&#49828;&#53668;</h2><div class="card"><div id="v9Milestones"></div></div>';
+  milestoneSec.innerHTML = '<h2 class="section-title"><span class="emoji">🏁</span> 진행 마일스톤</h2><div class="card"><div id="v9Milestones"></div></div>';
 
   var tipSec = null;
   var allSec4 = container.querySelectorAll('.section');

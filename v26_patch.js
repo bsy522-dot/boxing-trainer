@@ -150,7 +150,7 @@ var sec1 = document.createElement('div');
 sec1.id = 'v26-sec-accuracy';
 sec1.className = 'v26-card';
 sec1.style.display = 'none';
-sec1.innerHTML = '<div class="v26-hdr">&#127919; &#54144;&#52824; &#51221;&#54869;&#46020; &#54532;&#47196;&#44536;&#47112;&#49496;</div><div class="v26-sub">9&#51316; &#48148;&#46356; &#53440;&#44191; &#51221;&#54869;&#46020; &#52628;&#51201; &amp; 30&#49464;&#49496; &#53944;&#47116;&#46300;</div><canvas id="v26-c-accuracy" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#0d0d1a;cursor:pointer"></canvas><div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="v26-btn" onclick="window._v26AccuracyDrill()">&#53440;&#44191; &#46300;&#47540;</button><button class="v26-btn-sec" onclick="window._v26AccuracyReset()">&#47532;&#49483;</button></div>';
+sec1.innerHTML = '<div class="v26-hdr">🎯 펀치 정확도 프로그레션</div><div class="v26-sub">9존 바디 타겟 정확도 추적 &amp; 30세션 트렌드</div><canvas id="v26-c-accuracy" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#0d0d1a;cursor:pointer"></canvas><div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="v26-btn" onclick="window._v26AccuracyDrill()">타겟 드릴</button><button class="v26-btn-sec" onclick="window._v26AccuracyReset()">리셋</button></div>';
 document.body.appendChild(sec1);
 
 function drawAccuracyCanvas(){
@@ -291,7 +291,7 @@ var sec2 = document.createElement('div');
 sec2.id = 'v26-sec-camp';
 sec2.className = 'v26-card';
 sec2.style.display = 'none';
-sec2.innerHTML = '<div class="v26-hdr">&#128197; &#54028;&#51060;&#53944;&#52896;&#54532; &#51452;&#44592;&#54868; &#54540;&#47000;&#45320;</div><div class="v26-sub">16&#51452; 4&#45800;&#44228; &#47588;&#53356;&#47196;&#49324;&#51060;&#53364; (Base/Build/Peak/Taper)</div><canvas id="v26-c-camp" width="620" height="380" style="width:100%;max-width:620px;border-radius:12px;background:#0d0d1a;cursor:pointer"></canvas><div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="v26-btn" onclick="window._v26CampWeek()">&#51452;&#44036; &#50756;&#47308;</button><button class="v26-btn-sec" onclick="window._v26CampReset()">&#47532;&#49483;</button></div>';
+sec2.innerHTML = '<div class="v26-hdr">📅 파이트캠프 주기화 플래너</div><div class="v26-sub">16주 4단계 매크로사이클 (Base/Build/Peak/Taper)</div><canvas id="v26-c-camp" width="620" height="380" style="width:100%;max-width:620px;border-radius:12px;background:#0d0d1a;cursor:pointer"></canvas><div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="v26-btn" onclick="window._v26CampWeek()">주간 완료</button><button class="v26-btn-sec" onclick="window._v26CampReset()">리셋</button></div>';
 document.body.appendChild(sec2);
 
 function drawCampCanvas(){
@@ -412,7 +412,7 @@ var sec3 = document.createElement('div');
 sec3.id = 'v26-sec-defense';
 sec3.className = 'v26-card';
 sec3.style.display = 'none';
-sec3.innerHTML = '<div class="v26-hdr">&#128737;&#65039; &#48169;&#50612; &#48152;&#51025; &#47588;&#53944;&#47533;&#49828;</div><div class="v26-sub">8&#44277;&#44201;&#50976;&#54805; &#215; 6&#48169;&#50612;&#48152;&#51025; &#55176;&#53944;&#47609; + &#49457;&#44277;&#50984;</div><canvas id="v26-c-defense" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#0d0d1a;cursor:pointer"></canvas><div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="v26-btn" onclick="window._v26DefenseDrill()">&#48169;&#50612; &#46300;&#47540;</button><button class="v26-btn-sec" onclick="window._v26DefenseReset()">&#47532;&#49483;</button></div>';
+sec3.innerHTML = '<div class="v26-hdr">🛡️ 방어 반응 매트릭스</div><div class="v26-sub">8공격유형 × 6방어반응 히트맹 + 성공율</div><canvas id="v26-c-defense" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#0d0d1a;cursor:pointer"></canvas><div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="v26-btn" onclick="window._v26DefenseDrill()">방어 드릴</button><button class="v26-btn-sec" onclick="window._v26DefenseReset()">리셋</button></div>';
 document.body.appendChild(sec3);
 
 function drawDefenseCanvas(){
@@ -506,7 +506,7 @@ var sec4 = document.createElement('div');
 sec4.id = 'v26-sec-biomech';
 sec4.className = 'v26-card';
 sec4.style.display = 'none';
-sec4.innerHTML = '<div class="v26-hdr">&#9881;&#65039; &#54144;&#52824; &#48148;&#51060;&#50724;&#47700;&#52852;&#45769;&#49828;</div><div class="v26-sub">7&#54144;&#52824; &#50868;&#46041;&#49324;&#49836; 6&#44396;&#44036; &#55192; &#51204;&#45804; &#48516;&#49437;</div><canvas id="v26-c-biomech" width="600" height="380" style="width:100%;max-width:600px;border-radius:12px;background:#0d0d1a;cursor:pointer"></canvas><div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="v26-btn" onclick="window._v26BiomechScan()">&#48148;&#51060;&#50724; &#49828;&#52884;</button><button class="v26-btn-sec" onclick="window._v26BiomechReset()">&#47532;&#49483;</button></div>';
+sec4.innerHTML = '<div class="v26-hdr">⚙️ 펀치 바이오메카닉스</div><div class="v26-sub">7펀치 운동사슬 6구간 힘 전달 분석</div><canvas id="v26-c-biomech" width="600" height="380" style="width:100%;max-width:600px;border-radius:12px;background:#0d0d1a;cursor:pointer"></canvas><div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="v26-btn" onclick="window._v26BiomechScan()">바이오 스캔</button><button class="v26-btn-sec" onclick="window._v26BiomechReset()">리셋</button></div>';
 document.body.appendChild(sec4);
 
 function drawBiomechCanvas(){
@@ -609,7 +609,7 @@ var sec5 = document.createElement('div');
 sec5.id = 'v26-sec-sparradar';
 sec5.className = 'v26-card';
 sec5.style.display = 'none';
-sec5.innerHTML = '<div class="v26-hdr">&#128171; &#49828;&#54028;&#47553; &#54140;&#54252;&#47676;&#49828; &#47112;&#51060;&#45908;</div><div class="v26-sub">8&#52629;(&#44277;&#44201;/&#48169;&#50612;/&#54411;&#50892;&#53356;/&#49828;&#53468;&#48120;&#45208;/Ring IQ/&#54028;&#50892;/&#49828;&#54588;&#46300;/Chin) &#49464;&#49496; &#48708;&#44368;</div><canvas id="v26-c-sparradar" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#0d0d1a;cursor:pointer"></canvas><div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="v26-btn" onclick="window._v26SparSession()">&#49828;&#54028;&#47553; &#49464;&#49496;</button><button class="v26-btn-sec" onclick="window._v26SparReset()">&#47532;&#49483;</button></div>';
+sec5.innerHTML = '<div class="v26-hdr">💫 스파링 퍼포먼스 레이더</div><div class="v26-sub">8축(공격/방어/풋워크/스태미나/Ring IQ/파워/스피드/Chin) 세션 비교</div><canvas id="v26-c-sparradar" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#0d0d1a;cursor:pointer"></canvas><div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="v26-btn" onclick="window._v26SparSession()">스파링 세션</button><button class="v26-btn-sec" onclick="window._v26SparReset()">리셋</button></div>';
 document.body.appendChild(sec5);
 
 function drawSparRadar(){
@@ -741,7 +741,7 @@ var sec6 = document.createElement('div');
 sec6.id = 'v26-sec-trainload';
 sec6.className = 'v26-card';
 sec6.style.display = 'none';
-sec6.innerHTML = '<div class="v26-hdr">&#128200; &#53944;&#47112;&#51060;&#45789; &#48512;&#54616; &#47784;&#45768;&#53552;</div><div class="v26-sub">RPE/Volume/Intensity &#44553;&#49457;:&#47564;&#49457; &#48512;&#54616;&#48708; &amp; &#48512;&#49345;&#50948;&#54744; &#44172;&#51060;&#51648;</div><canvas id="v26-c-trainload" width="600" height="380" style="width:100%;max-width:600px;border-radius:12px;background:#0d0d1a;cursor:pointer"></canvas><div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="v26-btn" onclick="window._v26TrainLog()">&#49464;&#49496; &#44592;&#47197;</button><button class="v26-btn-sec" onclick="window._v26TrainReset()">&#47532;&#49483;</button></div>';
+sec6.innerHTML = '<div class="v26-hdr">📈 트레이닝 부하 모니터</div><div class="v26-sub">RPE/Volume/Intensity 급성:만성 부하비 &amp; 부상위험 게이지</div><canvas id="v26-c-trainload" width="600" height="380" style="width:100%;max-width:600px;border-radius:12px;background:#0d0d1a;cursor:pointer"></canvas><div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="v26-btn" onclick="window._v26TrainLog()">세션 기록</button><button class="v26-btn-sec" onclick="window._v26TrainReset()">리셋</button></div>';
 document.body.appendChild(sec6);
 
 function drawTrainLoadCanvas(){
@@ -869,7 +869,7 @@ var sec7 = document.createElement('div');
 sec7.id = 'v26-sec-nutrition';
 sec7.className = 'v26-card';
 sec7.style.display = 'none';
-sec7.innerHTML = '<div class="v26-hdr">&#127860; &#48373;&#49905; &#50689;&#50577; &#51452;&#44592;&#54868;</div><div class="v26-sub">&#54028;&#51060;&#53944; &#50948;&#53356; 7&#51068; &#49885;&#45800;, &#47588;&#53356;&#47196; &#46020;&#45339; &amp; &#49688;&#48516; &#53944;&#47000;&#52964;</div><canvas id="v26-c-nutrition" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#0d0d1a;cursor:pointer"></canvas><div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="v26-btn" onclick="window._v26NutritionPlan()">&#49885;&#45800; &#49373;&#49457;</button><button class="v26-btn-sec" onclick="window._v26NutritionReset()">&#47532;&#49483;</button></div>';
+sec7.innerHTML = '<div class="v26-hdr">🍴 복싱 영양 주기화</div><div class="v26-sub">파이트 위크 7일 식단, 매크로 도넛 &amp; 수분 트래커</div><canvas id="v26-c-nutrition" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#0d0d1a;cursor:pointer"></canvas><div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="v26-btn" onclick="window._v26NutritionPlan()">식단 생성</button><button class="v26-btn-sec" onclick="window._v26NutritionReset()">리셋</button></div>';
 document.body.appendChild(sec7);
 
 function drawNutritionCanvas(){
@@ -1002,7 +1002,7 @@ var sec8 = document.createElement('div');
 sec8.id = 'v26-sec-ringgen';
 sec8.className = 'v26-card';
 sec8.style.display = 'none';
-sec8.innerHTML = '<div class="v26-hdr">&#127942; &#47553; &#51109;&#50501;&#47141; &#48516;&#49437;&#44592;</div><div class="v26-sub">8&#51204;&#49696; + &#51316; &#51648;&#48176;&#47141; &#55176;&#53944;&#47609; + &#51204;&#49696;IQ &#49828;&#53076;&#50612;</div><canvas id="v26-c-ringgen" width="620" height="380" style="width:100%;max-width:620px;border-radius:12px;background:#0d0d1a;cursor:pointer"></canvas><div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="v26-btn" onclick="window._v26RingAnalyze()">&#47553; &#48516;&#49437;</button><button class="v26-btn-sec" onclick="window._v26RingReset()">&#47532;&#49483;</button></div>';
+sec8.innerHTML = '<div class="v26-hdr">🏆 링 장악력 분석기</div><div class="v26-sub">8전술 + 존 지배력 히트맹 + 전술IQ 스코어</div><canvas id="v26-c-ringgen" width="620" height="380" style="width:100%;max-width:620px;border-radius:12px;background:#0d0d1a;cursor:pointer"></canvas><div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap"><button class="v26-btn" onclick="window._v26RingAnalyze()">링 분석</button><button class="v26-btn-sec" onclick="window._v26RingReset()">리셋</button></div>';
 document.body.appendChild(sec8);
 
 function drawRingGenCanvas(){
@@ -1147,7 +1147,7 @@ var quizData26 = [
   {q:'복싱에서 Corner Trap 전술의 핵심은?',a:['링 가운데서 포위','Cut Off로 코너로 몰고 커비네이션','후퇴하며 대기','클린치로 체력소모'],c:1}
 ];
 
-var quizHTML26 = '<div class="v26-hdr">&#128218; Boxing Quiz v26 (15&#47928;)</div><div class="v26-sub">ACWR/바이오메카닉스/영양/링제너럴쉽/방어반응</div>';
+var quizHTML26 = '<div class="v26-hdr">📚 Boxing Quiz v26 (15문)</div><div class="v26-sub">ACWR/바이오메카닉스/영양/링제너럴쉽/방어반응</div>';
 quizData26.forEach(function(q,qi){
   quizHTML26 += '<div class="v26-card" id="v26-qq-'+qi+'" style="padding:12px"><div style="font-size:12px;font-weight:700;margin-bottom:8px">Q'+(qi+1)+'. '+q.q+'</div>';
   q.a.forEach(function(a,ai){
@@ -1181,8 +1181,8 @@ window._v26QuizAnswer = function(qi, ai){
 var ACHS26 = [
   {id:'accuracy_tracker',name:'정확도 추적자',desc:'펌치 정확도 5회 드릴',check:function(){ return v26.punchAccuracy.sessions.length >= 5; }},
   {id:'accuracy_sniper',name:'스나이퍼',desc:'정확도 등급 A 이상',check:function(){ return v26.punchAccuracy.bestGrade==='S'||v26.punchAccuracy.bestGrade==='A'; }},
-  {id:'camp_starter',name:'캄프 시작',desc:'파이트캄프 4주 완료',check:function(){ return v26.campPlan.completedWeeks >= 4; }},
-  {id:'camp_finisher',name:'캄프 완주',desc:'파이트캄프 16주 완주',check:function(){ return v26.campPlan.completedWeeks >= 16; }},
+  {id:'camp_starter',name:'캠프 시작',desc:'파이트캠프 4주 완료',check:function(){ return v26.campPlan.completedWeeks >= 4; }},
+  {id:'camp_finisher',name:'캠프 완주',desc:'파이트캠프 16주 완주',check:function(){ return v26.campPlan.completedWeeks >= 16; }},
   {id:'defense_driller',name:'방어 훈련병',desc:'방어 드릴 10회 완료',check:function(){ return v26.defMatrix.drills >= 10; }},
   {id:'biomech_expert',name:'바이오 전문가',desc:'바이오메카닉스 7회 분석',check:function(){ return v26.biomech.sessions >= 7; }},
   {id:'spar_warrior',name:'스파링 전사',desc:'스파링 세션 5회 완료',check:function(){ return v26.sparRadar.sessions >= 5; }},
@@ -1213,7 +1213,7 @@ function checkAchievementsV26(){
 function addV26Nav(){
   var features = [
     {id:'punchAccuracy',label:'정확도',sec:sec1},
-    {id:'campPlan',label:'캄프플래너',sec:sec2},
+    {id:'campPlan',label:'캠프플래너',sec:sec2},
     {id:'defMatrix',label:'방어매트릭스',sec:sec3},
     {id:'biomech',label:'바이오메카',sec:sec4},
     {id:'sparRadar',label:'스파레이더',sec:sec5},

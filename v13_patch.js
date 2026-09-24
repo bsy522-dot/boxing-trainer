@@ -547,7 +547,7 @@ var STRATEGIES = [
    detail:'잡은 앞손으로 빠르게 내뼉고 바로 크로스로 연결. 잡 후 0.2초 이내에 크로스 연결이 핵심. 후수발 어깨회전을 실어 체중을 실어야 파워가 나옴.'},
   {id:'pressure',name:'프레셔 파이팅',icon:'💢',type:'offense',
    desc:'상대를 로프 코너로 몰아붙이며 공격.',
-   detail:'전진하며 잡을 끌임없이 내뼉고, 보디 액션으로 거리를 좋힘. 상대가 로프에 갇히면 훅/어퍼캿 연타. 체력 소모가 크므로 라운드 초반에 사용.'},
+   detail:'전진하며 잡을 끌임없이 내뼉고, 보디 액션으로 거리를 좋힘. 상대가 로프에 갇히면 훅/어퍼컷 연타. 체력 소모가 크므로 라운드 초반에 사용.'},
   {id:'counter',name:'카운터 펄처',icon:'⚡',type:'counter',
    desc:'상대 공격에 맞춰 반격하는 전략.',
    detail:'상대 잡에 슬립하며 크로스 반격, 또는 상대 크로스에 롤하며 훅 반격. 타이밍이 생명. 방어 자세에서 빠르게 전환하는 연습이 필요.'},
@@ -555,14 +555,14 @@ var STRATEGIES = [
    desc:'거리를 유지하며 장타 펀치로 승부.',
    detail:'발놓림을 활용해 거리를 유지. 잡과 스트레이트를 주무기로 사용. 상대가 접근하면 피벗으로 각도를 만들어 재배치. 무하마드 알리 스타일.'},
   {id:'infighter',name:'인파이팅',icon:'💥',type:'offense',
-   desc:'근접 거리에서 훅/어퍼캿 연타.',
-   detail:'보디 액션으로 들어가 훅/어퍼캿 콤보. 헤드 무브먼트로 회피하며 가까이 붙어서 싸움. 가드를 높이 유지하며 틈을 노림. 마이크 타이슨 스타일.'},
+   desc:'근접 거리에서 훅/어퍼컷 연타.',
+   detail:'보디 액션으로 들어가 훅/어퍼컷 콤보. 헤드 무브먼트로 회피하며 가까이 붙어서 싸움. 가드를 높이 유지하며 틈을 노림. 마이크 타이슨 스타일.'},
   {id:'philly_shell',name:'필리 셸',icon:'🛡',type:'defense',
    desc:'어깨로 방어하며 카운터 기회 포착.',
    detail:'앞어깨를 올려 방어, 뒷손은 턴 보호. 상대 잡을 어깨로 흘려보내고 크로스 반격. 메이웨더 시규처. 반응속도와 타이밍 필수.'},
   {id:'peek_a_boo',name:'피카부',icon:'👀',type:'defense',
    desc:'가드를 높이 세우고 헤드무브로 회피.',
-   detail:'양권을 볼 높이로 올리고 팔꿈치를 붙임. 좌우로 고개를 움직이며 회피. 가까이 접근해 훅/어퍼캿 연타. 마이크 타이슨 스타일.'},
+   detail:'양권을 볼 높이로 올리고 팔꿈치를 붙임. 좌우로 고개를 움직이며 회피. 가까이 접근해 훅/어퍼컷 연타. 마이크 타이슨 스타일.'},
   {id:'bait',name:'베이트 전략',icon:'🎣',type:'counter',
    desc:'의도적으로 빈틈을 보여 상대 공격을 유도.',
    detail:'가드를 살짝 낮춰 상대가 공격하게 유도. 예상한 공격에 카운터. 위험하지만 성공시 큰 효과. 경험 많은 복서 전용.'},
@@ -901,8 +901,8 @@ function handleFightAction(act){
     else { msg = '훅 빗나감!'; dmg=0; }
   } else if(act === 'upper'){
     dmg = 18 + Math.floor(Math.random()*12);
-    if(hit < 0.5) { msg = '어퍼캿 고정! '+dmg+' 데미지!!'; fightState.enemyHP -= dmg; }
-    else { msg = '어퍼캿 빗나감!'; dmg=0; }
+    if(hit < 0.5) { msg = '어퍼컷 고정! '+dmg+' 데미지!!'; fightState.enemyHP -= dmg; }
+    else { msg = '어퍼컷 빗나감!'; dmg=0; }
   } else if(act === 'dodge'){
     msg = '회피 준비!';
   } else if(act === 'guard'){
@@ -1595,7 +1595,7 @@ function renderQuizV13(){
     var pct = Math.round(quizV13State.score / QUIZ_V13.length * 100);
     panel.innerHTML = '<div class="v13-quiz-result">🏆 '+quizV13State.score+'/'+QUIZ_V13.length+' ('+pct+'%)</div>\
 <div style="text-align:center;color:var(--text-dim);font-size:13px;margin:8px 0">'+(pct>=80?'훌륭합니다!':pct>=60?'좋습니다!':'더 학습해보세요!')+'</div>\
-<button class="rope-ctrl" onclick="document.getElementById(\'v13QuizPanel\').__retryQuiz()">&#128260; 다시 풀기</button>';
+<button class="rope-ctrl" onclick="document.getElementById(\'v13QuizPanel\').__retryQuiz()">🔄 다시 풀기</button>';
     panel.__retryQuiz = function(){
       quizV13State = {idx:0, score:0, answered:false, total:QUIZ_V13.length};
       renderQuizV13();

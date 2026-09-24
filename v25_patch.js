@@ -170,7 +170,7 @@ var sec1 = document.createElement('div');
 sec1.id = 'v25-sec-power';
 sec1.className = 'v25-card';
 sec1.style.display = 'none';
-sec1.innerHTML = '<div class="v25-hdr">&#129354; &#54144;&#52824; &#54028;&#50892; &#45796;&#51060;&#45208;&#48121;&#49828; &#48516;&#49437;&#44592;</div><div class="v25-sub">7&#51333; &#54144;&#52824;&#51032; &#54028;&#50892; &#44257;&#49440; &#48143; &#54588;&#53356; &#54028;&#50892; &#48708;&#44368; &#48516;&#49437;</div><canvas id="v25-c-power" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto 10px"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button class="v25-btn" onclick="window._v25PowerSim()">&#8482; &#54028;&#50892; &#49884;&#48044;&#47112;&#51060;&#49496;</button><button class="v25-btn-sec" onclick="window._v25PowerReset()">&#52488;&#44592;&#54868;</button></div>';
+sec1.innerHTML = '<div class="v25-hdr">🥊 펀치 파워 다이나믹스 분석기</div><div class="v25-sub">7종 펀치의 파워 곡선 및 피크 파워 비교 분석</div><canvas id="v25-c-power" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto 10px"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button class="v25-btn" onclick="window._v25PowerSim()">™ 파워 시뮬레이션</button><button class="v25-btn-sec" onclick="window._v25PowerReset()">초기화</button></div>';
 document.body.appendChild(sec1);
 
 window._v25PowerSim = function(){
@@ -254,7 +254,7 @@ var sec2 = document.createElement('div');
 sec2.id = 'v25-sec-calendar';
 sec2.className = 'v25-card';
 sec2.style.display = 'none';
-sec2.innerHTML = '<div class="v25-hdr">&#128197; &#50892;&#53356;&#50500;&#50883; &#55176;&#49828;&#53664;&#47532; &#52896;&#47536;&#45908;</div><div class="v25-sub">90&#51068; &#50868;&#46041; &#44592;&#47197; &#55176;&#53944;&#47605; - &#49828;&#53944;&#47533; &#52628;&#51201; &#48143; &#51452;&#44036; &#47785;&#54364;</div><canvas id="v25-c-cal" width="620" height="380" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto 10px"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button class="v25-btn" onclick="window._v25CalLog()">&#50724;&#45720; &#50868;&#46041; &#44592;&#47197;</button><button class="v25-btn-sec" onclick="window._v25CalSim()">90&#51068; &#49884;&#48044;</button><button class="v25-btn-sec" onclick="window._v25CalReset()">&#52488;&#44592;&#54868;</button></div>';
+sec2.innerHTML = '<div class="v25-hdr">📅 워크아웃 히스토리 캠린더</div><div class="v25-sub">90일 운동 기록 히트맵 - 스트릭 추적 및 주간 목표</div><canvas id="v25-c-cal" width="620" height="380" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto 10px"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button class="v25-btn" onclick="window._v25CalLog()">오늘 운동 기록</button><button class="v25-btn-sec" onclick="window._v25CalSim()">90일 시뮬</button><button class="v25-btn-sec" onclick="window._v25CalReset()">초기화</button></div>';
 document.body.appendChild(sec2);
 
 function getTodayStr(){ var d = new Date(); return d.getFullYear()+'-'+(d.getMonth()+1)+'-'+d.getDate(); }
@@ -356,7 +356,7 @@ var sec3 = document.createElement('div');
 sec3.id = 'v25-sec-glove';
 sec3.className = 'v25-card';
 sec3.style.display = 'none';
-sec3.innerHTML = '<div class="v25-hdr">&#129351; &#44544;&#47084;&#48652; &#54588;&#54021; &#44032;&#51060;&#46300;</div><div class="v25-sub">&#52404;&#44553;/&#50857;&#46020;&#48324; &#44544;&#47084;&#48652; &#52628;&#52380;, 6&#51333; &#53440;&#51077;, &#49324;&#50857; &#44032;&#51060;&#46300;</div><canvas id="v25-c-glove" width="600" height="380" style="width:100%;max-width:600px;border-radius:12px;background:#111;display:block;margin:0 auto 10px"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button class="v25-btn" onclick="window._v25GloveFit()">&#54588;&#54021; &#48516;&#49437;</button><button class="v25-btn-sec" onclick="window._v25GloveReset()">&#52488;&#44592;&#54868;</button></div>';
+sec3.innerHTML = '<div class="v25-hdr">🥇 글러브 피팅 가이드</div><div class="v25-sub">체급/용도별 글러브 추천, 6종 타입, 사용 가이드</div><canvas id="v25-c-glove" width="600" height="380" style="width:100%;max-width:600px;border-radius:12px;background:#111;display:block;margin:0 auto 10px"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button class="v25-btn" onclick="window._v25GloveFit()">피팅 분석</button><button class="v25-btn-sec" onclick="window._v25GloveReset()">초기화</button></div>';
 document.body.appendChild(sec3);
 
 window._v25GloveFit = function(){
@@ -419,7 +419,7 @@ var sec4 = document.createElement('div');
 sec4.id = 'v25-sec-fitness';
 sec4.className = 'v25-card';
 sec4.style.display = 'none';
-sec4.innerHTML = '<div class="v25-hdr">&#128170; &#54028;&#51060;&#53552; &#54588;&#53944;&#45768;&#49828; &#54532;&#47196;&#54596;</div><div class="v25-sub">6&#52629; &#52404;&#47141; &#47112;&#51060;&#45908; - &#50976;&#49328;&#49548;/&#47924;&#49328;&#49548;/&#44540;&#47141;/&#50976;&#50672;&#49457;/&#48152;&#51025;/&#53076;&#50612;</div><canvas id="v25-c-fitness" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto 10px"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button class="v25-btn" onclick="window._v25FitTest()">&#52404;&#47141; &#53580;&#49828;&#53944;</button><button class="v25-btn-sec" onclick="window._v25FitReset()">&#52488;&#44592;&#54868;</button></div>';
+sec4.innerHTML = '<div class="v25-hdr">💪 파이터 피트니스 프로필</div><div class="v25-sub">6축 체력 레이더 - 유산소/무산소/근력/유연성/반응/코어</div><canvas id="v25-c-fitness" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto 10px"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button class="v25-btn" onclick="window._v25FitTest()">체력 테스트</button><button class="v25-btn-sec" onclick="window._v25FitReset()">초기화</button></div>';
 document.body.appendChild(sec4);
 
 window._v25FitTest = function(){
@@ -511,7 +511,7 @@ var sec5 = document.createElement('div');
 sec5.id = 'v25-sec-footwork';
 sec5.className = 'v25-card';
 sec5.style.display = 'none';
-sec5.innerHTML = '<div class="v25-hdr">&#128095; &#54396;&#50892;&#53356; &#46300;&#47540; &#54056;&#53556;</div><div class="v25-sub">8&#48169;&#54693; &#48156;&#45459;&#47548; &#54056;&#53556; - &#51221;&#54869;&#46020; &#52628;&#51201; &#48143; &#46300;&#47540; &#50504;&#45236;</div><canvas id="v25-c-foot" width="600" height="380" style="width:100%;max-width:600px;border-radius:12px;background:#111;display:block;margin:0 auto 10px"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button class="v25-btn" onclick="window._v25FootDrill()">&#46300;&#47540; &#49884;&#51089;</button><button class="v25-btn-sec" onclick="window._v25FootReset()">&#52488;&#44592;&#54868;</button></div>';
+sec5.innerHTML = '<div class="v25-hdr">👟 푼워크 드릴 패턴</div><div class="v25-sub">8방향 발놓림 패턴 - 정확도 추적 및 드릴 안내</div><canvas id="v25-c-foot" width="600" height="380" style="width:100%;max-width:600px;border-radius:12px;background:#111;display:block;margin:0 auto 10px"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button class="v25-btn" onclick="window._v25FootDrill()">드릴 시작</button><button class="v25-btn-sec" onclick="window._v25FootReset()">초기화</button></div>';
 document.body.appendChild(sec5);
 
 window._v25FootDrill = function(){
@@ -594,7 +594,7 @@ var sec6 = document.createElement('div');
 sec6.id = 'v25-sec-combo';
 sec6.className = 'v25-card';
 sec6.style.display = 'none';
-sec6.innerHTML = '<div class="v25-hdr">&#9889; &#54144;&#52824; &#53092;&#48372; &#54952;&#50984; &#48516;&#49437;&#44592;</div><div class="v25-sub">10&#44060; &#53092;&#48372;&#51032; &#49884;&#44036;/&#54028;&#50892;/&#49828;&#53468;&#48120;&#45208; &#48708;&#44368;, &#52572;&#51201; &#53092;&#48372; &#52286;&#44592;</div><canvas id="v25-c-combo" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto 10px"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button class="v25-btn" onclick="window._v25ComboAnalyze()">&#53092;&#48372; &#48516;&#49437;</button><button class="v25-btn-sec" onclick="window._v25ComboReset()">&#52488;&#44592;&#54868;</button></div>';
+sec6.innerHTML = '<div class="v25-hdr">⚡ 펀치 콤보 효율 분석기</div><div class="v25-sub">10개 콤보의 시간/파워/스태미나 비교, 최적 콤보 찾기</div><canvas id="v25-c-combo" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto 10px"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button class="v25-btn" onclick="window._v25ComboAnalyze()">콤보 분석</button><button class="v25-btn-sec" onclick="window._v25ComboReset()">초기화</button></div>';
 document.body.appendChild(sec6);
 
 window._v25ComboAnalyze = function(){
@@ -657,7 +657,7 @@ var sec7 = document.createElement('div');
 sec7.id = 'v25-sec-weight';
 sec7.className = 'v25-card';
 sec7.style.display = 'none';
-sec7.innerHTML = '<div class="v25-hdr">&#9878;&#65039; &#52404;&#44553;&#48324; &#51204;&#47029; &#44032;&#51060;&#46300;</div><div class="v25-sub">17&#52404;&#44553; &#51204;&#49696; &#48708;&#44368; - &#52628;&#52380; &#49828;&#53440;&#51068; &#48143; &#51204;&#47029;</div><canvas id="v25-c-weight" width="620" height="380" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto 10px"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button class="v25-btn" onclick="window._v25WeightExplore()">&#52404;&#44553; &#53456;&#49353;</button><button class="v25-btn-sec" onclick="window._v25WeightReset()">&#52488;&#44592;&#54868;</button></div>';
+sec7.innerHTML = '<div class="v25-hdr">⚖️ 체급별 전략 가이드</div><div class="v25-sub">17체급 전술 비교 - 추천 스타일 및 전략</div><canvas id="v25-c-weight" width="620" height="380" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto 10px"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button class="v25-btn" onclick="window._v25WeightExplore()">체급 탐색</button><button class="v25-btn-sec" onclick="window._v25WeightReset()">초기화</button></div>';
 document.body.appendChild(sec7);
 
 window._v25WeightExplore = function(){
@@ -726,7 +726,7 @@ var sec8 = document.createElement('div');
 sec8.id = 'v25-sec-energy';
 sec8.className = 'v25-card';
 sec8.style.display = 'none';
-sec8.innerHTML = '<div class="v25-hdr">&#9889; &#46972;&#50868;&#46300; &#50640;&#45320;&#51648; &#48516;&#48176; &#52572;&#51201;&#54868;</div><div class="v25-sub">12R &#52572;&#51201; &#50640;&#45320;&#51648; &#48176;&#48516; &#49884;&#48044;&#47112;&#51060;&#49496;</div><canvas id="v25-c-energy" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto 10px"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button class="v25-btn" onclick="window._v25EnergySim()">&#50640;&#45320;&#51648; &#49884;&#48044;</button><button class="v25-btn-sec" onclick="window._v25EnergyOptimal()">&#52572;&#51201; &#48176;&#48516;</button><button class="v25-btn-sec" onclick="window._v25EnergyReset()">&#52488;&#44592;&#54868;</button></div>';
+sec8.innerHTML = '<div class="v25-hdr">⚡ 라운드 에너지 분배 최적화</div><div class="v25-sub">12R 최적 에너지 배분 시뮬레이션</div><canvas id="v25-c-energy" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto 10px"></canvas><div style="display:flex;gap:6px;flex-wrap:wrap;justify-content:center"><button class="v25-btn" onclick="window._v25EnergySim()">에너지 시뮬</button><button class="v25-btn-sec" onclick="window._v25EnergyOptimal()">최적 배분</button><button class="v25-btn-sec" onclick="window._v25EnergyReset()">초기화</button></div>';
 document.body.appendChild(sec8);
 
 window._v25EnergySim = function(){
@@ -813,7 +813,7 @@ secQuiz.style.display = 'none';
 var quizData25 = [
   {q:'복싱에서 파워 펀치(Power Punch)로 분류되는 것은?',a:['잭','크로스','앱커펀치','풀모션펀치'],c:1},
   {q:'무에타이 체급의 상한은 몇 kg인가?',a:['52.2','53.5','55.3','57.2'],c:1},
-  {q:'복싱에서 푸트워크의 기본 원칙으로 올바른 것은?',a:['발을 끌어서 이동','발을 뛰어서 이동','발을 꽁꽁 굽르며 이동','발을 고정하고 상체만 이동'],c:0},
+  {q:'복싱에서 풋워크의 기본 원칙으로 올바른 것은?',a:['발을 끌어서 이동','발을 뛰어서 이동','발을 꽁꽁 굽르며 이동','발을 고정하고 상체만 이동'],c:0},
   {q:'클린치(Clinch) 기술의 주요 목적이 아닌 것은?',a:['체력 회복','상대 공격 차단','시간 벌기','판정 점수 획득'],c:3},
   {q:'복싱 글러브에서 스파링용으로 권장되는 무게는?',a:['8oz','10oz','14-16oz','18oz'],c:2},
   {q:'펀치 콤보 "1-2"가 의미하는 것은?',a:['훅-크로스','잭-크로스','잭-잭','크로스-훅'],c:1},
@@ -828,7 +828,7 @@ var quizData25 = [
   {q:'복싱 트레이닝에서 아나에로빅(Anaerobic) 운동의 예시는?',a:['조깅','5km 달리기','백 타격 인터벌 트레이닝','요가'],c:2}
 ];
 
-var quizHTML25 = '<div class="v25-hdr">&#128218; Boxing Quiz v25 (15&#47928;)</div><div class="v25-sub">&#48373;&#49905; &#51648;&#49885; &#53580;&#49828;&#53944; - &#54028;&#50892;/&#52404;&#44553;/&#54396;&#50892;&#53356;/&#44544;&#47084;&#48652;/&#52404;&#47141;</div>';
+var quizHTML25 = '<div class="v25-hdr">📚 Boxing Quiz v25 (15문)</div><div class="v25-sub">복싱 지식 테스트 - 파워/체급/푼워크/글러브/체력</div>';
 quizData25.forEach(function(q,qi){
   quizHTML25 += '<div class="v25-card" id="v25-qq-'+qi+'" style="padding:12px"><div style="font-size:12px;font-weight:700;margin-bottom:8px">Q'+(qi+1)+'. '+q.q+'</div>';
   q.a.forEach(function(a,ai){
@@ -866,7 +866,7 @@ var ACHS25 = [
   {id:'streak_king',name:'스트릭 킹',desc:'최대 스트릭 7일 달성',check:function(){ return v25.workoutCal.maxStreak >= 7; }},
   {id:'glove_expert',name:'글러브 전문가',desc:'글러브 피팅 5회 완료',check:function(){ return v25.gloveFit.fittings >= 5; }},
   {id:'fitness_pro',name:'피트니스 프로',desc:'체력 테스트 5회 완료',check:function(){ return v25.fitProfile.tests >= 5; }},
-  {id:'footwork_master',name:'푸트워크 마스터',desc:'푸트워크 드릴 5회 완료',check:function(){ return v25.footwork.drills >= 5; }},
+  {id:'footwork_master',name:'풋워크 마스터',desc:'풋워크 드릴 5회 완료',check:function(){ return v25.footwork.drills >= 5; }},
   {id:'combo_scientist',name:'콤보 과학자',desc:'콤보 분석 5회 완료',check:function(){ return v25.comboEff.totalAnalyses >= 5; }},
   {id:'weight_scholar',name:'체급 학자',desc:'17체급 전체 탐색',check:function(){ return Object.keys(v25.weightClass.explored).length >= 17; }},
   {id:'energy_master',name:'에너지 마스터',desc:'에너지 최적 배분 발견',check:function(){ return v25.roundEnergy.optimalFound; }},
@@ -897,7 +897,7 @@ function addV25Nav(){
     {id:'workoutCal',label:'캘린더',sec:sec2},
     {id:'gloveFit',label:'글러브',sec:sec3},
     {id:'fitProfile',label:'피트니스',sec:sec4},
-    {id:'footwork',label:'푸트워크',sec:sec5},
+    {id:'footwork',label:'풋워크',sec:sec5},
     {id:'comboEff',label:'콤보분석',sec:sec6},
     {id:'weightClass',label:'체급전략',sec:sec7},
     {id:'roundEnergy',label:'에너지',sec:sec8},

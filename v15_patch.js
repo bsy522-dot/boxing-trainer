@@ -188,23 +188,23 @@ function injectV15Styles(){
 
 // ===== 1. PUNCH COMBINATION BUILDER CANVAS =====
 var PUNCH_TYPES = [
-  {id:'jab',name:'&#51105;',short:'J',color:'#3b82f6'},
-  {id:'cross',name:'&#53356;&#47196;&#49828;',short:'C',color:'#ef4444'},
-  {id:'hook_l',name:'&#50812;&#54985;',short:'LH',color:'#22c55e'},
-  {id:'hook_r',name:'&#50724;&#47480;&#54985;',short:'RH',color:'#f97316'},
-  {id:'upper_l',name:'&#50812;&#50612;&#54140;',short:'LU',color:'#a855f7'},
-  {id:'upper_r',name:'&#50724;&#47480;&#50612;&#54140;',short:'RU',color:'#ec4899'}
+  {id:'jab',name:'잡',short:'J',color:'#3b82f6'},
+  {id:'cross',name:'크로스',short:'C',color:'#ef4444'},
+  {id:'hook_l',name:'왼훅',short:'LH',color:'#22c55e'},
+  {id:'hook_r',name:'오른훅',short:'RH',color:'#f97316'},
+  {id:'upper_l',name:'왼어퍼',short:'LU',color:'#a855f7'},
+  {id:'upper_r',name:'오른어퍼',short:'RU',color:'#ec4899'}
 ];
 
 var PRESET_COMBOS = [
-  {name:'&#44592;&#48376; &#50896;&#53804;',seq:['jab','cross'],desc:'&#44032;&#51109; &#44592;&#48376;&#51201;&#51064; &#53092;&#48372;'},
-  {name:'&#53364;&#47000;&#49885; &#50896;&#53804;&#53804;&#47532;',seq:['jab','cross','hook_l'],desc:'1-2-3 &#50896;&#53804;&#53804;&#47532; &#53092;&#48372;'},
-  {name:'&#54028;&#50892; &#54252;',seq:['jab','cross','hook_l','cross'],desc:'1-2-3-2 &#54028;&#50892;&#54400; &#47532;&#46300;&#44277;&#44201;'},
-  {name:'&#48148;&#46356; &#50612;&#53469;',seq:['jab','jab','upper_l','cross'],desc:'&#51105;&#51105;&#50612;&#54140;&#53356;&#47196;&#49828; &#48148;&#46356;&#44277;&#47029;'},
-  {name:'&#53076;&#45320; &#53944;&#47017;',seq:['cross','hook_l','upper_r'],desc:'&#53076;&#45320;&#50640; &#47792;&#50500;&#45347;&#44592;'},
-  {name:'&#54028;&#50892; &#47084;&#49772;',seq:['jab','cross','upper_l','hook_r','cross'],desc:'5&#50672;&#53440; &#54924;&#50724;&#47532; &#44277;&#44201;'},
-  {name:'&#54588;&#52852;&#48512; &#49828;&#53440;&#51068;',seq:['hook_l','hook_r','upper_l','upper_r'],desc:'&#44540;&#51217; &#54028;&#50892;&#54156;&#52824; &#47084;&#49772;'},
-  {name:'&#47672;&#49888;&#44148; &#53092;&#48372;',seq:['jab','jab','cross','hook_l','upper_r','cross'],desc:'6&#50672;&#53440; &#47672;&#49888;&#44148; &#53092;&#48372;'}
+  {name:'기본 원투',seq:['jab','cross'],desc:'가장 기본적인 콤보'},
+  {name:'클래식 원투투리',seq:['jab','cross','hook_l'],desc:'1-2-3 원투투리 콤보'},
+  {name:'파워 포',seq:['jab','cross','hook_l','cross'],desc:'1-2-3-2 파워풀 리드공격'},
+  {name:'바디 어택',seq:['jab','jab','upper_l','cross'],desc:'잡잡어퍼크로스 바디공략'},
+  {name:'코너 트랩',seq:['cross','hook_l','upper_r'],desc:'코너에 몰아넣기'},
+  {name:'파워 러쉬',seq:['jab','cross','upper_l','hook_r','cross'],desc:'5연타 회오리 공격'},
+  {name:'피카부 스타일',seq:['hook_l','hook_r','upper_l','upper_r'],desc:'근접 파워펌치 러쉬'},
+  {name:'머신건 콤보',seq:['jab','jab','cross','hook_l','upper_r','cross'],desc:'6연타 머신건 콤보'}
 ];
 
 var comboBuilderSeq = [];
@@ -213,17 +213,17 @@ function buildComboBuilder(){
   var sec = document.createElement('div');
   sec.className = 'v15-section';
   sec.id = 'v15-combo';
-  sec.innerHTML = '<div class="v15-title"><span class="emoji">&#128170;</span> &#54156;&#52824; &#53092;&#48708;&#45348;&#51060;&#49496; &#48716;&#45908;</div>' +
-    '<div class="v15-subtitle">6&#51333; &#54156;&#52824;&#47196; &#53092;&#48372; &#44396;&#49457; + &#54532;&#47532;&#49483; 8&#51333; + &#52964;&#49828;&#53568; &#48716;&#45908;</div>' +
+  sec.innerHTML = '<div class="v15-title"><span class="emoji">💪</span> 펌치 콤비네이션 빌더</div>' +
+    '<div class="v15-subtitle">6종 펌치로 콤보 구성 + 프리셋 8종 + 커스텀 빌더</div>' +
     '<div class="v15-canvas-wrap"><canvas id="v15ComboCanvas" width="560" height="220" style="width:100%;display:block"></canvas></div>' +
     '<div class="v15-flex" style="margin-bottom:12px">' +
     PUNCH_TYPES.map(function(p){
       return '<button class="v15-btn sm" onclick="window._v15AddPunch(\''+p.id+'\')" style="background:'+p.color+'">' + p.short + ' ' + p.name + '</button>';
     }).join('') +
-    '<button class="v15-btn sm secondary" onclick="window._v15ClearCombo()">&#52488;&#44592;&#54868;</button>' +
-    '<button class="v15-btn sm" onclick="window._v15PlayCombo()">&#9654; &#49892;&#54665;</button>' +
+    '<button class="v15-btn sm secondary" onclick="window._v15ClearCombo()">초기화</button>' +
+    '<button class="v15-btn sm" onclick="window._v15PlayCombo()">▶ 실행</button>' +
     '</div>' +
-    '<div style="font-size:13px;color:var(--text-dim);margin-bottom:10px">&#54532;&#47532;&#49483; &#53092;&#48372;:</div>' +
+    '<div style="font-size:13px;color:var(--text-dim);margin-bottom:10px">프리셋 콤보:</div>' +
     '<div class="v15-grid2">' +
     PRESET_COMBOS.map(function(c,i){
       return '<div class="v15-card" style="cursor:pointer" onclick="window._v15LoadPreset('+i+')">' +
@@ -232,7 +232,7 @@ function buildComboBuilder(){
         '<div style="margin-top:6px">' + c.seq.map(function(s){
           var p = PUNCH_TYPES.filter(function(x){return x.id===s})[0];
           return '<span style="display:inline-block;padding:2px 6px;border-radius:4px;font-size:10px;font-weight:700;color:#fff;background:'+p.color+';margin-right:3px">'+p.short+'</span>';
-        }).join('&#8594;') + '</div></div>';
+        }).join('→') + '</div></div>';
     }).join('') +
     '</div>';
   return sec;
@@ -253,7 +253,7 @@ function drawComboCanvas(){
   if(comboBuilderSeq.length === 0){
     ctx.fillStyle = isDark ? '#555' : '#999';
     ctx.font = '14px -apple-system,sans-serif';
-    ctx.fillText('&#50948;&#51032; &#48260;&#53948;&#51012; &#45580;&#47084; &#53092;&#48372;&#47484; &#44396;&#49457;&#54616;&#49464;&#50836;',W/2,H/2);
+    ctx.fillText('위의 버튼을 눌러 콤보를 구성하세요',W/2,H/2);
     return;
   }
   var gap = Math.min(70, (W - 40) / comboBuilderSeq.length);
@@ -299,11 +299,11 @@ function drawComboCanvas(){
   ctx.fillStyle = isDark ? '#aaa' : '#555';
   ctx.font = 'bold 12px -apple-system,sans-serif';
   ctx.textAlign = 'left';
-  ctx.fillText(comboBuilderSeq.length+'&#50672;&#53440; &#53092;&#48372;', 12, 20);
+  ctx.fillText(comboBuilderSeq.length+'연타 콤보', 12, 20);
 }
 
 window._v15AddPunch = function(pid){
-  if(comboBuilderSeq.length >= 10) { showToast15('&#52572;&#45824; 10&#50672;&#53440;&#44620;&#51648; &#44032;&#45733;&#54633;&#45768;&#45796;'); return; }
+  if(comboBuilderSeq.length >= 10) { showToast15('최대 10연타까지 가능합니다'); return; }
   comboBuilderSeq.push(pid);
   playSFX15('combo_build');
   drawComboCanvas();
@@ -314,7 +314,7 @@ window._v15LoadPreset = function(idx){
   comboBuilderSeq = PRESET_COMBOS[idx].seq.slice();
   playSFX15('combo_build');
   drawComboCanvas();
-  showToast15(PRESET_COMBOS[idx].name + ' &#47196;&#46300;!');
+  showToast15(PRESET_COMBOS[idx].name + ' 로드!');
   trackFeature('combo');
 };
 window._v15PlayCombo = function(){
@@ -323,38 +323,38 @@ window._v15PlayCombo = function(){
   v15.comboBuilder.played++;
   if(comboBuilderSeq.length > v15.comboBuilder.bestCombo) v15.comboBuilder.bestCombo = comboBuilderSeq.length;
   saveV15(v15);
-  showToast15(comboBuilderSeq.length+'&#50672;&#53440; &#53092;&#48372; &#49892;&#54665;!');
+  showToast15(comboBuilderSeq.length+'연타 콤보 실행!');
   checkV15Achievements();
 };
 
 // ===== 2. BOXING STANCE ANALYZER =====
 var STANCES = [
-  {id:'orthodox',name:'&#50724;&#49548;&#46021;&#49828;(&#51221;&#53685;)',atk:70,def:75,move:80,counter:65,speed:70,power:75,
-   desc:'&#50724;&#47480;&#49552;&#51105;&#51060; &#44592;&#48376;. &#44032;&#51109; &#48372;&#54200;&#51201;&#51064; &#49828;&#53472;&#49828;. &#44512;&#54805;&#51105;&#55180; &#44277;&#48169;.',
-   pros:'&#44512;&#54805;&#51105;&#55180; &#44277;&#48169;/&#48176;&#50864;&#44592; &#49772;&#50880;/&#54028;&#50892; &#54156;&#52824; &#51316;&#47749;',tips:'&#50526;&#48156; &#51105;-&#46271;&#48156; &#53356;&#47196;&#49828;&#47196; &#49884;&#51089;'},
-  {id:'southpaw',name:'&#49324;&#50864;&#49828;&#54252;',atk:75,def:70,move:80,counter:70,speed:75,power:70,
-   desc:'&#50812;&#49552;&#51105;&#51060; &#44592;&#48376;. &#51221;&#53685;&#54028; &#49345;&#45824;&#50640;&#44172; &#50976;&#47532;.',
-   pros:'&#51221;&#53685;&#54028; &#49345;&#45824;&#47196; &#44033;&#46020; &#50976;&#47532;/&#50812;&#49552; &#54028;&#50892; &#54156;&#52824;',tips:'&#50724;&#47480;&#48156;&#51012; &#50526;&#50640; &#46160;&#44256; &#50724;&#47480;&#49552;&#51004;&#47196; &#47532;&#46300;'},
-  {id:'peekaboo',name:'&#54588;&#52852;&#48512;',atk:85,def:80,move:65,counter:75,speed:80,power:90,
-   desc:'&#47560;&#51060;&#53356; &#53440;&#51060;&#49832;&#51032; &#49884;&#44536;&#45768;&#52376; &#49828;&#53472;&#51068;. &#44540;&#51217; &#44277;&#44201;&#54805;.',
-   pros:'&#44540;&#51217;&#51204; &#52572;&#44053;/&#54756;&#46300;&#47924;&#48652; &#48169;&#50612;/&#54028;&#50892;&#54400; &#50612;&#54140;&#52983;',tips:'&#44544;&#47084;&#48652;&#47484; &#50620;&#44404; &#45458;&#51060;&#50640;&#49436; &#46160;&#49552;&#51004;&#47196; &#53556;&#51012; &#44032;&#46300;'},
-  {id:'philly',name:'&#54596;&#47532;&#49520;',atk:60,def:90,move:75,counter:90,speed:65,power:55,
-   desc:'&#50612;&#44648; &#47196;&#47553; &#44592;&#48152;. &#52852;&#50868;&#53552; &#54156;&#52824; &#53945;&#54868;.',
-   pros:'&#52852;&#50868;&#53552;&#54156;&#52824; &#52572;&#44053;/&#50612;&#44648; &#47196;&#47553; &#48169;&#50612;/&#50640;&#45320;&#51648; &#51208;&#50557;',tips:'&#50526;&#50612;&#44648;&#47484; &#45236;&#48128;&#44256; &#49345;&#45824; &#54156;&#52824;&#47484; &#49828;&#50948;&#54532;'},
-  {id:'crossguard',name:'&#53356;&#47196;&#49828;&#44032;&#46300;',atk:65,def:85,move:70,counter:60,speed:60,power:70,
-   desc:'&#54036;&#44144;&#52824;&#47484; &#44368;&#52264;&#54616;&#50668; &#44032;&#46300;. &#48148;&#46356; &#48169;&#50612; &#53945;&#54868;.',
-   pros:'&#48148;&#46356; &#48169;&#50612; &#53945;&#54868;/&#51217;&#44540;&#51204; &#50504;&#51221;/&#45236;&#44396;&#49457; &#48372;&#51316;',tips:'&#50577;&#54036;&#51012; &#44368;&#52264;&#54616;&#50668; &#48148;&#46356;&#50752; &#50619;&#44404;&#51012; &#46041;&#49884; &#48169;&#50612;'},
-  {id:'wide',name:'&#50752;&#51060;&#46300; &#49828;&#53472;&#49828;',atk:80,def:60,move:85,counter:70,speed:85,power:65,
-   desc:'&#45331;&#51008; &#49828;&#53472;&#49828;&#47196; &#44592;&#46041;&#49457; &#44537;&#45824;&#54868;. &#50500;&#50883;&#48373;&#49905; &#49828;&#53440;&#51068;.',
-   pros:'&#44592;&#46041;&#49457; &#52572;&#49345;/&#44033;&#46020; &#44277;&#44201; &#50976;&#47532;/&#44144;&#47532; &#50976;&#51648;',tips:'&#45331;&#51008; &#49828;&#53472;&#49828;&#50640;&#49436; &#48744;&#47480; &#51652;&#51077;&#44284; &#54980;&#53748;'}
+  {id:'orthodox',name:'오소독스(정통)',atk:70,def:75,move:80,counter:65,speed:70,power:75,
+   desc:'오른손잡이 기본. 가장 보편적인 스탠스. 균형잡힌 공방.',
+   pros:'균형잡힌 공방/배우기 쉬움/파워 펌치 존명',tips:'앞발 잡-뒿발 크로스로 시작'},
+  {id:'southpaw',name:'사우스포',atk:75,def:70,move:80,counter:70,speed:75,power:70,
+   desc:'왼손잡이 기본. 정통파 상대에게 유리.',
+   pros:'정통파 상대로 각도 유리/왼손 파워 펌치',tips:'오른발을 앞에 두고 오른손으로 리드'},
+  {id:'peekaboo',name:'피카부',atk:85,def:80,move:65,counter:75,speed:80,power:90,
+   desc:'마이크 타이슨의 시그니처 스탠일. 근접 공격형.',
+   pros:'근접전 최강/헤드무브 방어/파워풀 어퍼컷',tips:'글러브를 얼굴 높이에서 두손으로 턴을 가드'},
+  {id:'philly',name:'필리셰',atk:60,def:90,move:75,counter:90,speed:65,power:55,
+   desc:'어깨 로링 기반. 카운터 펌치 특화.',
+   pros:'카운터펌치 최강/어깨 로링 방어/에너지 절약',tips:'앞어깨를 내밀고 상대 펌치를 스위프'},
+  {id:'crossguard',name:'크로스가드',atk:65,def:85,move:70,counter:60,speed:60,power:70,
+   desc:'팔거치를 교차하여 가드. 바디 방어 특화.',
+   pros:'바디 방어 특화/접근전 안정/내구성 보존',tips:'양팔을 교차하여 바디와 얻굴을 동시 방어'},
+  {id:'wide',name:'와이드 스탠스',atk:80,def:60,move:85,counter:70,speed:85,power:65,
+   desc:'넓은 스탠스로 기동성 극대화. 아웃복싱 스타일.',
+   pros:'기동성 최상/각도 공격 유리/거리 유지',tips:'넓은 스탠스에서 빨른 진입과 후퇴'}
 ];
 
 function buildStanceAnalyzer(){
   var sec = document.createElement('div');
   sec.className = 'v15-section';
   sec.id = 'v15-stance';
-  sec.innerHTML = '<div class="v15-title"><span class="emoji">&#129354;</span> &#48373;&#49905; &#49828;&#53472;&#49828; &#48516;&#49437;&#44592;</div>' +
-    '<div class="v15-subtitle">6&#51333; &#49828;&#53472;&#49828; &#48708;&#44368; &#48516;&#49437; + &#51109;&#45800;&#51216; + &#54785;</div>' +
+  sec.innerHTML = '<div class="v15-title"><span class="emoji">🥊</span> 복싱 스탠스 분석기</div>' +
+    '<div class="v15-subtitle">6종 스탠스 비교 분석 + 장단점 + 혁</div>' +
     '<div class="v15-grid2" id="v15StanceGrid"></div>' +
     '<div class="v15-canvas-wrap"><canvas id="v15StanceCanvas" width="400" height="360" style="width:100%;display:block"></canvas></div>';
   return sec;
@@ -371,11 +371,11 @@ function renderStances(){
     div.style.cursor = 'pointer';
     div.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center">' +
       '<div style="font-weight:700;font-size:14px">' + s.name + '</div>' +
-      (viewed ? '<span class="v15-badge">&#10003; &#54617;&#49845;</span>' : '') +
+      (viewed ? '<span class="v15-badge">✓ 학습</span>' : '') +
       '</div>' +
       '<div style="font-size:12px;color:var(--text-dim);margin:6px 0">'+s.desc+'</div>' +
-      '<div style="font-size:11px;margin-top:4px"><b style="color:var(--green)">&#9654; &#51109;&#51216;:</b> '+s.pros+'</div>' +
-      '<div style="font-size:11px;margin-top:4px"><b style="color:var(--blue)">&#128161; &#54785;:</b> '+s.tips+'</div>';
+      '<div style="font-size:11px;margin-top:4px"><b style="color:var(--green)">▶ 장점:</b> '+s.pros+'</div>' +
+      '<div style="font-size:11px;margin-top:4px"><b style="color:var(--blue)">💡 혁:</b> '+s.tips+'</div>';
     div.onclick = function(){
       if(v15.stance.viewed.indexOf(s.id) === -1) v15.stance.viewed.push(s.id);
       saveV15(v15);
@@ -400,7 +400,7 @@ function drawStanceRadar(st){
   ctx.fillRect(0,0,W,H);
   var cx = W/2, cy = H/2 + 10;
   var R = Math.min(W,H)*0.35;
-  var labels = ['&#44277;&#44201;','&#48169;&#50612;','&#44592;&#46041;','&#52852;&#50868;&#53552;','&#49828;&#54588;&#46300;','&#54028;&#50892;'];
+  var labels = ['공격','방어','기동','카운터','스피드','파워'];
   var vals = [st.atk,st.def,st.move,st.counter,st.speed,st.power];
   var n = labels.length;
   for(var ring=1;ring<=5;ring++){
@@ -461,7 +461,7 @@ function drawStanceRadar(st){
   var avg = Math.round(vals.reduce(function(a,b){return a+b},0)/n);
   ctx.fillStyle = isDark ? '#aaa' : '#555';
   ctx.font = '12px -apple-system,sans-serif';
-  ctx.fillText('&#54217;&#44512; &#45733;&#47141;&#52824;: '+avg+'/100', W/2, 42);
+  ctx.fillText('평균 능력치: '+avg+'/100', W/2, 42);
 }
 
 // ===== 3. VIRTUAL SANDBAG WORKOUT CANVAS =====
@@ -471,16 +471,16 @@ function buildSandbag(){
   var sec = document.createElement('div');
   sec.className = 'v15-section';
   sec.id = 'v15-sandbag';
-  sec.innerHTML = '<div class="v15-title"><span class="emoji">&#129354;</span> &#44032;&#49345; &#49380;&#46300;&#48177; &#50892;&#53356;&#50500;&#50883;</div>' +
-    '<div class="v15-subtitle">&#53552;&#52824;/&#53364;&#47533; &#54156;&#52824; + &#53092;&#48372; &#54532;&#47212;&#54532;&#53944; + &#51216;&#49688;/&#53440;&#51060;&#47672;</div>' +
+  sec.innerHTML = '<div class="v15-title"><span class="emoji">🥊</span> 가상 샤드백 워크아웃</div>' +
+    '<div class="v15-subtitle">터치/클릭 펌치 + 콤보 프롬프트 + 점수/타이머</div>' +
     '<div class="v15-canvas-wrap"><canvas id="v15BagCanvas" width="400" height="450" style="width:100%;display:block;cursor:pointer"></canvas></div>' +
     '<div style="text-align:center;margin-top:8px">' +
-    '<button class="v15-btn" id="v15BagStart" onclick="window._v15StartBag()">&#127942; 30&#52488; &#50892;&#53356;&#50500;&#50883; &#49884;&#51089;</button>' +
+    '<button class="v15-btn" id="v15BagStart" onclick="window._v15StartBag()">🏆 30초 워크아웃 시작</button>' +
     '</div>' +
     '<div class="v15-grid3" style="margin-top:12px">' +
-    '<div class="v15-card" style="text-align:center"><div style="font-size:11px;color:var(--text-dim)">&#52509; &#55176;&#53944;</div><div style="font-size:20px;font-weight:800;color:var(--accent)" id="v15BagTotalHits">'+v15.sandbag.totalHits+'</div></div>' +
-    '<div class="v15-card" style="text-align:center"><div style="font-size:11px;color:var(--text-dim)">&#52572;&#44256;&#51216;&#49688;</div><div style="font-size:20px;font-weight:800;color:var(--gold)" id="v15BagBest">'+v15.sandbag.bestScore+'</div></div>' +
-    '<div class="v15-card" style="text-align:center"><div style="font-size:11px;color:var(--text-dim)">&#49464;&#49496;</div><div style="font-size:20px;font-weight:800;color:var(--green)" id="v15BagSessions">'+v15.sandbag.sessions+'</div></div>' +
+    '<div class="v15-card" style="text-align:center"><div style="font-size:11px;color:var(--text-dim)">총 히트</div><div style="font-size:20px;font-weight:800;color:var(--accent)" id="v15BagTotalHits">'+v15.sandbag.totalHits+'</div></div>' +
+    '<div class="v15-card" style="text-align:center"><div style="font-size:11px;color:var(--text-dim)">최고점수</div><div style="font-size:20px;font-weight:800;color:var(--gold)" id="v15BagBest">'+v15.sandbag.bestScore+'</div></div>' +
+    '<div class="v15-card" style="text-align:center"><div style="font-size:11px;color:var(--text-dim)">세션</div><div style="font-size:20px;font-weight:800;color:var(--green)" id="v15BagSessions">'+v15.sandbag.sessions+'</div></div>' +
     '</div>';
   return sec;
 }
@@ -516,10 +516,10 @@ function drawBag(){
   ctx.lineWidth = 2;
   ctx.stroke();
   var zones = [
-    {name:'&#47672;&#47532;',y:bagY-100,r:28,color:'rgba(255,68,68,0.3)'},
-    {name:'&#44032;&#49844;',y:bagY-30,r:35,color:'rgba(255,150,50,0.3)'},
-    {name:'&#48373;&#48512;',y:bagY+50,r:32,color:'rgba(100,200,100,0.3)'},
-    {name:'&#50616;&#44396;&#47532;',y:bagY+130,r:26,color:'rgba(100,150,255,0.3)'}
+    {name:'머리',y:bagY-100,r:28,color:'rgba(255,68,68,0.3)'},
+    {name:'가슴',y:bagY-30,r:35,color:'rgba(255,150,50,0.3)'},
+    {name:'복부',y:bagY+50,r:32,color:'rgba(100,200,100,0.3)'},
+    {name:'언구리',y:bagY+130,r:26,color:'rgba(100,150,255,0.3)'}
   ];
   bagState.zones = zones.map(function(z){ return {name:z.name, x:bagX, y:z.y, r:z.r}; });
   zones.forEach(function(z){
@@ -556,12 +556,12 @@ function drawBag(){
     ctx.fillText(bagState.timeLeft+'s', W/2, 35);
     ctx.fillStyle = '#fff';
     ctx.font = 'bold 16px -apple-system,sans-serif';
-    ctx.fillText('&#51216;&#49688;: '+bagState.score+'  &#53092;&#48372;: '+bagState.combo, W/2, H - 20);
+    ctx.fillText('점수: '+bagState.score+'  콤보: '+bagState.combo, W/2, H - 20);
   } else {
     ctx.fillStyle = isDark ? '#888' : '#666';
     ctx.font = '13px -apple-system,sans-serif';
     ctx.textAlign = 'center';
-    ctx.fillText('&#49380;&#46300;&#48177;&#51012; &#53552;&#52824;/&#53364;&#47533;&#54616;&#50668; &#54156;&#52824;&#54616;&#49464;&#50836;', W/2, H - 20);
+    ctx.fillText('샤드백을 터치/클릭하여 펌치하세요', W/2, H - 20);
   }
 }
 
@@ -609,7 +609,7 @@ window._v15StartBag = function(){
       if(bagState.score > v15.sandbag.bestScore) v15.sandbag.bestScore = bagState.score;
       saveV15(v15);
       playSFX15('bag_combo');
-      showToast15('&#50892;&#53356;&#50500;&#50883; &#50756;&#47308;! &#51216;&#49688;: '+bagState.score);
+      showToast15('워크아웃 완료! 점수: '+bagState.score);
       var el1 = document.getElementById('v15BagTotalHits'); if(el1) el1.textContent = v15.sandbag.totalHits;
       var el2 = document.getElementById('v15BagBest'); if(el2) el2.textContent = v15.sandbag.bestScore;
       var el3 = document.getElementById('v15BagSessions'); if(el3) el3.textContent = v15.sandbag.sessions;
@@ -623,50 +623,50 @@ window._v15StartBag = function(){
 
 // ===== 4. INJURY PREVENTION GUIDE =====
 var INJURIES = [
-  {name:'&#50612;&#44648; &#47196;&#53580;&#51060;&#53552;&#52964;&#54532; &#48512;&#49345;',area:'&#50612;&#44648;',risk:'&#45458;&#51020;',
-   prevent:'&#51649;&#52840;&#44397;/&#52377;&#48373;&#44540; &#44053;&#54868;, &#54156;&#52824; &#51204; &#49828;&#53944;&#47112;&#52845;',
-   treat:'&#55092;&#49885;, RICE &#50836;&#48277;, &#51216;&#51652;&#51201; &#48373;&#44480;'},
-  {name:'&#49552;&#47785;/&#49552;&#44032;&#46973; &#44264;&#51208;',area:'&#49552;',risk:'&#45458;&#51020;',
-   prevent:'&#50732;&#48148;&#47480; &#48533;&#45824; &#44048;&#44592;, &#47001;&#54021;&#46041;&#51089; &#51221;&#54869;&#55176; &#49688;&#54665;',
-   treat:'&#44256;&#51221;, &#48337;&#50896; &#51652;&#47308;, &#50756;&#52824; &#49884;&#44620;&#51648; &#54984;&#47144; &#51473;&#45800;'},
-  {name:'&#45516;&#51652;&#53461;(&#44221;&#48120;)',area:'&#47672;&#47532;',risk:'&#45458;&#51020;',
-   prevent:'&#54756;&#46300;&#44032;&#46300; &#54637;&#49345; &#50976;&#51648;, &#47785; &#44540;&#47141; &#44053;&#54868;',
-   treat:'&#51593;&#49884; &#55092;&#49885;, 1~2&#51452; &#50756;&#51204;&#55092;&#49885;, &#51204;&#47928;&#44032; &#49345;&#45812;'},
-  {name:'&#47924;&#47502; &#51064;&#45824; &#49552;&#49345;',area:'&#47924;&#47502;',risk:'&#51473;&#44036;',
-   prevent:'&#54588;&#48372;&#54021;/&#48512;&#50892;&#53356; &#49884; &#47924;&#47502; &#48169;&#54693; &#51452;&#51032;',
-   treat:'&#48152;&#50900;&#44256;, &#50517;&#48149;, &#47932;&#47532;&#52824;&#47308;, &#49900;&#54616;&#47732; &#49688;&#49696;'},
-  {name:'&#44040;&#48708;&#48904;(&#44264;&#48180;) &#50516;&#48149;&#50864;&#49828;',area:'&#54036;&#44636;&#52824;',risk:'&#51473;&#44036;',
-   prevent:'&#49552;&#47785; &#44053;&#54868; &#50868;&#46041;, &#50644;&#46300;&#54252;&#51064;&#53944; &#48373;&#49905;&#54984;&#47144;',
-   treat:'&#48533;&#45824;+&#50500;&#51060;&#49905;+&#55092;&#49885;, &#54252;&#47084;&#47204;&#47553;'},
-  {name:'&#44040;&#48708;&#48904; &#44264;&#51208;(&#44396;&#49885;)',area:'&#44040;&#48708;&#48904;',risk:'&#51473;&#44036;',
-   prevent:'&#47901;&#44032;&#46300; &#51109;&#52265;&#44428;&#51109;, &#54588;&#48372;&#54021; &#44592;&#49696; &#54984;&#47144;',
-   treat:'&#51593;&#49884; &#55092;&#49885;, &#48337;&#50896; &#51652;&#47308;, &#53560; &#44256;&#51221;'},
-  {name:'&#47785; &#44540;&#50977; &#44596;&#51109;',area:'&#47785;',risk:'&#51473;&#44036;',
-   prevent:'&#47785; &#49828;&#53944;&#47112;&#52845; &#52649;&#48516;&#55176;, &#47700;&#46356;&#49888;&#48380; &#50868;&#46041;',
-   treat:'&#46384;&#46907;&#54620; &#54032;, &#47560;&#49324;&#51648;, &#49828;&#53944;&#47112;&#52845;, &#48152;&#50900;&#44256;'},
-  {name:'&#50500;&#53420;&#47112;&#49828;&#44148; &#53685;&#51613;',area:'&#48156;',risk:'&#45230;&#51020;',
-   prevent:'&#50500;&#53420;&#47112;&#49828;&#44148; &#44053;&#54868; &#50868;&#46041;, &#51201;&#51208;&#54620; &#49888;&#48156;',
-   treat:'&#55092;&#49885;, &#53580;&#51060;&#54609;, &#50684;&#51613; &#44048;&#49548; &#52376;&#52824;'},
-  {name:'&#53076; &#52636;&#54792;/&#44264;&#51208;',area:'&#53076;',risk:'&#51473;&#44036;',
-   prevent:'&#53076; &#48372;&#54840;&#44592;(&#44148;) &#52265;&#50857;, &#48169;&#50612; &#44592;&#49696; &#50672;&#49845;',
-   treat:'&#51593;&#49884; &#55092;&#49885;, &#44148;&#51004;&#47196; &#48372;&#54840;, &#48337;&#50896; &#51652;&#47308;'},
-  {name:'&#50868;&#46041;&#50976;&#48156;&#49457; &#52380;&#49885;',area:'&#54840;&#55137;&#44592;',risk:'&#45230;&#51020;',
-   prevent:'&#50892;&#48141;&#50629;&#52649;&#48516;&#55176;, &#51064;&#54756;&#51068;&#47084; &#48708;&#52824;',
-   treat:'&#44148;&#51312;&#54620; &#54872;&#44221;&#50640;&#49436; &#49436;&#49436;&#55176; &#54984;&#47144;, &#48337;&#50896; &#49345;&#45812;'},
-  {name:'&#54728;&#47532; &#46356;&#49828;&#53356; &#48512;&#49345;',area:'&#54728;&#47532;',risk:'&#45230;&#51020;',
-   prevent:'&#53076;&#50612; &#44053;&#54868;, &#48373;&#49905;&#49884; &#51201;&#51208;&#54620; &#54744;&#51020;&#44144;&#47532;&#44592;',
-   treat:'&#55092;&#49885;, &#49828;&#53944;&#47112;&#52845;, &#47932;&#47532;&#52824;&#47308;'},
-  {name:'&#50676;&#49324;&#48337;/&#53448;&#49688;',area:'&#51204;&#49888;',risk:'&#45230;&#51020;',
-   prevent:'&#52649;&#48516;&#54620; &#49688;&#48516; &#49453;&#52712;, &#55092;&#49885; &#44036;&#44201; &#51456;&#49688;',
-   treat:'&#49884;&#50896;&#54620; &#54872;&#44221;&#51004;&#47196; &#51060;&#46041;, &#49688;&#48516;/&#51204;&#54644;&#51656; &#48372;&#52649;'}
+  {name:'어깨 로테이터커프 부상',area:'어깨',risk:'높음',
+   prevent:'직침국/척복근 강화, 펌치 전 스트레칭',
+   treat:'휴식, RICE 요법, 점진적 복귀'},
+  {name:'손목/손가락 골절',area:'손',risk:'높음',
+   prevent:'올바른 붕대 감기, 랙팅동작 정확히 수행',
+   treat:'고정, 병원 진료, 완치 시까지 훈련 중단'},
+  {name:'뇌진탕(경미)',area:'머리',risk:'높음',
+   prevent:'헤드가드 항상 유지, 목 근력 강화',
+   treat:'즉시 휴식, 1~2주 완전휴식, 전문가 상담'},
+  {name:'무릎 인대 손상',area:'무릎',risk:'중간',
+   prevent:'피보팅/부워크 시 무릎 방향 주의',
+   treat:'반월고, 압박, 물리치료, 심하면 수술'},
+  {name:'갈비뼈(골밴) 암박우스',area:'팔깜치',risk:'중간',
+   prevent:'손목 강화 운동, 엔드포인트 복싱훈련',
+   treat:'붕대+아이싱+휴식, 포러롤링'},
+  {name:'갈비뼈 골절(구식)',area:'갈비뼈',risk:'중간',
+   prevent:'묝가드 장착권장, 피보팅 기술 훈련',
+   treat:'즉시 휴식, 병원 진료, 털 고정'},
+  {name:'목 근육 긴장',area:'목',risk:'중간',
+   prevent:'목 스트레칭 충분히, 메디신볼 운동',
+   treat:'따뜻한 판, 마사지, 스트레칭, 반월고'},
+  {name:'아킬레스건 통증',area:'발',risk:'낮음',
+   prevent:'아킬레스건 강화 운동, 적절한 신발',
+   treat:'휴식, 테이핑, 염증 감소 처치'},
+  {name:'코 출혈/골절',area:'코',risk:'중간',
+   prevent:'코 보호기(건) 착용, 방어 기술 연습',
+   treat:'즉시 휴식, 건으로 보호, 병원 진료'},
+  {name:'운동유발성 천식',area:'호흡기',risk:'낮음',
+   prevent:'워밍업충분히, 인헤일러 비치',
+   treat:'건조한 환경에서 서서히 훈련, 병원 상담'},
+  {name:'허리 디스크 부상',area:'허리',risk:'낮음',
+   prevent:'코어 강화, 복싱시 적절한 험음거리기',
+   treat:'휴식, 스트레칭, 물리치료'},
+  {name:'열사병/탈수',area:'전신',risk:'낮음',
+   prevent:'충분한 수분 섭취, 휴식 간격 준수',
+   treat:'시원한 환경으로 이동, 수분/전해질 보충'}
 ];
 
 function buildInjuryGuide(){
   var sec = document.createElement('div');
   sec.className = 'v15-section';
   sec.id = 'v15-injury';
-  sec.innerHTML = '<div class="v15-title"><span class="emoji">&#127973;</span> &#48512;&#49345; &#50696;&#48169; &#44032;&#51060;&#46300;</div>' +
-    '<div class="v15-subtitle">12&#51333; &#48373;&#49905; &#48512;&#49345; &#50976;&#54805; + &#50696;&#48169;&#48277; + &#52824;&#47308;&#48277;</div>' +
+  sec.innerHTML = '<div class="v15-title"><span class="emoji">🏥</span> 부상 예방 가이드</div>' +
+    '<div class="v15-subtitle">12종 복싱 부상 유형 + 예방법 + 치료법</div>' +
     '<div id="v15InjuryList"></div>';
   return sec;
 }
@@ -683,12 +683,12 @@ function renderInjuries(){
     div.style.cursor = 'pointer';
     div.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">' +
       '<div style="font-weight:700;font-size:14px">'+inj.name+'</div>' +
-      '<span class="v15-tag" style="background:'+riskColor+';color:#fff">&#50948;&#54744;: '+inj.risk+'</span>' +
+      '<span class="v15-tag" style="background:'+riskColor+';color:#fff">위험: '+inj.risk+'</span>' +
       '</div>' +
-      '<div style="font-size:12px;margin-bottom:4px"><b>&#48512;&#50948;:</b> '+inj.area+'</div>' +
-      '<div style="font-size:12px;margin-bottom:4px;color:var(--green)"><b>&#50696;&#48169;:</b> '+inj.prevent+'</div>' +
-      '<div style="font-size:12px;color:var(--blue)"><b>&#52824;&#47308;:</b> '+inj.treat+'</div>' +
-      (viewed ? '<div style="margin-top:6px"><span class="v15-badge">&#10003; &#54617;&#49845;</span></div>' : '');
+      '<div style="font-size:12px;margin-bottom:4px"><b>부위:</b> '+inj.area+'</div>' +
+      '<div style="font-size:12px;margin-bottom:4px;color:var(--green)"><b>예방:</b> '+inj.prevent+'</div>' +
+      '<div style="font-size:12px;color:var(--blue)"><b>치료:</b> '+inj.treat+'</div>' +
+      (viewed ? '<div style="margin-top:6px"><span class="v15-badge">✓ 학습</span></div>' : '');
     div.onclick = function(){
       if(v15.injury.viewed.indexOf(idx) === -1) v15.injury.viewed.push(idx);
       saveV15(v15);
@@ -703,16 +703,16 @@ function renderInjuries(){
 
 // ===== 5. JUDGE SCORING SIMULATOR =====
 var JUDGE_SCENARIOS = [
-  {round:1,desc:'A&#49440;&#49688;&#44032; &#51105;&#51012; &#44228;&#49549; &#44866;&#44256;, B&#49440;&#49688;&#45716; &#44032;&#46300; &#50920;&#50640;&#49436; &#47750;&#52264;&#47168; &#53356;&#47196;&#49828;&#47484; &#47532;&#53556;&#54665;&#45796;.',a_score:9,b_score:10,explain:'B&#49440;&#49688;&#51032; &#53364;&#47536; &#54028;&#50892;&#54156;&#52824;&#44032; &#45908; &#54952;&#44284;&#51201;'},
-  {round:2,desc:'&#50577;&#49440;&#49688; &#54876;&#48156;&#54620; &#44277;&#48169;. A&#44032; &#47564;&#51060; &#46384;&#47160;&#51648;&#47564; B&#44032; &#53364;&#47536;&#55176;&#53944; &#48708;&#50984;&#51060; &#45458;&#45796;.',a_score:9,b_score:10,explain:'&#52572;&#51333;&#44208;&#44284; &#51088;&#52404;&#48372;&#45796; &#53364;&#47536;&#55176;&#53944; &#48708;&#50984;&#44284; &#54952;&#44284;&#51201; &#44277;&#44201;&#51060; &#51473;&#50836;'},
-  {round:3,desc:'A&#49440;&#49688;&#44032; &#50612;&#54140;&#52983;&#51004;&#47196; B&#47484; &#55124;&#46308;&#47540; &#51216;&#46020;&#51032; &#44053;&#47141;&#54620; &#54156;&#52824;&#47484; &#45347;&#50632;&#45796;.',a_score:10,b_score:8,explain:'&#45796;&#50868;&#51012; &#50976;&#48156;&#54620; &#44053;&#47141;&#54620; &#54156;&#52824;&#45716; 10-8 &#52292;&#51216; &#44032;&#45733;'},
-  {round:4,desc:'B&#49440;&#49688;&#44032; &#47553; &#44032;&#50868;&#45936;&#47484; &#51109;&#50501;&#54616;&#44256; &#49345;&#45824;&#47484; &#47044;&#50500;&#45347;&#44596;&#45796;.',a_score:9,b_score:10,explain:'&#47553;&#51228;&#45320;&#47084;&#49901;(&#47553; &#51109;&#50501;)&#51008; &#52292;&#51216;&#50640; &#50976;&#47532;'},
-  {round:5,desc:'&#50577;&#49440;&#49688; &#54948;&#46300; &#44368;&#54872;&#51060; &#47566;&#50520;&#44256;, &#53945;&#48324;&#55176; &#50864;&#50948;&#47484; &#44032;&#47540; &#49688; &#50630;&#45716; &#51217;&#51204;.',a_score:10,b_score:10,explain:'&#48516;&#47749;&#54620; &#50864;&#50948;&#44032; &#50630;&#51004;&#47732; 10-10 &#51060;&#48516; &#46972;&#50868;&#46300;'},
-  {round:6,desc:'A&#49440;&#49688;&#44032; &#51105;&#51004;&#47196; &#44144;&#47532;&#47484; &#50976;&#51648;&#54616;&#47728; &#50500;&#50883;&#48373;&#49905;&#51012; &#54178;&#52456;&#45796;.',a_score:10,b_score:9,explain:'&#54952;&#44284;&#51201; &#44144;&#47532; &#50976;&#51648;&#50752; &#44648;&#45143;&#54620; &#51105;&#51060; &#45458;&#44172; &#54217;&#44032;'},
-  {round:7,desc:'B&#49440;&#49688;&#44032; &#53364;&#47536;&#52824;&#47484; &#44284;&#46020;&#54616;&#44172; &#49324;&#50857;&#54616;&#44256; &#49900;&#54032;&#51060; &#44221;&#44256;&#47484; &#48155;&#50520;&#45796;.',a_score:10,b_score:9,explain:'&#48152;&#52825; &#44221;&#44256;&#45716; &#51216;&#49688;&#50640; &#48520;&#47532;&#54616;&#44172; &#51089;&#50857;'},
-  {round:8,desc:'A&#49440;&#49688;&#44032; &#48148;&#46356; &#44277;&#44201;&#51004;&#47196; B&#47484; &#44228;&#49549; &#50517;&#48149;&#54664;&#45796;. B&#45716; &#48169;&#50612;&#47564; &#54664;&#45796;.',a_score:10,b_score:9,explain:'&#44277;&#44201;&#51201; &#50864;&#50948;&#50752; &#50517;&#48149;&#51060; &#52292;&#51216;&#50640; &#48152;&#50689;'},
-  {round:9,desc:'&#47560;&#51648;&#47561; &#46972;&#50868;&#46300; &#51204;. B&#49440;&#49688;&#44032; &#52509;&#44277;&#49464;&#47196; &#51204;&#54872;&#54616;&#50668; &#50668;&#47084;&#48264; &#55176;&#53944;.',a_score:9,b_score:10,explain:'&#47560;&#51648;&#47561; &#44277;&#44201; &#51032;&#51648;&#50752; &#44201;&#47148;&#54620; &#44277;&#44201;&#51060; &#45458;&#51008; &#54217;&#44032;'},
-  {round:10,desc:'&#52572;&#51333; &#46972;&#50868;&#46300;. &#50577;&#49440;&#49688; &#49324;&#47141;&#51012; &#45796;&#54620; &#44277;&#48169;. A&#44032; &#44540;&#49548;&#54620; &#52264;&#51060;&#47196; &#50864;&#49464;.',a_score:10,b_score:9,explain:'&#44540;&#49548;&#54620; &#52264;&#51060;&#46972;&#46020; &#50864;&#50948;&#44032; &#51080;&#51004;&#47732; 10-9'}
+  {round:1,desc:'A선수가 잡을 계속 꽂고, B선수는 가드 웨에서 몆차례 크로스를 리턴행다.',a_score:9,b_score:10,explain:'B선수의 클린 파워펌치가 더 효과적'},
+  {round:2,desc:'양선수 활발한 공방. A가 만이 따렸지만 B가 클린히트 비율이 높다.',a_score:9,b_score:10,explain:'최종결과 자체보다 클린히트 비율과 효과적 공격이 중요'},
+  {round:3,desc:'A선수가 어퍼컷으로 B를 흔들릴 점도의 강력한 펌치를 넣었다.',a_score:10,b_score:8,explain:'다운을 유발한 강력한 펌치는 10-8 채점 가능'},
+  {round:4,desc:'B선수가 링 가운데를 장악하고 상대를 럄아넣긴다.',a_score:9,b_score:10,explain:'링제너러십(링 장악)은 채점에 유리'},
+  {round:5,desc:'양선수 횤드 교환이 많았고, 특별히 우위를 가릴 수 없는 접전.',a_score:10,b_score:10,explain:'분명한 우위가 없으면 10-10 이분 라운드'},
+  {round:6,desc:'A선수가 잡으로 거리를 유지하며 아웃복싱을 펢쳨다.',a_score:10,b_score:9,explain:'효과적 거리 유지와 깨끗한 잡이 높게 평가'},
+  {round:7,desc:'B선수가 클린치를 과도하게 사용하고 심판이 경고를 받았다.',a_score:10,b_score:9,explain:'반칙 경고는 점수에 불리하게 작용'},
+  {round:8,desc:'A선수가 바디 공격으로 B를 계속 압박했다. B는 방어만 했다.',a_score:10,b_score:9,explain:'공격적 우위와 압박이 채점에 반영'},
+  {round:9,desc:'마지막 라운드 전. B선수가 총공세로 전환하여 여러번 히트.',a_score:9,b_score:10,explain:'마지막 공격 의지와 격렬한 공격이 높은 평가'},
+  {round:10,desc:'최종 라운드. 양선수 사력을 다한 공방. A가 근소한 차이로 우세.',a_score:10,b_score:9,explain:'근소한 차이라도 우위가 있으면 10-9'}
 ];
 
 var judgeState = { currentRound: 0, playerScoresA: [], playerScoresB: [], started: false };
@@ -721,8 +721,8 @@ function buildJudgeSim(){
   var sec = document.createElement('div');
   sec.className = 'v15-section';
   sec.id = 'v15-judge';
-  sec.innerHTML = '<div class="v15-title"><span class="emoji">&#9878;&#65039;</span> &#49900;&#54032; &#52292;&#51216; &#49884;&#48044;&#47112;&#51060;&#53552;</div>' +
-    '<div class="v15-subtitle">10R 10&#51216; &#48169;&#49885; &#52292;&#51216; &#54617;&#49845; + &#54032;&#51221; &#49444;&#47749;</div>' +
+  sec.innerHTML = '<div class="v15-title"><span class="emoji">⚖️</span> 심판 채점 시뮬레이터</div>' +
+    '<div class="v15-subtitle">10R 10점 방식 채점 학습 + 판정 설명</div>' +
     '<div id="v15JudgeArea"></div>';
   return sec;
 }
@@ -732,8 +732,8 @@ function renderJudge(){
   if(!area) return;
   if(!judgeState.started){
     area.innerHTML = '<div style="text-align:center;padding:20px">' +
-      '<div style="font-size:14px;color:var(--text-dim);margin-bottom:16px">10&#46972;&#50868;&#46300; &#44221;&#44592; &#49884;&#45208;&#47532;&#50724;&#47484; &#48372;&#44256; &#52292;&#51216;&#54644;&#48372;&#49464;&#50836;.<br>&#44033; &#46972;&#50868;&#46300;&#47560;&#45796; A&#49440;&#49688;&#50752; B&#49440;&#49688;&#50640;&#44172; &#51216;&#49688;&#47484; &#48512;&#50668;&#54633;&#45768;&#45796;.</div>' +
-      '<button class="v15-btn" onclick="window._v15StartJudge()">&#9878;&#65039; &#52292;&#51216; &#49884;&#51089;</button></div>';
+      '<div style="font-size:14px;color:var(--text-dim);margin-bottom:16px">10라운드 경기 시나리오를 보고 채점해보세요.<br>각 라운드마다 A선수와 B선수에게 점수를 부여합니다.</div>' +
+      '<button class="v15-btn" onclick="window._v15StartJudge()">⚖️ 채점 시작</button></div>';
     return;
   }
   var r = judgeState.currentRound;
@@ -747,10 +747,10 @@ function renderJudge(){
     var gradeColor = grade==='S'?'#FFD700':grade==='A'?'#22c55e':grade==='B'?'#3b82f6':grade==='C'?'#f97316':'#ef4444';
     area.innerHTML = '<div style="text-align:center;padding:20px">' +
       '<div style="font-size:48px;font-weight:900;color:'+gradeColor+'">'+grade+'</div>' +
-      '<div style="font-size:14px;margin:8px 0">&#45236; &#52292;&#51216;: A('+totalA+') vs B('+totalB+')</div>' +
-      '<div style="font-size:13px;color:var(--text-dim)">&#51221;&#45813; &#52292;&#51216;: A('+correctA+') vs B('+correctB+')</div>' +
-      '<div style="font-size:13px;color:var(--text-dim);margin-top:4px">&#54200;&#52264;: '+diff+'&#51216; (&#45230;&#51012;&#49688;&#47197; &#51221;&#54869;)</div>' +
-      '<button class="v15-btn" style="margin-top:16px" onclick="window._v15ResetJudge()">&#45796;&#49884; &#52292;&#51216;&#54616;&#44592;</button></div>';
+      '<div style="font-size:14px;margin:8px 0">내 채점: A('+totalA+') vs B('+totalB+')</div>' +
+      '<div style="font-size:13px;color:var(--text-dim)">정답 채점: A('+correctA+') vs B('+correctB+')</div>' +
+      '<div style="font-size:13px;color:var(--text-dim);margin-top:4px">편차: '+diff+'점 (낮을수록 정확)</div>' +
+      '<button class="v15-btn" style="margin-top:16px" onclick="window._v15ResetJudge()">다시 채점하기</button></div>';
     v15.judging.rounds += 10;
     v15.judging.accuracy = Math.round((1 - diff/40) * 100);
     v15.judging.sessions.push({date:new Date().toISOString().slice(0,10),grade:grade,diff:diff});
@@ -762,21 +762,21 @@ function renderJudge(){
   var sc = JUDGE_SCENARIOS[r];
   area.innerHTML = '<div class="v15-card">' +
     '<div style="display:flex;justify-content:space-between;margin-bottom:10px">' +
-    '<span class="v15-badge">&#46972;&#50868;&#46300; '+(r+1)+'/10</span>' +
+    '<span class="v15-badge">라운드 '+(r+1)+'/10</span>' +
     '<span style="font-size:12px;color:var(--text-dim)">'+(r+1)+'R</span></div>' +
     '<div style="font-size:14px;line-height:1.6;margin-bottom:16px">'+sc.desc+'</div>' +
     '<div class="v15-grid2">' +
-    '<div><div style="font-size:12px;font-weight:700;margin-bottom:8px;color:var(--blue)">A&#49440;&#49688; &#51216;&#49688;</div>' +
+    '<div><div style="font-size:12px;font-weight:700;margin-bottom:8px;color:var(--blue)">A선수 점수</div>' +
     [7,8,9,10].map(function(s){ return '<button class="v15-btn sm secondary" style="margin:2px" onclick="window._v15ScoreA('+s+')">'+s+'</button>'; }).join('') +
     '</div>' +
-    '<div><div style="font-size:12px;font-weight:700;margin-bottom:8px;color:var(--accent)">B&#49440;&#49688; &#51216;&#49688;</div>' +
+    '<div><div style="font-size:12px;font-weight:700;margin-bottom:8px;color:var(--accent)">B선수 점수</div>' +
     [7,8,9,10].map(function(s){ return '<button class="v15-btn sm secondary" style="margin:2px" onclick="window._v15ScoreB('+s+')">'+s+'</button>'; }).join('') +
     '</div></div></div>';
   if(r > 0){
     var prev = JUDGE_SCENARIOS[r-1];
     area.innerHTML += '<div class="v15-card" style="border-left:3px solid var(--accent)">' +
-      '<div style="font-size:12px;font-weight:700;margin-bottom:4px">&#51060;&#51204; &#46972;&#50868;&#46300; &#54644;&#49444;</div>' +
-      '<div style="font-size:12px;color:var(--text-dim)">&#51221;&#45813;: A('+prev.a_score+') B('+prev.b_score+') &#8212; '+prev.explain+'</div></div>';
+      '<div style="font-size:12px;font-weight:700;margin-bottom:4px">이전 라운드 해설</div>' +
+      '<div style="font-size:12px;color:var(--text-dim)">정답: A('+prev.a_score+') B('+prev.b_score+') — '+prev.explain+'</div></div>';
   }
 }
 
@@ -791,7 +791,7 @@ window._v15ScoreA = function(s){
   judgeState.playerScoresA.push(s);
   playSFX15('judge_score');
   if(judgeState.playerScoresA.length === judgeState.playerScoresB.length + 1){
-    showToast15('B&#49440;&#49688; &#51216;&#49688;&#46020; &#49440;&#53469;&#54616;&#49464;&#50836;');
+    showToast15('B선수 점수도 선택하세요');
   }
 };
 window._v15ScoreB = function(s){
@@ -808,28 +808,28 @@ window._v15ResetJudge = function(){
 
 // ===== 6. TRAINING DIARY =====
 var DIARY_MOODS = [
-  {id:'great',emoji:'&#128293;',label:'&#52572;&#44256;'},
-  {id:'good',emoji:'&#128170;',label:'&#51339;&#51020;'},
-  {id:'ok',emoji:'&#128528;',label:'&#48372;&#53685;'},
-  {id:'tired',emoji:'&#128548;',label:'&#54588;&#44260;'},
-  {id:'bad',emoji:'&#128557;',label:'&#55192;&#46308;&#50612;'}
+  {id:'great',emoji:'🔥',label:'최고'},
+  {id:'good',emoji:'💪',label:'좋음'},
+  {id:'ok',emoji:'😐',label:'보통'},
+  {id:'tired',emoji:'😤',label:'피곤'},
+  {id:'bad',emoji:'😭',label:'힘들어'}
 ];
 
 function buildDiary(){
   var sec = document.createElement('div');
   sec.className = 'v15-section';
   sec.id = 'v15-diary';
-  sec.innerHTML = '<div class="v15-title"><span class="emoji">&#128221;</span> &#53944;&#47112;&#51060;&#45789; &#45796;&#51060;&#50612;&#47532;</div>' +
-    '<div class="v15-subtitle">&#55092;&#47144; &#51068;&#51648; + &#44592;&#48516; 5&#51333; + 50&#44148; &#48372;&#44288; + &#53440;&#51076;&#46972;&#51064;</div>' +
+  sec.innerHTML = '<div class="v15-title"><span class="emoji">📝</span> 트레이닝 다이어리</div>' +
+    '<div class="v15-subtitle">휴련 일지 + 기분 5종 + 50건 보관 + 타임라인</div>' +
     '<div style="margin-bottom:12px">' +
-    '<div style="font-size:13px;font-weight:600;margin-bottom:8px">&#50724;&#45720;&#51032; &#44592;&#48516;</div>' +
+    '<div style="font-size:13px;font-weight:600;margin-bottom:8px">오늘의 기분</div>' +
     '<div class="v15-flex" id="v15MoodPicker">' +
     DIARY_MOODS.map(function(m){ return '<span class="v15-mood" data-mood="'+m.id+'" onclick="window._v15SelectMood(\''+m.id+'\')" title="'+m.label+'">'+m.emoji+'</span>'; }).join('') +
     '</div></div>' +
     '<div style="margin-bottom:12px">' +
-    '<textarea id="v15DiaryText" placeholder="&#50724;&#45720;&#51032; &#55092;&#47144; &#44592;&#47197;..." style="width:100%;height:70px;background:var(--surface);border:1px solid var(--glass-border);border-radius:10px;color:var(--text);padding:12px;font-size:13px;resize:none;font-family:var(--font)"></textarea>' +
+    '<textarea id="v15DiaryText" placeholder="오늘의 휴련 기록..." style="width:100%;height:70px;background:var(--surface);border:1px solid var(--glass-border);border-radius:10px;color:var(--text);padding:12px;font-size:13px;resize:none;font-family:var(--font)"></textarea>' +
     '</div>' +
-    '<button class="v15-btn" onclick="window._v15SaveDiary()">&#128190; &#51200;&#51109;</button>' +
+    '<button class="v15-btn" onclick="window._v15SaveDiary()">💾 저장</button>' +
     '<div style="margin-top:16px" id="v15DiaryTimeline"></div>';
   return sec;
 }
@@ -843,7 +843,7 @@ window._v15SelectMood = function(mid){
 };
 window._v15SaveDiary = function(){
   var text = document.getElementById('v15DiaryText');
-  if(!text || !text.value.trim()) { showToast15('&#45236;&#50857;&#51012; &#51077;&#47141;&#54644;&#51452;&#49464;&#50836;'); return; }
+  if(!text || !text.value.trim()) { showToast15('내용을 입력해주세요'); return; }
   var entry = {
     date: new Date().toISOString().slice(0,10),
     time: new Date().toTimeString().slice(0,5),
@@ -857,7 +857,7 @@ window._v15SaveDiary = function(){
   selectedDiaryMood = '';
   document.querySelectorAll('#v15MoodPicker .v15-mood').forEach(function(el){ el.classList.remove('selected'); });
   playSFX15('diary_save');
-  showToast15('&#45796;&#51060;&#50612;&#47532; &#51200;&#51109; &#50756;&#47308;!');
+  showToast15('다이어리 저장 완료!');
   renderDiaryTimeline();
   trackFeature('diary');
   checkV15Achievements();
@@ -867,10 +867,10 @@ function renderDiaryTimeline(){
   var tl = document.getElementById('v15DiaryTimeline');
   if(!tl) return;
   if(v15.diary.entries.length === 0){
-    tl.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:13px;padding:16px">&#50500;&#51649; &#44592;&#47197;&#51060; &#50630;&#49845;&#45768;&#45796;</div>';
+    tl.innerHTML = '<div style="text-align:center;color:var(--text-dim);font-size:13px;padding:16px">아직 기록이 없습니다</div>';
     return;
   }
-  tl.innerHTML = '<div style="font-size:13px;font-weight:700;margin-bottom:10px">&#52572;&#44540; &#44592;&#47197; ('+v15.diary.entries.length+'&#44148;)</div><div class="v15-timeline">' +
+  tl.innerHTML = '<div style="font-size:13px;font-weight:700;margin-bottom:10px">최근 기록 ('+v15.diary.entries.length+'건)</div><div class="v15-timeline">' +
     v15.diary.entries.slice(0,10).map(function(e){
       var moodEmoji = DIARY_MOODS.filter(function(m){return m.id===e.mood})[0];
       return '<div class="v15-timeline-item"><div style="font-size:11px;color:var(--text-dim)">'+e.date+' '+e.time+'</div>' +
@@ -883,11 +883,11 @@ function buildCombatPower(){
   var sec = document.createElement('div');
   sec.className = 'v15-section';
   sec.id = 'v15-power-radar';
-  sec.innerHTML = '<div class="v15-title"><span class="emoji">&#128200;</span> &#51204;&#53804;&#47141; &#48516;&#49437; &#45824;&#49884;&#48372;&#46300;</div>' +
-    '<div class="v15-subtitle">6&#52629; &#47112;&#51060;&#45908; (&#54028;&#50892;/&#49828;&#54588;&#46300;/&#51648;&#44396;&#47141;/&#48169;&#50612;/&#44592;&#49696;/&#54413;&#50892;&#53356;)</div>' +
+  sec.innerHTML = '<div class="v15-title"><span class="emoji">📈</span> 전투력 분석 대시보드</div>' +
+    '<div class="v15-subtitle">6축 레이더 (파워/스피드/지구력/방어/기술/풍워크)</div>' +
     '<div class="v15-canvas-wrap"><canvas id="v15PowerRadar" width="400" height="400" style="width:100%;display:block"></canvas></div>' +
     '<div style="text-align:center;margin-top:8px">' +
-    '<button class="v15-btn" onclick="window._v15ScanPower()">&#128269; &#51204;&#53804;&#47141; &#49828;&#52884;</button></div>';
+    '<button class="v15-btn" onclick="window._v15ScanPower()">🔍 전투력 스캔</button></div>';
   return sec;
 }
 
@@ -922,7 +922,7 @@ function drawPowerRadar(vals){
   ctx.fillRect(0,0,W,H);
   var cx = W/2, cy = H/2 + 10;
   var R = Math.min(W,H)*0.35;
-  var labels = ['&#54028;&#50892;','&#49828;&#54588;&#46300;','&#51648;&#44396;&#47141;','&#48169;&#50612;','&#44592;&#49696;','&#54413;&#50892;&#53356;'];
+  var labels = ['파워','스피드','지구력','방어','기술','풍워크'];
   var colors = ['#ef4444','#f97316','#22c55e','#3b82f6','#a855f7','#ec4899'];
   var n = labels.length;
   if(!vals) vals = [30,30,30,30,30,30];
@@ -986,43 +986,43 @@ function drawPowerRadar(vals){
   ctx.fillText(grade, W/2, 30);
   ctx.fillStyle = isDark ? '#aaa' : '#555';
   ctx.font = '13px -apple-system,sans-serif';
-  ctx.fillText('&#51333;&#54633; &#51204;&#53804;&#47141;: '+avg+'/100', W/2, 52);
+  ctx.fillText('종합 전투력: '+avg+'/100', W/2, 52);
 }
 
 // ===== 8. LEGENDARY FIGHTS REVIEW =====
 var LEGEND_FIGHTS = [
-  {year:'1974',title:'&#51221;&#44544; &#51064; &#45908; &#51221;&#44544;',fighters:'&#47924;&#54616;&#47560;&#46300; &#50508;&#47532; vs &#51312;&#51648; &#54252;&#47676;',
-   lesson:'&#47196;&#54532;&#50612;&#46021;(Rope-a-dope) &#51204;&#47029;. &#52404;&#47141; &#48372;&#51316;+&#52852;&#50868;&#53552; &#51204;&#47029;&#51032; &#44368;&#44284;&#49436;'},
-  {year:'1975',title:'&#49892;&#46972; &#51064; &#47560;&#45776;&#46972;',fighters:'&#47924;&#54616;&#47560;&#46300; &#50508;&#47532; vs &#51312; &#54532;&#47112;&#51060;&#51648;&#50612;',
-   lesson:'14R &#44537;&#54620;&#51032; &#45824;&#44208;. &#50612;&#46500; &#49345;&#54889;&#50640;&#49436;&#46020; &#54252;&#44592;&#54616;&#51648; &#50506;&#45716; &#51221;&#49888;&#47141;'},
-  {year:'1990',title:'&#53440;&#51060;&#49832; vs &#45908;&#44544;&#47084;&#49828;',fighters:'&#47560;&#51060;&#53356; &#53440;&#51060;&#49832; vs &#51228;&#51076;&#49828; &#45908;&#44544;&#47084;&#49828;',
-   lesson:'&#50669;&#45824; &#52572;&#44256;&#51032; &#51060;&#48320;. &#51088;&#47564;&#51012; &#48260;&#47532;&#44256; &#44540;&#48376;&#50640; &#52649;&#49892;&#54616;&#46972;'},
-  {year:'1997',title:'&#47924;&#50612;&#48148;&#51060;&#53944; II',fighters:'&#50640;&#48180;&#45908; &#54848;&#47532;&#54596;&#46300; vs &#47560;&#51060;&#53356; &#53440;&#51060;&#49832;',
-   lesson:'&#44284;&#46020;&#54620; &#54036;&#51012; &#48276;&#54616;&#47732; &#44208;&#44284;&#44032; &#50612;&#46500;&#44148; &#51032;&#48120;&#50630;&#50612;&#51652;&#45796;'},
-  {year:'2002',title:'&#52828;&#48708;&#50864;&#49828;&#51032; &#51204;&#51137;',fighters:'&#47112;&#45185;&#49828; &#47336;&#51060;&#49828; vs &#47560;&#51060;&#53356; &#53440;&#51060;&#49832;',
-   lesson:'&#52404;&#44553; &#50516;&#48149;&#50864;&#49828;&#51032; &#44053;&#51216;. &#44592;&#49696;&#44284; &#49828;&#53468;&#48120;&#45208;&#51032; &#51312;&#54633;'},
-  {year:'2012',title:'&#54028;&#53300;&#50500;&#50724; vs &#47560;&#47476;&#44172;&#49828;',fighters:'&#47588;&#45768; &#54028;&#53300;&#50500;&#50724; vs &#55020; &#47560;&#47476;&#44172;&#49828;',
-   lesson:'&#49828;&#54588;&#46300;&#50752; &#54413;&#50892;&#53356;&#44032; &#54028;&#50892;&#47484; &#51060;&#44596; &#49688; &#51080;&#45796;'},
-  {year:'2015',title:'&#49464;&#44592;&#51032; &#45824;&#44208;',fighters:'&#47700;&#51060;&#50920;&#45908; vs &#54028;&#53300;&#50500;&#50724;',
-   lesson:'&#50756;&#48317;&#54620; &#48169;&#50612; &#44592;&#49696;&#51008; &#44277;&#44201;&#47141;&#51012; &#50517;&#46020;&#54624; &#49688; &#51080;&#45796;'},
-  {year:'1980',title:'&#50696;&#49696;&#44284; &#44284;&#54617;',fighters:'&#49836;&#44144; &#47112;&#51060; &#47112;&#45320;&#46300; vs &#47196;&#48288;&#47476;&#53664; &#46160;&#46976;',
-   lesson:'&#51068;&#49849;&#51068;&#54056; &#45824;&#48152;&#51204;. &#54620; &#48264; &#44592;&#54924;&#47484; &#45459;&#52824;&#51648; &#47568;&#44163;'},
-  {year:'2001',title:'&#48148;&#47548;&#51032; &#51204;&#49324;',fighters:'&#54861;&#49688;&#54872; vs &#45348;&#49828;&#53552; &#44032;&#47476;&#49324;',
-   lesson:'&#54620;&#44397; &#48373;&#49905;&#51032; &#50669;&#49324;. &#51089;&#51008; &#52404;&#44201;&#51004;&#47196;&#46020; &#51032;&#51648;&#47196; &#49849;&#47532;&#54624; &#49688; &#51080;&#45796;'},
-  {year:'2019',title:'&#47693;&#49884;&#53076;&#51032; &#48164;',fighters:'&#50532;&#46356; &#47336;&#51060;&#49828; vs &#50532;&#53804;&#45768; &#51312;&#49800;',
-   lesson:'&#48373;&#49905;&#51008; &#50696;&#52769;&#48520;&#44032;&#45733;. &#54620; &#48169;&#50640; &#47784;&#46304; &#44163;&#51060; &#48148;&#45044;&#45796;'},
-  {year:'2022',title:'&#50669;&#45824; &#52572;&#44053;',fighters:'&#50732;&#47116;&#49328;&#45908;&#47476; &#50864;&#49884;&#53356; vs &#50532;&#53804;&#45768; &#51312;&#49800;',
-   lesson:'4&#52404;&#44553; &#53685;&#51068; &#51204;&#47029;. &#48373;&#49905;IQ&#50752; &#53580;&#53356;&#45769;&#51032; &#49849;&#47532;'},
-  {year:'2017',title:'&#47672;&#45768; &#47588;&#52824;',fighters:'&#47700;&#51060;&#50920;&#45908; vs &#47589;&#44536;&#47532;&#44144;',
-   lesson:'&#45796;&#47480; &#51333;&#47785;&#50640;&#49436; &#50728; &#46020;&#51204;. &#44221;&#54744;&#44284; &#44592;&#49696;&#51032; &#52264;&#51060;'}
+  {year:'1974',title:'정글 인 더 정글',fighters:'무하마드 알리 vs 조지 포먼',
+   lesson:'로프어독(Rope-a-dope) 전략. 체력 보존+카운터 전략의 교과서'},
+  {year:'1975',title:'실라 인 마닐라',fighters:'무하마드 알리 vs 조 프레이지어',
+   lesson:'14R 극한의 대결. 어떤 상황에서도 포기하지 않는 정신력'},
+  {year:'1990',title:'타이슨 vs 더글러스',fighters:'마이크 타이슨 vs 제임스 더글러스',
+   lesson:'역대 최고의 이변. 자만을 버리고 근본에 충실하라'},
+  {year:'1997',title:'무어바이트 II',fighters:'에밴더 홀리필드 vs 마이크 타이슨',
+   lesson:'과도한 팔을 범하면 결과가 어떤건 의미없어진다'},
+  {year:'2002',title:'친비우스의 전쟁',fighters:'레낁스 루이스 vs 마이크 타이슨',
+   lesson:'체급 암박우스의 강점. 기술과 스태미나의 조합'},
+  {year:'2012',title:'파퀴아오 vs 마르게스',fighters:'매니 파퀴아오 vs 훬 마르게스',
+   lesson:'스피드와 풍워크가 파워를 이긴 수 있다'},
+  {year:'2015',title:'세기의 대결',fighters:'메이웨더 vs 파퀴아오',
+   lesson:'완벽한 방어 기술은 공격력을 압도할 수 있다'},
+  {year:'1980',title:'예술과 과학',fighters:'슬거 레이 레너드 vs 로베르토 두란',
+   lesson:'일승일패 대반전. 한 번 기회를 놓치지 말것'},
+  {year:'2001',title:'바림의 전사',fighters:'홍수환 vs 네스터 가르사',
+   lesson:'한국 복싱의 역사. 작은 체격으로도 의지로 승리할 수 있다'},
+  {year:'2019',title:'멍시코의 밤',fighters:'앤디 루이스 vs 앤투니 조슈',
+   lesson:'복싱은 예측불가능. 한 방에 모든 것이 바꿴다'},
+  {year:'2022',title:'역대 최강',fighters:'올렌산더르 우시크 vs 앤투니 조슈',
+   lesson:'4체급 통일 전략. 복싱IQ와 테크닉의 승리'},
+  {year:'2017',title:'머니 매치',fighters:'메이웨더 vs 맥그리거',
+   lesson:'다른 종목에서 온 도전. 경험과 기술의 차이'}
 ];
 
 function buildLegendFights(){
   var sec = document.createElement('div');
   sec.className = 'v15-section';
   sec.id = 'v15-legends';
-  sec.innerHTML = '<div class="v15-title"><span class="emoji">&#127942;</span> &#48373;&#49905; &#47749;&#45824;&#44208; &#47532;&#48624; 12&#49440;</div>' +
-    '<div class="v15-subtitle">&#50669;&#49324;&#51201; &#47749;&#44221;&#44592; &#48516;&#49437; + &#44368;&#54984;</div>' +
+  sec.innerHTML = '<div class="v15-title"><span class="emoji">🏆</span> 복싱 명대결 리뷰 12선</div>' +
+    '<div class="v15-subtitle">역사적 명경기 분석 + 교훈</div>' +
     '<div id="v15LegendList"></div>';
   return sec;
 }
@@ -1039,10 +1039,10 @@ function renderLegends(){
     div.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center">' +
       '<div><span class="v15-tag" style="background:var(--accent);color:#fff;margin-right:6px">'+f.year+'</span>' +
       '<span style="font-weight:700;font-size:14px">'+f.title+'</span></div>' +
-      (viewed ? '<span class="v15-badge">&#10003;</span>' : '') +
+      (viewed ? '<span class="v15-badge">✓</span>' : '') +
       '</div>' +
       '<div style="font-size:12px;color:var(--text-dim);margin:6px 0">'+f.fighters+'</div>' +
-      '<div style="font-size:12px"><b style="color:var(--gold)">&#128161; &#44368;&#54984;:</b> '+f.lesson+'</div>';
+      '<div style="font-size:12px"><b style="color:var(--gold)">💡 교훈:</b> '+f.lesson+'</div>';
     div.onclick = function(){
       if(v15.legendFights.viewed.indexOf(idx) === -1) v15.legendFights.viewed.push(idx);
       saveV15(v15);
@@ -1057,29 +1057,29 @@ function renderLegends(){
 
 // ===== QUIZ V15 (+15, 90->105) =====
 var QUIZ_V15 = [
-  {q:'&#48373;&#49905;&#50640;&#49436; &#8220;&#50896;&#53804;&#8221;&#45716; &#50612;&#46500; &#54156;&#52824; &#51312;&#54633;&#51012; &#51032;&#48120;&#54616;&#45208;?',a:['&#51105;-&#53356;&#47196;&#49828;','&#51105;-&#55041;','&#50612;&#54140;-&#53356;&#47196;&#49828;','&#55041;-&#55041;'],c:0},
-  {q:'&#47196;&#54532;&#50612;&#46021;(Rope-a-dope) &#51204;&#47029;&#51012; &#50976;&#47749;&#54616;&#44172; &#49324;&#50857;&#54620; &#49440;&#49688;&#45716;?',a:['&#47560;&#51060;&#53356; &#53440;&#51060;&#49832;','&#47924;&#54616;&#47560;&#46300; &#50508;&#47532;','&#47700;&#51060;&#50920;&#45908;','&#47588;&#45768; &#54028;&#53300;&#50500;&#50724;'],c:1},
-  {q:'10&#51216; &#48169;&#49885; &#52292;&#51216;&#50640;&#49436; &#45796;&#50868;&#51060; &#50630;&#51004;&#47732; &#44033; &#49440;&#49688;&#50640;&#44172; &#47751; &#51216;&#51012; &#48512;&#50668;&#54616;&#45208;?',a:['10-10','10-9','9-9','10-8'],c:0},
-  {q:'&#54588;&#52852;&#48512; &#49828;&#53472;&#49828;&#47484; &#50976;&#47749;&#54616;&#44172; &#49324;&#50857;&#54620; &#49440;&#49688;&#45716;?',a:['&#50508;&#47532;','&#53440;&#51060;&#49832;','&#47700;&#51060;&#50920;&#45908;','&#47112;&#45185;&#49828;'],c:1},
-  {q:'&#48373;&#49905;&#50640;&#49436; &#8220;&#53364;&#47536;&#52824;&#8221;&#45716; &#47924;&#50631;&#51012; &#51032;&#48120;&#54616;&#45208;?',a:['&#44053;&#47141;&#54620; &#54156;&#52824;','&#49345;&#45824;&#47484; &#44852;&#50504;&#45716; &#46041;&#51089;','&#54028;&#50872; &#54156;&#52824;','&#50612;&#54140;&#52983;'],c:1},
-  {q:'&#49380;&#46300;&#48177; &#50892;&#53356;&#50500;&#50883;&#50640;&#49436; &#44032;&#51109; &#47566;&#51008; &#51216;&#49688;&#47484; &#50619;&#45716; &#48512;&#50948;&#45716;?',a:['&#48373;&#48512;','&#48156;','&#47672;&#47532;','&#44032;&#49844;'],c:2},
-  {q:'&#54596;&#47532;&#49520; &#49828;&#53472;&#49828;&#51032; &#44032;&#51109; &#53360; &#51109;&#51216;&#51008;?',a:['&#54028;&#50892; &#54156;&#52824;','&#52852;&#50868;&#53552; &#54156;&#52824;','&#48744;&#47480; &#49828;&#54588;&#46300;','&#44053;&#54620; &#48169;&#50612;'],c:1},
-  {q:'&#48373;&#49905;&#50640;&#49436; &#8220;&#48372;&#46356;&#49399;&#8221;&#51008; &#50612;&#46356;&#47484; &#44277;&#44201;&#54616;&#45716; &#44163;&#51012; &#47568;&#54616;&#45208;?',a:['&#50620;&#44404;','&#54036;','&#47800;&#53685;','&#45796;&#47532;'],c:2},
-  {q:'&#51221;&#44544; &#51064; &#45908; &#51221;&#44544;(Rumble in the Jungle)&#51008; &#50612;&#45712; &#54644;&#50640; &#50676;&#47160;&#45208;?',a:['1972','1974','1976','1978'],c:1},
-  {q:'&#48373;&#49905; &#48512;&#49345; &#51473; &#8220;RICE &#50836;&#48277;&#8221;&#50640;&#49436; R&#51008; &#47924;&#50631;&#51012; &#51032;&#48120;&#54616;&#45208;?',a:['Recovery','Rest','Rehab','Rotation'],c:1},
-  {q:'&#53356;&#47196;&#49828;&#44032;&#46300; &#49828;&#53472;&#49828;&#51032; &#53945;&#54868;&#46108; &#48169;&#50612; &#50689;&#50669;&#51008;?',a:['&#47672;&#47532;','&#48148;&#46356;','&#45796;&#47532;','&#54036;'],c:1},
-  {q:'10&#46972;&#50868;&#46300; &#51473; &#54620; &#49440;&#49688;&#44032; &#45796;&#50868;&#45817;&#54616;&#47732; &#52292;&#51216;&#51008;?',a:['10-10','10-8','10-7','10-9'],c:1},
-  {q:'&#48373;&#49905;&#50640;&#49436; &#8220;&#50500;&#50883;&#48373;&#49905;&#8221;&#51008; &#50612;&#46500; &#49828;&#53440;&#51068;&#51012; &#51032;&#48120;&#54616;&#45208;?',a:['&#44540;&#51217;&#51204;','&#44144;&#47532;&#50976;&#51648;&#51204;','&#52852;&#50868;&#53552;&#51204;','&#48169;&#50612;&#51204;'],c:1},
-  {q:'&#48373;&#49905; &#54984;&#47144; &#51473; &#47700;&#46356;&#49888;&#48380; &#50868;&#46041;&#50032; &#44053;&#54868;&#54616;&#45716; &#48512;&#50948;&#45716;?',a:['&#50612;&#44648;','&#47785;','&#54728;&#47532;','&#51204;&#49888;'],c:1},
-  {q:'&#48373;&#49905;&#50640;&#49436; &#51473;&#47049;&#44553; &#44592;&#51456;&#51008;(&#54532;&#47196; &#44592;&#51456;)?',a:['72.5kg &#51060;&#54616;','75.7kg &#51060;&#54616;','69.8kg &#51060;&#54616;','76.2kg &#51060;&#54616;'],c:3}
+  {q:'복싱에서 “원투”는 어떤 펌치 조합을 의미하나?',a:['잡-크로스','잡-휁','어퍼-크로스','휁-휁'],c:0},
+  {q:'로프어독(Rope-a-dope) 전략을 유명하게 사용한 선수는?',a:['마이크 타이슨','무하마드 알리','메이웨더','매니 파퀴아오'],c:1},
+  {q:'10점 방식 채점에서 다운이 없으면 각 선수에게 몇 점을 부여하나?',a:['10-10','10-9','9-9','10-8'],c:0},
+  {q:'피카부 스탠스를 유명하게 사용한 선수는?',a:['알리','타이슨','메이웨더','레낁스'],c:1},
+  {q:'복싱에서 “클린치”는 무엇을 의미하나?',a:['강력한 펌치','상대를 꼴안는 동작','파울 펌치','어퍼컷'],c:1},
+  {q:'샤드백 워크아웃에서 가장 많은 점수를 얻는 부위는?',a:['복부','발','머리','가슴'],c:2},
+  {q:'필리셰 스탠스의 가장 큰 장점은?',a:['파워 펌치','카운터 펌치','빨른 스피드','강한 방어'],c:1},
+  {q:'복싱에서 “보디샷”은 어디를 공격하는 것을 말하나?',a:['얼굴','팔','몸통','다리'],c:2},
+  {q:'정글 인 더 정글(Rumble in the Jungle)은 어느 해에 열렸나?',a:['1972','1974','1976','1978'],c:1},
+  {q:'복싱 부상 중 “RICE 요법”에서 R은 무엇을 의미하나?',a:['Recovery','Rest','Rehab','Rotation'],c:1},
+  {q:'크로스가드 스탠스의 특화된 방어 영역은?',a:['머리','바디','다리','팔'],c:1},
+  {q:'10라운드 중 한 선수가 다운당하면 채점은?',a:['10-10','10-8','10-7','10-9'],c:1},
+  {q:'복싱에서 “아웃복싱”은 어떤 스타일을 의미하나?',a:['근접전','거리유지전','카운터전','방어전'],c:1},
+  {q:'복싱 훈련 중 메디신볼 운동썰 강화하는 부위는?',a:['어깨','목','허리','전신'],c:1},
+  {q:'복싱에서 중량급 기준은(프로 기준)?',a:['72.5kg 이하','75.7kg 이하','69.8kg 이하','76.2kg 이하'],c:3}
 ];
 
 function buildQuizV15(){
   var sec = document.createElement('div');
   sec.className = 'v15-section';
   sec.id = 'v15-quiz';
-  sec.innerHTML = '<div class="v15-title"><span class="emoji">&#10067;</span> v15 &#53300;&#51592; (+15&#47928;, &#52509; 105)</div>' +
-    '<div class="v15-subtitle">&#48373;&#49905; &#51648;&#49885; &#53580;&#49828;&#53944; - &#53092;&#48372;/&#49828;&#53472;&#49828;/&#52292;&#51216;/&#48512;&#49345;/&#50669;&#49324;</div>' +
+  sec.innerHTML = '<div class="v15-title"><span class="emoji">❓</span> v15 퀴즈 (+15문, 총 105)</div>' +
+    '<div class="v15-subtitle">복싱 지식 테스트 - 콤보/스탠스/채점/부상/역사</div>' +
     '<div id="v15QuizArea"></div>';
   return sec;
 }
@@ -1093,8 +1093,8 @@ function renderQuizV15(){
     var pct = Math.round(quizV15State.correct / QUIZ_V15.length * 100);
     area.innerHTML = '<div style="text-align:center;padding:16px">' +
       '<div style="font-size:36px;font-weight:900;color:'+(pct>=80?'var(--gold)':pct>=60?'var(--green)':'var(--accent)')+'">'+pct+'%</div>' +
-      '<div style="font-size:14px;margin:8px 0">'+quizV15State.correct+'/'+QUIZ_V15.length+' &#51221;&#45813;</div>' +
-      '<button class="v15-btn" onclick="window._v15RetryQuiz()">&#45796;&#49884; &#54400;&#44592;</button></div>';
+      '<div style="font-size:14px;margin:8px 0">'+quizV15State.correct+'/'+QUIZ_V15.length+' 정답</div>' +
+      '<button class="v15-btn" onclick="window._v15RetryQuiz()">다시 풀기</button></div>';
     v15.quizV15Scores[new Date().toISOString().slice(0,10)] = pct;
     saveV15(v15);
     checkV15Achievements();
@@ -1103,7 +1103,7 @@ function renderQuizV15(){
   var q = QUIZ_V15[quizV15State.idx];
   area.innerHTML = '<div class="v15-card"><div style="display:flex;justify-content:space-between;margin-bottom:10px">' +
     '<span class="v15-badge">Q'+(quizV15State.idx+1)+'/'+QUIZ_V15.length+'</span>' +
-    '<span style="font-size:12px;color:var(--text-dim)">'+quizV15State.correct+'&#51221;&#45813;</span></div>' +
+    '<span style="font-size:12px;color:var(--text-dim)">'+quizV15State.correct+'정답</span></div>' +
     '<div style="font-size:14px;font-weight:600;margin-bottom:14px;line-height:1.5">'+q.q+'</div>' +
     q.a.map(function(opt,i){
       return '<button class="v15-btn secondary" style="width:100%;margin-bottom:6px;text-align:left" onclick="window._v15AnswerQuiz('+i+')">'+opt+'</button>';
@@ -1112,8 +1112,8 @@ function renderQuizV15(){
 
 window._v15AnswerQuiz = function(idx){
   var q = QUIZ_V15[quizV15State.idx];
-  if(idx === q.c){ quizV15State.correct++; playSFX15('quiz_v15'); showToast15('&#51221;&#45813;!'); }
-  else { showToast15('&#50724;&#45813;! &#51221;&#45813;: '+q.a[q.c]); }
+  if(idx === q.c){ quizV15State.correct++; playSFX15('quiz_v15'); showToast15('정답!'); }
+  else { showToast15('오답! 정답: '+q.a[q.c]); }
   quizV15State.idx++;
   if(quizV15State.idx >= QUIZ_V15.length) quizV15State.done = true;
   renderQuizV15();
@@ -1125,18 +1125,18 @@ window._v15RetryQuiz = function(){
 
 // ===== ACHIEVEMENTS V15 =====
 var ACHIEVEMENTS_V15 = [
-  {id:'combo_first',name:'&#52395; &#53092;&#48372;',icon:'&#128170;',desc:'&#53092;&#48372; &#48716;&#45908;&#50640;&#49436; &#52395; &#53092;&#48372; &#49892;&#54665;'},
-  {id:'combo_5',name:'&#53092;&#48372; &#47560;&#49828;&#53552;',icon:'&#9889;',desc:'5&#54924; &#51060;&#49345; &#53092;&#48372; &#49892;&#54665;'},
-  {id:'combo_long',name:'&#47217;&#53092;&#48372;',icon:'&#127942;',desc:'8&#50672;&#53440; &#51060;&#49345; &#53092;&#48372; &#44396;&#49457;'},
-  {id:'stance_3',name:'&#49828;&#53472;&#49828; &#53456;&#49353;&#44032;',icon:'&#129354;',desc:'3&#44060; &#51060;&#49345; &#49828;&#53472;&#49828; &#54617;&#49845;'},
-  {id:'stance_all',name:'&#49828;&#53472;&#49828; &#47560;&#49828;&#53552;',icon:'&#127775;',desc:'&#47784;&#46304; 6&#51333; &#49828;&#53472;&#49828; &#54617;&#49845;'},
-  {id:'bag_first',name:'&#52395; &#49380;&#46300;&#48177;',icon:'&#129354;',desc:'&#49380;&#46300;&#48177; &#50892;&#53356;&#50500;&#50883; &#52395; &#50756;&#47308;'},
-  {id:'bag_high',name:'&#54156;&#52824; &#47672;&#49888;',icon:'&#128293;',desc:'&#49380;&#46300;&#48177; 200&#51216; &#51060;&#49345; &#45804;&#49457;'},
-  {id:'injury_6',name:'&#50504;&#51204; &#51228;&#51068;',icon:'&#127973;',desc:'6&#44060; &#51060;&#49345; &#48512;&#49345; &#50696;&#48169; &#54617;&#49845;'},
-  {id:'injury_all',name:'&#48512;&#49345; &#48149;&#49324;',icon:'&#127891;',desc:'12&#51333; &#48512;&#49345; &#51204;&#48512; &#54617;&#49845;'},
-  {id:'judge_first',name:'&#52395; &#52292;&#51216;',icon:'&#9878;&#65039;',desc:'&#52292;&#51216; &#49884;&#48044;&#47112;&#51060;&#53552; &#52395; &#50756;&#47308;'},
-  {id:'diary_5',name:'&#44592;&#47197;&#44305;',icon:'&#128221;',desc:'&#45796;&#51060;&#50612;&#47532; 5&#54924; &#51060;&#49345; &#51089;&#49457;'},
-  {id:'v15_explorer',name:'v15 &#53456;&#54744;&#44032;',icon:'&#128640;',desc:'v15 &#47784;&#46304; &#44592;&#45733; &#49324;&#50857;'}
+  {id:'combo_first',name:'첫 콤보',icon:'💪',desc:'콤보 빌더에서 첫 콤보 실행'},
+  {id:'combo_5',name:'콤보 마스터',icon:'⚡',desc:'5회 이상 콤보 실행'},
+  {id:'combo_long',name:'롱콤보',icon:'🏆',desc:'8연타 이상 콤보 구성'},
+  {id:'stance_3',name:'스탠스 탐색가',icon:'🥊',desc:'3개 이상 스탠스 학습'},
+  {id:'stance_all',name:'스탠스 마스터',icon:'🌟',desc:'모든 6종 스탠스 학습'},
+  {id:'bag_first',name:'첫 샤드백',icon:'🥊',desc:'샤드백 워크아웃 첫 완료'},
+  {id:'bag_high',name:'펌치 머신',icon:'🔥',desc:'샤드백 200점 이상 달성'},
+  {id:'injury_6',name:'안전 제일',icon:'🏥',desc:'6개 이상 부상 예방 학습'},
+  {id:'injury_all',name:'부상 박사',icon:'🎓',desc:'12종 부상 전부 학습'},
+  {id:'judge_first',name:'첫 채점',icon:'⚖️',desc:'채점 시뮬레이터 첫 완료'},
+  {id:'diary_5',name:'기록광',icon:'📝',desc:'다이어리 5회 이상 작성'},
+  {id:'v15_explorer',name:'v15 탐험가',icon:'🚀',desc:'v15 모든 기능 사용'}
 ];
 
 function checkV15Achievements(){
@@ -1146,7 +1146,7 @@ function checkV15Achievements(){
       v15.achievementsV15[id] = new Date().toISOString();
       changed = true;
       var a = ACHIEVEMENTS_V15.filter(function(x){return x.id===id})[0];
-      if(a) showToast15(a.icon+' &#50629;&#51201; &#54644;&#44552;: '+a.name);
+      if(a) showToast15(a.icon+' 업적 해금: '+a.name);
       playSFX15('achieve_v15');
     }
   }
@@ -1173,7 +1173,7 @@ function buildAchievements(){
   var sec = document.createElement('div');
   sec.className = 'v15-section';
   sec.id = 'v15-achievements';
-  sec.innerHTML = '<div class="v15-title"><span class="emoji">&#127942;</span> v15 &#50629;&#51201; ('+countV15Ach()+'/'+ACHIEVEMENTS_V15.length+')</div>' +
+  sec.innerHTML = '<div class="v15-title"><span class="emoji">🏆</span> v15 업적 ('+countV15Ach()+'/'+ACHIEVEMENTS_V15.length+')</div>' +
     '<div class="v15-grid3" id="v15AchGrid"></div>';
   return sec;
 }
@@ -1194,7 +1194,7 @@ function renderV15Ach(){
     grid.appendChild(div);
   });
   var title = document.querySelector('#v15-achievements .v15-title');
-  if(title) title.innerHTML = '<span class="emoji">&#127942;</span> v15 &#50629;&#51201; ('+countV15Ach()+'/'+ACHIEVEMENTS_V15.length+')';
+  if(title) title.innerHTML = '<span class="emoji">🏆</span> v15 업적 ('+countV15Ach()+'/'+ACHIEVEMENTS_V15.length+')';
 }
 
 // ===== FEATURE TRACKING =====
@@ -1210,14 +1210,14 @@ function buildScrollNav(){
   nav.className = 'v15-scrollnav';
   nav.id = 'v15-scrollnav';
   var items = [
-    {label:'&#53092;&#48372;&#48716;&#45908;',target:'v15-combo'},
-    {label:'&#49828;&#53472;&#49828;',target:'v15-stance'},
-    {label:'&#49380;&#46300;&#48177;',target:'v15-sandbag'},
-    {label:'&#48512;&#49345;&#50696;&#48169;',target:'v15-injury'},
-    {label:'&#52292;&#51216;&#49884;&#48044;',target:'v15-judge'},
-    {label:'&#45796;&#51060;&#50612;&#47532;',target:'v15-diary'},
-    {label:'&#51204;&#53804;&#47141;',target:'v15-power-radar'},
-    {label:'&#47749;&#45824;&#44208;',target:'v15-legends'}
+    {label:'콤보빌더',target:'v15-combo'},
+    {label:'스탠스',target:'v15-stance'},
+    {label:'샤드백',target:'v15-sandbag'},
+    {label:'부상예방',target:'v15-injury'},
+    {label:'채점시뮬',target:'v15-judge'},
+    {label:'다이어리',target:'v15-diary'},
+    {label:'전투력',target:'v15-power-radar'},
+    {label:'명대결',target:'v15-legends'}
   ];
   nav.innerHTML = items.map(function(it){
     return '<div class="v15-scrollnav-item" onclick="document.getElementById(\''+it.target+'\').scrollIntoView({behavior:\'smooth\',block:\'start\'})">'+it.label+'</div>';

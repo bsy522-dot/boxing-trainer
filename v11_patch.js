@@ -273,10 +273,10 @@ font-variant-numeric:tabular-nums}\
 
 // ===== 1. HEART RATE ZONE TRAINING =====
 var HR_ZONES = [
-  {name:'&#50892;&#50629;&#50629;', range:'50-60%', color:'#4fc3f7', min:90, max:108},
-  {name:'&#51648;&#48169;&#50672;&#49548;', range:'60-70%', color:'#66bb6a', min:108, max:126},
-  {name:'&#50976;&#49328;&#49548;', range:'70-80%', color:'#ffa726', min:126, max:144},
-  {name:'&#47924;&#49328;&#49548;', range:'80-90%', color:'#ef5350', min:144, max:162},
+  {name:'워업업', range:'50-60%', color:'#4fc3f7', min:90, max:108},
+  {name:'지방연소', range:'60-70%', color:'#66bb6a', min:108, max:126},
+  {name:'유산소', range:'70-80%', color:'#ffa726', min:126, max:144},
+  {name:'무산소', range:'80-90%', color:'#ef5350', min:144, max:162},
   {name:'MAX', range:'90-100%', color:'#ab47bc', min:162, max:180}
 ];
 
@@ -304,15 +304,15 @@ function renderHeartRate(){
   if(latest){
     html += '<div class="hr-session">';
     html += '<div class="hr-stat"><div class="hr-stat-val" style="color:'+HR_ZONES[zone].color+'">'+latest.bpm+'</div><div class="hr-stat-label">BPM</div></div>';
-    html += '<div class="hr-stat"><div class="hr-stat-val">'+HR_ZONES[zone].name+'</div><div class="hr-stat-label">&#51316; &#49345;&#53468;</div></div>';
+    html += '<div class="hr-stat"><div class="hr-stat-val">'+HR_ZONES[zone].name+'</div><div class="hr-stat-label">존 상태</div></div>';
     var avgBpm = Math.round(sessions.reduce(function(s,h){return s+h.bpm;},0)/sessions.length);
-    html += '<div class="hr-stat"><div class="hr-stat-val">'+avgBpm+'</div><div class="hr-stat-label">&#54217;&#44512; BPM</div></div>';
+    html += '<div class="hr-stat"><div class="hr-stat-val">'+avgBpm+'</div><div class="hr-stat-label">평균 BPM</div></div>';
     html += '</div>';
   }
 
   html += '<div class="hr-input-row"><input type="number" class="hr-input" id="hrInput" placeholder="BPM" min="40" max="220">';
-  html += '<button class="hr-log-btn" id="hrLog">&#128147; &#44592;&#47197;</button></div>';
-  html += '<div style="font-size:10px;color:var(--text-muted);text-align:center">&#54984;&#47144; &#51473; &#49900;&#48149;&#49688;&#47484; &#51649;&#51217; &#51077;&#47141;&#54616;&#49464;&#50836; (&#49552;&#47785; &#47589;&#48149; 15&#52488; &#215; 4)</div>';
+  html += '<button class="hr-log-btn" id="hrLog">💓 기록</button></div>';
+  html += '<div style="font-size:10px;color:var(--text-muted);text-align:center">훈련 중 심박수를 직접 입력하세요 (손목 맥박 15초 × 4)</div>';
 
   if(sessions.length > 1){
     html += '<div style="display:flex;gap:3px;margin-top:10px;height:30px;align-items:flex-end">';
@@ -332,40 +332,40 @@ function renderHeartRate(){
     if(v11.hrSessions.length > 100) v11.hrSessions = v11.hrSessions.slice(-100);
     saveV11(v11);
     playSFX11('hr_beep');
-    toastV11('&#128147; &#49900;&#48149;&#49688; '+val+' BPM &#44592;&#47197;!');
+    toastV11('💓 심박수 '+val+' BPM 기록!');
     renderHeartRate();
   });
 }
 
 // ===== 2. WORKOUT CLASSES =====
 var CLASSES = [
-  {name:'HIIT &#48513;&#49905;', icon:'&#9889;', desc:'&#44256;&#44053;&#46020; &#51064;&#53552;&#48268; &#48373;&#49905;. 20&#52488; &#54253;&#48156;+10&#52488; &#55092;&#49885; &#215; 8&#49464;&#53944;. &#52404;&#51648;&#48169; &#48264;&#50669; &#52572;&#51201;&#54868;.', time:'15&#48516;', intensity:'high', focus:'&#52404;&#51648;&#48169; &#50672;&#49548;'},
-  {name:'&#54028;&#50892; &#54144;&#52824;', icon:'&#128170;', desc:'&#47924;&#44144;&#50868; &#54144;&#52824; &#51473;&#49900;. &#44053;&#47141;&#54620; &#53356;&#47196;&#49828;&#50752; &#54985;, &#50612;&#54140;&#52983; &#50672;&#49549; &#53440;&#44201;.', time:'20&#48516;', intensity:'high', focus:'&#54028;&#50892; &#54693;&#49345;'},
-  {name:'&#49828;&#54588;&#46300; &#53944;&#47112;&#51060;&#45789;', icon:'&#127939;', desc:'&#49549;&#46020;&#50752; &#48152;&#51025;&#49549;&#46020; &#54693;&#49345;. &#48736;&#47480; &#51105; &#50672;&#49549;&#44284; &#49692;&#48156;&#47141; &#50868;&#46041;.', time:'15&#48516;', intensity:'med', focus:'&#49549;&#46020; &#54693;&#49345;'},
-  {name:'&#51648;&#44396;&#47141; &#48716;&#45908;', icon:'&#128293;', desc:'&#51109;&#49884;&#44036; &#48373;&#49905;&#51012; &#50948;&#54620; &#52404;&#47141; &#48716;&#46300;&#50629;. 3&#48516; &#46972;&#50868;&#46300; &#215; 6.', time:'25&#48516;', intensity:'med', focus:'&#52404;&#47141; &#44053;&#54868;'},
-  {name:'&#53580;&#53356;&#45769; &#54000;&#50740;&#52964;&#49828;', icon:'&#127919;', desc:'&#51221;&#54869;&#54620; &#54268;&#44284; &#44592;&#49696; &#50672;&#47560;. &#49836;&#47549;, &#47204;&#47553;, &#54028;&#47553; &#54984;&#47144;.', time:'20&#48516;', intensity:'low', focus:'&#44592;&#49696; &#50672;&#47560;'},
-  {name:'&#49452;&#46020;&#50864; &#48149;&#49905;', icon:'&#127775;', desc:'&#49892;&#51204; &#49345;&#45824;&#47484; &#49345;&#49345;&#54616;&#47728; &#54268; &#50672;&#49845;. &#44144;&#50872; &#50526;&#50640;&#49436; &#51088;&#50976;&#47213;&#44172;.', time:'10&#48516;', intensity:'low', focus:'&#54268; &#50756;&#49457;'},
-  {name:'&#49436;&#53431; &#53944;&#47112;&#51060;&#45789;', icon:'&#128260;', desc:'&#48373;&#49905;+&#52404;&#51473;&#50868;&#46041; &#54844;&#54633;. &#48260;&#54588;, &#49828;&#53272;&#53944;, &#54540;&#47021;&#53356; &#48373;&#44279;.', time:'20&#48516;', intensity:'high', focus:'&#51204;&#49888; &#44053;&#54868;'},
-  {name:'&#54400; &#50892;&#53356;&#50500;&#50883;', icon:'&#129354;', desc:'&#50892;&#48141;&#50629;+&#48373;&#49905;+&#52980;&#45796;&#50868;+&#49828;&#53944;&#47112;&#52845;. &#50756;&#48317;&#54620; &#51333;&#54633; &#49464;&#49496;.', time:'30&#48516;', intensity:'med', focus:'&#51333;&#54633; &#54984;&#47144;'}
+  {name:'HIIT 북싱', icon:'⚡', desc:'고강도 인터벌 복싱. 20초 폭발+10초 휴식 × 8세트. 체지방 번역 최적화.', time:'15분', intensity:'high', focus:'체지방 연소'},
+  {name:'파워 펀치', icon:'💪', desc:'무거운 펀치 중심. 강력한 크로스와 훅, 어퍼컷 연속 타격.', time:'20분', intensity:'high', focus:'파워 향상'},
+  {name:'스피드 트레이닝', icon:'🏃', desc:'속도와 반응속도 향상. 빠른 잡 연속과 순발력 운동.', time:'15분', intensity:'med', focus:'속도 향상'},
+  {name:'지구력 빌더', icon:'🔥', desc:'장시간 복싱을 위한 체력 빌드업. 3분 라운드 × 6.', time:'25분', intensity:'med', focus:'체력 강화'},
+  {name:'테크닉 티옴커스', icon:'🎯', desc:'정확한 폼과 기술 연마. 슬립, 롤링, 파링 훈련.', time:'20분', intensity:'low', focus:'기술 연마'},
+  {name:'섬도우 박싱', icon:'🌟', desc:'실전 상대를 상상하며 폼 연습. 거울 앞에서 자유롭게.', time:'10분', intensity:'low', focus:'폼 완성'},
+  {name:'서킷 트레이닝', icon:'🔄', desc:'복싱+체중운동 혼합. 버피, 스퀘트, 플랭크 복곷.', time:'20분', intensity:'high', focus:'전신 강화'},
+  {name:'풀 워크아웃', icon:'🥊', desc:'워밍업+복싱+컴다운+스트레칭. 완벽한 종합 세션.', time:'30분', intensity:'med', focus:'종합 훈련'}
 ];
 
 function renderClasses(){
   var el = document.getElementById('v11Classes');
   if(!el) return;
   var completed = v11.classHistory || [];
-  var html = '<div style="margin-bottom:10px;font-size:12px;color:var(--text-dim)">'+completed.length+'&#54924; &#50756;&#47308; | &#50724;&#45720; &#52628;&#52380;: '+CLASSES[new Date().getDay() % CLASSES.length].name+'</div>';
+  var html = '<div style="margin-bottom:10px;font-size:12px;color:var(--text-dim)">'+completed.length+'회 완료 | 오늘 추천: '+CLASSES[new Date().getDay() % CLASSES.length].name+'</div>';
   html += '<div class="class-grid">';
   CLASSES.forEach(function(cls, idx){
     var count = completed.filter(function(c){return c.idx === idx;}).length;
     html += '<div class="class-card" data-idx="'+idx+'">';
-    html += '<div class="class-card-intensity '+cls.intensity+'">'+(cls.intensity==='high'?'&#44256;&#44053;&#46020;':cls.intensity==='med'?'&#51473;&#44053;&#46020;':'&#51200;&#44053;&#46020;')+'</div>';
+    html += '<div class="class-card-intensity '+cls.intensity+'">'+(cls.intensity==='high'?'고강도':cls.intensity==='med'?'중강도':'저강도')+'</div>';
     html += '<div class="class-card-icon">'+cls.icon+'</div>';
     html += '<div class="class-card-name">'+cls.name+'</div>';
     html += '<div class="class-card-desc">'+cls.desc+'</div>';
     html += '<div class="class-card-meta">';
     html += '<span class="class-card-tag">'+cls.time+'</span>';
     html += '<span class="class-card-tag">'+cls.focus+'</span>';
-    if(count > 0) html += '<span class="class-card-tag" style="color:var(--green)">'+count+'&#54924; &#50756;&#47308;</span>';
+    if(count > 0) html += '<span class="class-card-tag" style="color:var(--green)">'+count+'회 완료</span>';
     html += '</div></div>';
   });
   html += '</div>';
@@ -378,7 +378,7 @@ function renderClasses(){
       v11.classHistory.push({idx: idx, date: new Date().toISOString()});
       saveV11(v11);
       playSFX11('class_start');
-      toastV11(cls2.icon+' '+cls2.name+' &#49884;&#51089;! ('+cls2.time+')');
+      toastV11(cls2.icon+' '+cls2.name+' 시작! ('+cls2.time+')');
       renderClasses();
     });
   });
@@ -397,25 +397,25 @@ function renderSpeedTest(){
 
   var html = '<div class="speed-area">';
   if(speedState === 'idle'){
-    html += '<div style="font-size:13px;color:var(--text-dim);margin-bottom:12px">&#48716;&#44036;&#50640; &#48152;&#51025;&#54616;&#49464;&#50836;! &#53440;&#44199;&#51060; &#48744;&#44036;&#45208; &#48744;&#44036; &#53364;&#47533;.</div>';
-    html += '<div class="speed-target" id="speedTarget">&#128276;</div>';
-    html += '<div style="margin-top:12px"><button class="hr-log-btn" id="speedStart">&#9889; &#53580;&#49828;&#53944; &#49884;&#51089;</button></div>';
-    if(best > 0) html += '<div style="margin-top:8px;font-size:13px;color:var(--gold);font-weight:700">&#127942; &#52572;&#44256; &#44592;&#47197;: '+best+'ms</div>';
+    html += '<div style="font-size:13px;color:var(--text-dim);margin-bottom:12px">빌간에 반응하세요! 타겧이 빨간나 빨간 클릭.</div>';
+    html += '<div class="speed-target" id="speedTarget">🔔</div>';
+    html += '<div style="margin-top:12px"><button class="hr-log-btn" id="speedStart">⚡ 테스트 시작</button></div>';
+    if(best > 0) html += '<div style="margin-top:8px;font-size:13px;color:var(--gold);font-weight:700">🏆 최고 기록: '+best+'ms</div>';
   } else if(speedState === 'waiting'){
-    html += '<div style="font-size:16px;color:var(--text-dim);font-weight:700;margin-bottom:12px">&#44592;&#45796;&#47532;&#49464;&#50836;...</div>';
-    html += '<div class="speed-target" id="speedTarget" style="border-color:var(--text-muted)">&#9711;</div>';
-    html += '<div style="margin-top:8px;font-size:12px;color:var(--text-muted)">&#48744;&#44036;&#51060; &#45208;&#53440;&#45208;&#47732; &#53364;&#47533;!</div>';
+    html += '<div style="font-size:16px;color:var(--text-dim);font-weight:700;margin-bottom:12px">기다리세요...</div>';
+    html += '<div class="speed-target" id="speedTarget" style="border-color:var(--text-muted)">◯</div>';
+    html += '<div style="margin-top:8px;font-size:12px;color:var(--text-muted)">빨간이 나타나면 클릭!</div>';
   } else if(speedState === 'ready'){
-    html += '<div style="font-size:16px;color:var(--green);font-weight:700;margin-bottom:12px">&#51648;&#44552;!</div>';
-    html += '<div class="speed-target ready" id="speedTarget">&#128293;</div>';
+    html += '<div style="font-size:16px;color:var(--green);font-weight:700;margin-bottom:12px">지금!</div>';
+    html += '<div class="speed-target ready" id="speedTarget">🔥</div>';
   } else if(speedState === 'result'){
     var lastTest = tests[tests.length - 1];
     var ms = lastTest.ms;
     var grade = ms <= 200 ? 'S' : ms <= 300 ? 'A' : ms <= 400 ? 'B' : ms <= 500 ? 'C' : 'D';
     var gradeColor = grade === 'S' ? 'var(--gold)' : grade === 'A' ? 'var(--green)' : grade === 'B' ? 'var(--blue)' : grade === 'C' ? 'var(--orange)' : 'var(--accent)';
     html += '<div class="speed-result">'+ms+'<small style="font-size:20px">ms</small></div>';
-    html += '<div class="speed-grade" style="background:'+gradeColor+'22;color:'+gradeColor+'">&#46321;&#44553;: '+grade+'</div>';
-    html += '<div style="margin-top:16px"><button class="hr-log-btn" id="speedRetry">&#128260; &#45796;&#49884;</button></div>';
+    html += '<div class="speed-grade" style="background:'+gradeColor+'22;color:'+gradeColor+'">등급: '+grade+'</div>';
+    html += '<div style="margin-top:16px"><button class="hr-log-btn" id="speedRetry">🔄 다시</button></div>';
   }
 
   if(tests.length > 0){
@@ -447,7 +447,7 @@ function renderSpeedTest(){
     if(tgt) tgt.addEventListener('click', function(){
       clearTimeout(speedTimeout);
       speedState = 'idle';
-      toastV11('&#9888;&#65039; &#45320;&#47924; &#48736;&#47476;&#49901;&#45768;&#45796;! &#45796;&#49884; &#49884;&#46020;&#54616;&#49464;&#50836;.');
+      toastV11('⚠️ 너무 빠르십니다! 다시 시도하세요.');
       renderSpeedTest();
     });
   }
@@ -477,14 +477,14 @@ function renderSpeedTest(){
 
 // ===== 4. RECOVERY TIMER + STRETCHING =====
 var STRETCHES = [
-  {name:'&#50612;&#44648; &#49828;&#53944;&#47112;&#52845;', icon:'&#128170;', desc:'&#54036;&#51012; &#47672;&#47532; &#50948;&#47196; &#50732;&#47532;&#44256; &#48152;&#45824;&#54200; &#54036;&#47196; &#45817;&#44200;&#51469;&#45768;&#45796;. 30&#52488; &#50577;&#51901;.', dur:'60&#52488;'},
-  {name:'&#49552;&#47785; &#49828;&#53944;&#47112;&#52845;', icon:'&#9995;', desc:'&#49552;&#47785;&#51012; &#50948;/&#50500;&#47000;&#47196; &#44998;&#44256; &#48152;&#45824; &#49552;&#51004;&#47196; &#44032;&#48373;&#44172; &#45572;&#47493;&#45768;&#45796;.', dur:'40&#52488;'},
-  {name:'&#54728;&#47532; &#49828;&#53944;&#47112;&#52845;', icon:'&#129470;', desc:'&#46321;&#51012; &#45824;&#44256; &#50577;&#47924;&#47502;&#51012; &#44368;&#45824;&#47196; &#44032;&#49844;&#51004;&#47196; &#45817;&#44200;&#51469;&#45768;&#45796;.', dur:'60&#52488;'},
-  {name:'&#44256;&#44288;&#51208; &#50676;&#44592;', icon:'&#127939;', desc:'&#50526;&#48156;&#51012; &#50526;&#51004;&#47196; &#45236;&#48128;&#44256; &#44256;&#44288;&#51208; &#50500;&#47000;&#47484; &#49828;&#53944;&#47112;&#52845;&#54633;&#45768;&#45796;.', dur:'60&#52488;'},
-  {name:'&#47785; &#46028;&#47532;&#44592;', icon:'&#128260;', desc:'&#47785;&#51012; &#52380;&#52380;&#55176; &#50896;&#51012; &#44536;&#47532;&#47728; &#46028;&#47549;&#45768;&#45796;. &#49884;&#44228; &#48169;&#54693;/&#48152;&#49884;&#44228; &#48169;&#54693; &#44033; 5&#54924;.', dur:'30&#52488;'},
-  {name:'&#52404;&#49324;&#51060;&#46300; &#49828;&#53944;&#47112;&#52845;', icon:'&#129336;', desc:'&#50577;&#54036;&#51012; &#50743;&#51004;&#47196; &#48268;&#47532;&#44256; &#47800;&#53685;&#51012; &#50743;&#51004;&#47196; &#44592;&#50872;&#51077;&#45768;&#45796;. 30&#52488; &#50577;&#51901;.', dur:'60&#52488;'},
-  {name:'&#46196;&#44208;&#51452;&#47673; &#54400;&#44592;', icon:'&#128074;', desc:'&#51452;&#47673;&#51012; &#44844; &#50596;&#50688;&#45796; &#48268;&#47140;&#44592;&#47484; &#48152;&#48373;. &#49552;&#44032;&#46973; &#44033;&#44033; &#49828;&#53944;&#47112;&#52845;.', dur:'40&#52488;'},
-  {name:'&#46373; &#48652;&#47532;&#46377;', icon:'&#128524;', desc:'&#48148;&#45797;&#50640; &#45572;&#50892; &#47924;&#47502;&#51012; &#49464;&#50864;&#44256; &#50628;&#45929;&#51060;&#47484; &#46308;&#50612;&#50732;&#47549;&#45768;&#45796;. &#55092;&#48373;&#44540; &#49828;&#53944;&#47112;&#52845;.', dur:'60&#52488;'}
+  {name:'어깨 스트레칭', icon:'💪', desc:'팔을 머리 위로 올리고 반대편 팔로 당겨줍니다. 30초 양쪽.', dur:'60초'},
+  {name:'손목 스트레칭', icon:'✋', desc:'손목을 위/아래로 꿆고 반대 손으로 가복게 누릅니다.', dur:'40초'},
+  {name:'허리 스트레칭', icon:'🦾', desc:'등을 대고 양무릎을 교대로 가슴으로 당겨줍니다.', dur:'60초'},
+  {name:'고관절 열기', icon:'🏃', desc:'앞발을 앞으로 내밀고 고관절 아래를 스트레칭합니다.', dur:'60초'},
+  {name:'목 돌리기', icon:'🔄', desc:'목을 천천히 원을 그리며 돌립니다. 시계 방향/반시계 방향 각 5회.', dur:'30초'},
+  {name:'체사이드 스트레칭', icon:'🤸', desc:'양팔을 옷으로 벌리고 몸통을 옷으로 기울입니다. 30초 양쪽.', dur:'60초'},
+  {name:'둴결주먹 풀기', icon:'👊', desc:'주먹을 꼬 얤였다 벌려기를 반복. 손가락 각각 스트레칭.', dur:'40초'},
+  {name:'딥 브리딩', icon:'😌', desc:'바닥에 누워 무릎을 세우고 엄덩이를 들어올립니다. 휴복근 스트레칭.', dur:'60초'}
 ];
 
 var recoveryDone = {};
@@ -493,7 +493,7 @@ function renderRecovery(){
   var el = document.getElementById('v11Recovery');
   if(!el) return;
   var doneCount = Object.keys(recoveryDone).length;
-  var html = '<div style="margin-bottom:10px;font-size:12px;color:var(--text-dim)">'+doneCount+' / '+STRETCHES.length+' &#50756;&#47308;</div>';
+  var html = '<div style="margin-bottom:10px;font-size:12px;color:var(--text-dim)">'+doneCount+' / '+STRETCHES.length+' 완료</div>';
   html += '<div class="recovery-grid">';
   STRETCHES.forEach(function(st, idx){
     var done = recoveryDone[idx];
@@ -501,12 +501,12 @@ function renderRecovery(){
     html += '<div class="recovery-icon">'+st.icon+'</div>';
     html += '<div class="recovery-name">'+st.name+'</div>';
     html += '<div class="recovery-desc">'+st.desc+'</div>';
-    html += '<div class="recovery-dur">&#9201; '+st.dur+'</div>';
+    html += '<div class="recovery-dur">⏱ '+st.dur+'</div>';
     html += '</div>';
   });
   html += '</div>';
   if(doneCount === STRETCHES.length){
-    html += '<div style="text-align:center;margin-top:12px;font-size:14px;color:var(--green);font-weight:700">&#127942; &#47784;&#46304; &#49828;&#53944;&#47112;&#52845; &#50756;&#47308;!</div>';
+    html += '<div style="text-align:center;margin-top:12px;font-size:14px;color:var(--green);font-weight:700">🏆 모든 스트레칭 완료!</div>';
   }
   el.innerHTML = html;
 
@@ -518,7 +518,7 @@ function renderRecovery(){
         v11.recoveryLog.push({idx: idx2, date: new Date().toISOString()});
         saveV11(v11);
         playSFX11('recovery');
-        toastV11('&#10004; '+STRETCHES[idx2].name+' &#50756;&#47308;!');
+        toastV11('✔ '+STRETCHES[idx2].name+' 완료!');
       }
       renderRecovery();
     });
@@ -536,7 +536,7 @@ function renderReport(){
 
   var html = '<div class="report-tabs">';
   ['punches','calories','duration','combos'].forEach(function(tab){
-    var labels = {punches:'&#54144;&#52824;',calories:'&#52860;&#47196;&#47532;',duration:'&#49884;&#44036;',combos:'&#53092;&#48372;'};
+    var labels = {punches:'펀치',calories:'칼로리',duration:'시간',combos:'콤보'};
     html += '<div class="report-tab'+(reportTab===tab?' active':'')+'" data-tab="'+tab+'">'+labels[tab]+'</div>';
   });
   html += '</div>';
@@ -569,11 +569,11 @@ function renderReport(){
   var change = prevWeekTotal > 0 ? Math.round((thisWeekTotal - prevWeekTotal)/prevWeekTotal*100) : (thisWeekTotal > 0 ? 100 : 0);
 
   html += '<div class="report-summary">';
-  html += '<div class="report-metric"><div class="report-metric-val" style="color:var(--accent)">'+thisWeekTotal+'</div><div class="report-metric-label">&#51060;&#48264; &#51452;</div>';
-  html += '<div class="report-metric-change '+(change>=0?'up':'down')+'">'+(change>=0?'&#9650;':'&#9660;')+' '+Math.abs(change)+'%</div></div>';
-  html += '<div class="report-metric"><div class="report-metric-val">'+prevWeekTotal+'</div><div class="report-metric-label">&#51648;&#45212; &#51452;</div></div>';
+  html += '<div class="report-metric"><div class="report-metric-val" style="color:var(--accent)">'+thisWeekTotal+'</div><div class="report-metric-label">이번 주</div>';
+  html += '<div class="report-metric-change '+(change>=0?'up':'down')+'">'+(change>=0?'▲':'▼')+' '+Math.abs(change)+'%</div></div>';
+  html += '<div class="report-metric"><div class="report-metric-val">'+prevWeekTotal+'</div><div class="report-metric-label">지난 주</div></div>';
   var avg7 = Math.round(thisWeekTotal / 7);
-  html += '<div class="report-metric"><div class="report-metric-val" style="color:var(--blue)">'+avg7+'</div><div class="report-metric-label">&#51068;&#54217;&#44512;</div></div>';
+  html += '<div class="report-metric"><div class="report-metric-val" style="color:var(--blue)">'+avg7+'</div><div class="report-metric-label">일평균</div></div>';
   html += '</div>';
 
   html += '<canvas class="report-canvas" id="reportCanvas" width="500" height="200"></canvas>';
@@ -686,25 +686,25 @@ function renderLeaderboard(){
   all.sort(function(a,b){return b.score - a.score;});
 
   var html = '<div style="margin-bottom:10px;display:flex;align-items:center;gap:8px;justify-content:center">';
-  html += '<span style="font-size:12px;color:var(--text-dim)">&#45236; &#51060;&#47492;:</span>';
+  html += '<span style="font-size:12px;color:var(--text-dim)">내 이름:</span>';
   html += '<input class="lb-name-edit" id="lbNameInput" value="'+escHtml11(playerName)+'" maxlength="12">';
   html += '</div>';
 
-  html += '<table class="lb-table"><thead><tr><th>#</th><th>&#51060;&#47492;</th><th>&#54144;&#52824;</th><th>&#50672;&#49549;</th><th>&#51216;&#49688;</th></tr></thead><tbody>';
+  html += '<table class="lb-table"><thead><tr><th>#</th><th>이름</th><th>펀치</th><th>연속</th><th>점수</th></tr></thead><tbody>';
   all.forEach(function(entry, idx){
     var rankCls = idx === 0 ? 'gold' : idx === 1 ? 'silver' : idx === 2 ? 'bronze' : '';
     html += '<tr'+(entry.isPlayer?' class="player"':'')+'>';
     html += '<td class="lb-rank '+rankCls+'">'+(idx+1)+'</td>';
-    html += '<td class="lb-name">'+(entry.isPlayer?'&#128100; ':'')+entry.name+'</td>';
+    html += '<td class="lb-name">'+(entry.isPlayer?'👤 ':'')+entry.name+'</td>';
     html += '<td>'+entry.punches.toLocaleString()+'</td>';
-    html += '<td>'+entry.streak+'&#51068;</td>';
+    html += '<td>'+entry.streak+'일</td>';
     html += '<td style="font-weight:700;color:'+(entry.isPlayer?'var(--accent)':'var(--text)')+'">'+entry.score.toLocaleString()+'</td>';
     html += '</tr>';
   });
   html += '</tbody></table>';
 
   var playerRank = all.findIndex(function(e){return e.isPlayer;}) + 1;
-  html += '<div style="text-align:center;margin-top:8px;font-size:12px;color:var(--text-dim)">&#45236; &#49692;&#50948;: <span style="color:var(--accent);font-weight:700">'+playerRank+'&#50948;</span> / '+(all.length)+'&#47749;</div>';
+  html += '<div style="text-align:center;margin-top:8px;font-size:12px;color:var(--text-dim)">내 순위: <span style="color:var(--accent);font-weight:700">'+playerRank+'위</span> / '+(all.length)+'명</div>';
 
   el.innerHTML = html;
 
@@ -721,11 +721,11 @@ function renderLeaderboard(){
 
 // ===== 7. TRAINING PLAN BUILDER =====
 var PLANS = [
-  {name:'&#52488;&#48372;&#51088; 4&#51452; &#54540;&#47004;', desc:'&#48373;&#49905; &#51077;&#47928;&#51088;&#47484; &#50948;&#54620; &#44592;&#52488; &#54532;&#47196;&#44536;&#47016;. &#51452; 3&#54924; &#54984;&#47144;.', weeks:4, perWeek:3, focus:'&#44592;&#48376;&#44592;'},
-  {name:'&#52404;&#51648;&#48169; &#48260;&#45789; 4&#51452;', desc:'&#51665;&#51473;&#51201;&#51064; HIIT &#48373;&#49905;&#51004;&#47196; &#52404;&#51648;&#48169; &#44048;&#49548;. &#51452; 4&#54924; &#44256;&#44053;&#46020;.', weeks:4, perWeek:4, focus:'&#52404;&#51648;&#48169; &#44048;&#49548;'},
-  {name:'&#53092;&#48372; &#47560;&#49828;&#53552; 4&#51452;', desc:'&#45796;&#50577;&#54620; &#53092;&#48372;&#47484; &#47560;&#49828;&#53552;&#54616;&#45716; &#54532;&#47196;&#44536;&#47016;. &#51452; 3&#54924; &#44592;&#49696; &#51665;&#51473;.', weeks:4, perWeek:3, focus:'&#53092;&#48372; &#44592;&#49696;'},
-  {name:'&#49828;&#53468;&#48120;&#45208; &#48716;&#45908; 6&#51452;', desc:'&#52404;&#47141;&#44284; &#51648;&#44396;&#47141;&#51012; &#45458;&#51060;&#45716; &#51109;&#44592; &#54540;&#47004;. &#51452; 4&#54924; &#51216;&#51652;&#51201;.', weeks:6, perWeek:4, focus:'&#52404;&#47141; &#44053;&#54868;'},
-  {name:'&#49828;&#54588;&#46300; &#53412;&#47084; 4&#51452;', desc:'&#54144;&#52824; &#49549;&#46020;&#50752; &#48152;&#51025;&#49549;&#46020; &#54693;&#49345; &#54532;&#47196;&#44536;&#47016;. &#51452; 3&#54924;.', weeks:4, perWeek:3, focus:'&#49549;&#46020; &#54693;&#49345;'}
+  {name:'초보자 4주 플랜', desc:'복싱 입문자를 위한 기초 프로그램. 주 3회 훈련.', weeks:4, perWeek:3, focus:'기본기'},
+  {name:'체지방 버닝 4주', desc:'집중적인 HIIT 복싱으로 체지방 감소. 주 4회 고강도.', weeks:4, perWeek:4, focus:'체지방 감소'},
+  {name:'콤보 마스터 4주', desc:'다양한 콤보를 마스터하는 프로그램. 주 3회 기술 집중.', weeks:4, perWeek:3, focus:'콤보 기술'},
+  {name:'스태미나 빌더 6주', desc:'체력과 지구력을 높이는 장기 플랜. 주 4회 점진적.', weeks:6, perWeek:4, focus:'체력 강화'},
+  {name:'스피드 키러 4주', desc:'펀치 속도와 반응속도 향상 프로그램. 주 3회.', weeks:4, perWeek:3, focus:'속도 향상'}
 ];
 
 function renderPlans(){
@@ -743,7 +743,7 @@ function renderPlans(){
     }
     html += '<div style="text-align:center;margin-bottom:12px">';
     html += '<div style="font-size:16px;font-weight:800">'+plan.name+'</div>';
-    html += '<div style="font-size:12px;color:var(--text-dim);margin-top:4px">'+weeksDone+' / '+plan.weeks+' &#51452; &#50756;&#47308;</div>';
+    html += '<div style="font-size:12px;color:var(--text-dim);margin-top:4px">'+weeksDone+' / '+plan.weeks+' 주 완료</div>';
     html += '<div class="plan-card-weeks" style="justify-content:center;margin:10px 0">';
     for(var w2=1;w2<=plan.weeks;w2++){
       var done = progress[active+'_w'+w2];
@@ -753,9 +753,9 @@ function renderPlans(){
     html += '</div>';
     html += '<div style="display:flex;gap:8px;justify-content:center;margin-top:10px">';
     if(weeksDone < plan.weeks){
-      html += '<button class="hr-log-btn" id="planComplete">&#10004; '+( weeksDone+1)+'&#51452;&#52264; &#50756;&#47308;</button>';
+      html += '<button class="hr-log-btn" id="planComplete">✔ '+( weeksDone+1)+'주차 완료</button>';
     }
-    html += '<button class="hr-log-btn" id="planCancel" style="background:var(--glass);color:var(--text-dim);border:1px solid var(--glass-border)">&#52712;&#49548;</button>';
+    html += '<button class="hr-log-btn" id="planCancel" style="background:var(--glass);color:var(--text-dim);border:1px solid var(--glass-border)">취소</button>';
     html += '</div></div>';
   }
 
@@ -766,8 +766,8 @@ function renderPlans(){
     html += '<div class="plan-card-name">'+plan.name+'</div>';
     html += '<div class="plan-card-desc">'+plan.desc+'</div>';
     html += '<div class="class-card-meta">';
-    html += '<span class="class-card-tag">'+plan.weeks+'&#51452;&#44036;</span>';
-    html += '<span class="class-card-tag">&#51452; '+plan.perWeek+'&#54924;</span>';
+    html += '<span class="class-card-tag">'+plan.weeks+'주간</span>';
+    html += '<span class="class-card-tag">주 '+plan.perWeek+'회</span>';
     html += '<span class="class-card-tag">'+plan.focus+'</span>';
     html += '</div></div>';
   });
@@ -781,7 +781,7 @@ function renderPlans(){
         v11.planActive = idx2;
         saveV11(v11);
         playSFX11('plan_complete');
-        toastV11('&#128203; '+PLANS[idx2].name+' &#49884;&#51089;!');
+        toastV11('📋 '+PLANS[idx2].name+' 시작!');
         renderPlans();
       }
     });
@@ -799,9 +799,9 @@ function renderPlans(){
     saveV11(v11);
     playSFX11('plan_complete');
     if(nextWeek >= plan2.weeks){
-      toastV11('&#127942; '+plan2.name+' &#50756;&#47308;!');
+      toastV11('🏆 '+plan2.name+' 완료!');
     } else {
-      toastV11('&#10004; '+nextWeek+'&#51452;&#52264; &#50756;&#47308;!');
+      toastV11('✔ '+nextWeek+'주차 완료!');
     }
     renderPlans();
   });
@@ -815,7 +815,7 @@ function renderPlans(){
 }
 
 // ===== 8. PUNCH FORM ANALYZER (Canvas Radar) =====
-var FORM_AXES = ['&#49549;&#46020;','&#54028;&#50892;','&#51221;&#54869;&#46020;','&#44032;&#46300;&#48373;&#44480;','&#54400;&#53944;&#50892;&#53356;','&#49828;&#53468;&#48120;&#45208;'];
+var FORM_AXES = ['속도','파워','정확도','가드복귀','풀트워크','스태미나'];
 
 function generateFormScores(){
   return FORM_AXES.map(function(){return 40 + Math.floor(Math.random()*55);});
@@ -839,8 +839,8 @@ function renderFormAnalyzer(){
   }
 
   html += '<canvas class="form-radar" id="formRadar" width="300" height="300"></canvas>';
-  html += '<div style="text-align:center;margin-top:10px"><button class="hr-log-btn" id="formAnalyze">&#128200; &#54268; &#48516;&#49437;&#54616;&#44592;</button>';
-  html += '<div style="font-size:10px;color:var(--text-muted);margin-top:6px">&#54984;&#47144; &#54980; &#54268;&#51012; &#48516;&#49437;&#54644;&#48372;&#49464;&#50836; (&#44592;&#47197; &#44592;&#48152;)</div></div>';
+  html += '<div style="text-align:center;margin-top:10px"><button class="hr-log-btn" id="formAnalyze">📈 폼 분석하기</button>';
+  html += '<div style="font-size:10px;color:var(--text-muted);margin-top:6px">훈련 후 폼을 분석해보세요 (기록 기반)</div></div>';
   el.innerHTML = html;
 
   drawRadar(scores);
@@ -851,7 +851,7 @@ function renderFormAnalyzer(){
     if(v11.formScores.length > 30) v11.formScores = v11.formScores.slice(-30);
     saveV11(v11);
     playSFX11('form_analyze');
-    toastV11('&#128200; &#54268; &#48516;&#49437; &#50756;&#47308;!');
+    toastV11('📈 폼 분석 완료!');
     renderFormAnalyzer();
   });
 }
@@ -931,14 +931,14 @@ function drawRadar(scores){
 
 // ===== 9. BOXING MUSIC PLAYER =====
 var TRACKS = [
-  {name:'&#50892;&#48141;&#50629; &#48708;&#53944;', bpm:100, type:'warmup', pattern:[1,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0]},
-  {name:'&#51105; &#47532;&#46316;', bpm:120, type:'jab', pattern:[1,0,1,0,1,1,0,1,1,0,1,0,1,1,0,0]},
-  {name:'&#54028;&#50892; &#48708;&#53944;', bpm:140, type:'power', pattern:[1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,1]},
-  {name:'&#49828;&#54588;&#46300; &#47084;&#49772;', bpm:160, type:'speed', pattern:[1,1,0,1,1,0,1,1,1,1,0,1,1,0,1,0]},
-  {name:'&#53092;&#48372; &#54540;&#47196;&#50864;', bpm:130, type:'combo', pattern:[1,0,1,1,0,1,0,0,1,0,1,1,0,1,0,1]},
-  {name:'&#49828;&#54028;&#47553; &#50612;&#53469;', bpm:150, type:'sparring', pattern:[1,1,0,0,1,1,0,1,0,1,1,0,1,0,0,1]},
-  {name:'&#52980;&#45796;&#50868; &#52832;', bpm:80, type:'cooldown', pattern:[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0]},
-  {name:'&#52380;&#54588;&#50616; &#48708;&#53944;', bpm:170, type:'champion', pattern:[1,1,1,0,1,1,0,1,1,0,1,1,1,0,1,0]}
+  {name:'워밍업 비트', bpm:100, type:'warmup', pattern:[1,0,1,0,1,0,1,0,0,0,1,0,1,0,0,0]},
+  {name:'잡 리듬', bpm:120, type:'jab', pattern:[1,0,1,0,1,1,0,1,1,0,1,0,1,1,0,0]},
+  {name:'파워 비트', bpm:140, type:'power', pattern:[1,0,0,1,0,0,1,0,1,0,0,1,0,0,1,1]},
+  {name:'스피드 러쉬', bpm:160, type:'speed', pattern:[1,1,0,1,1,0,1,1,1,1,0,1,1,0,1,0]},
+  {name:'콤보 플로우', bpm:130, type:'combo', pattern:[1,0,1,1,0,1,0,0,1,0,1,1,0,1,0,1]},
+  {name:'스파링 어택', bpm:150, type:'sparring', pattern:[1,1,0,0,1,1,0,1,0,1,1,0,1,0,0,1]},
+  {name:'컴다운 칠', bpm:80, type:'cooldown', pattern:[1,0,0,0,1,0,0,0,1,0,0,0,1,0,0,0]},
+  {name:'천피언 비트', bpm:170, type:'champion', pattern:[1,1,1,0,1,1,0,1,1,0,1,1,1,0,1,0]}
 ];
 
 var musicCtx = null;
@@ -953,14 +953,14 @@ function renderMusic(){
   var track = TRACKS[musicTrack];
 
   var html = '<div class="music-player">';
-  html += '<div style="font-size:36px;margin-bottom:6px">'+(musicPlaying?'&#127925;':'&#127924;')+'</div>';
+  html += '<div style="font-size:36px;margin-bottom:6px">'+(musicPlaying?'🎵':'🎴')+'</div>';
   html += '<div class="music-track-name">'+track.name+'</div>';
   html += '<div class="music-track-bpm">'+track.bpm+' BPM | '+track.type.toUpperCase()+'</div>';
 
   html += '<div class="music-controls">';
-  html += '<div class="music-btn" id="musicPrev">&#9664;&#9664;</div>';
-  html += '<div class="music-btn play'+(musicPlaying?' active':'')+'" id="musicToggle">'+(musicPlaying?'&#9646;&#9646;':'&#9654;')+'</div>';
-  html += '<div class="music-btn" id="musicNext">&#9654;&#9654;</div>';
+  html += '<div class="music-btn" id="musicPrev">◀◀</div>';
+  html += '<div class="music-btn play'+(musicPlaying?' active':'')+'" id="musicToggle">'+(musicPlaying?'▮▮':'▶')+'</div>';
+  html += '<div class="music-btn" id="musicNext">▶▶</div>';
   html += '</div>';
 
   html += '<div class="music-tracklist">';
@@ -1090,18 +1090,18 @@ function renderBreathing(){
 
   var html = '<div class="breathe-guide">';
   if(!breathActive){
-    html += '<div style="font-size:14px;color:var(--text-dim);margin-bottom:16px">&#54984;&#47144; &#51204;/&#54980; &#54840;&#55137; &#47749;&#49345;&#51004;&#47196; &#51665;&#51473;&#47141;&#51012; &#45458;&#51060;&#49464;&#50836;</div>';
-    html += '<div class="breathe-circle-v11">&#127809;</div>';
-    html += '<div style="font-size:12px;color:var(--text-muted);margin:10px 0">4-7-8 &#54840;&#55137;&#48277;: &#46308;&#51060;&#47560;&#49884;&#44592; 4&#52488; &#8594; &#47704;&#52656;&#44592; 7&#52488; &#8594; &#45236;&#49772;&#44592; 8&#52488;</div>';
-    html += '<button class="hr-log-btn" id="breathStart">&#127793; &#47749;&#49345; &#49884;&#51089; (5&#49324;&#51060;&#53364;)</button>';
-    html += '<div class="breathe-count">&#52509; '+v11.breathSessions+'&#54924; &#50756;&#47308;</div>';
+    html += '<div style="font-size:14px;color:var(--text-dim);margin-bottom:16px">훈련 전/후 호흡 명상으로 집중력을 높이세요</div>';
+    html += '<div class="breathe-circle-v11">🍁</div>';
+    html += '<div style="font-size:12px;color:var(--text-muted);margin:10px 0">4-7-8 호흡법: 들이마시기 4초 → 멘춰기 7초 → 내쉬기 8초</div>';
+    html += '<button class="hr-log-btn" id="breathStart">🌱 명상 시작 (5사이클)</button>';
+    html += '<div class="breathe-count">총 '+v11.breathSessions+'회 완료</div>';
   } else {
-    var phaseText = breathPhase === 'inhale' ? '&#46308;&#51060;&#47560;&#49884;&#44592;' : breathPhase === 'hold' ? '&#47704;&#52656;&#44592;' : breathPhase === 'exhale' ? '&#45236;&#49772;&#44592;' : '&#51456;&#48708;';
+    var phaseText = breathPhase === 'inhale' ? '들이마시기' : breathPhase === 'hold' ? '멘춰기' : breathPhase === 'exhale' ? '내쉬기' : '준비';
     html += '<div class="breathe-timer">'+breathSeconds+'</div>';
     html += '<div class="breathe-circle-v11 '+breathPhase+'">'+phaseText+'</div>';
     html += '<div class="breathe-phase" style="color:'+(breathPhase==='inhale'?'var(--green)':breathPhase==='hold'?'var(--blue)':'var(--accent)')+'">'+phaseText+'</div>';
-    html += '<div style="font-size:12px;color:var(--text-muted)">&#49324;&#51060;&#53364; '+breathCycle+' / '+breathMaxCycles+'</div>';
-    html += '<button class="hr-log-btn" id="breathStop" style="background:var(--glass);color:var(--text-dim);border:1px solid var(--glass-border);margin-top:12px">&#9632; &#51473;&#51648;</button>';
+    html += '<div style="font-size:12px;color:var(--text-muted)">사이클 '+breathCycle+' / '+breathMaxCycles+'</div>';
+    html += '<button class="hr-log-btn" id="breathStop" style="background:var(--glass);color:var(--text-dim);border:1px solid var(--glass-border);margin-top:12px">■ 중지</button>';
   }
   html += '</div>';
   el.innerHTML = html;
@@ -1145,7 +1145,7 @@ function startBreathing(){
           breathTimer = null;
           v11.breathSessions++;
           saveV11(v11);
-          toastV11('&#127793; &#47749;&#49345; &#50756;&#47308;! &#51665;&#51473;&#47141;&#51060; &#54693;&#49345;&#46104;&#50632;&#49845;&#45768;&#45796;.');
+          toastV11('🌱 명상 완료! 집중력이 향상되었습니다.');
           renderBreathing();
           return;
         }
@@ -1160,21 +1160,21 @@ function startBreathing(){
 
 // ===== QUIZ V11 (+15 questions, 30->45) =====
 var QUIZ_V11 = [
-  {q:'&#48373;&#49905;&#50640;&#49436; &#12300;&#54032; &#44053;&#46020;&#12301;(Punch Power)&#45716; &#51452;&#47196; &#50612;&#46356;&#49436; &#45208;&#50724;&#45716;&#44032;?',opts:['&#50612;&#44648;&#44540;&#50977;','&#54036;&#44540;&#50977;','&#54616;&#52404;&#54924;&#51204;','&#49552;&#47785;&#54924;&#51204;'],ans:2,exp:'&#54144;&#52824;&#51032; &#54028;&#50892;&#45716; &#48156;&#50640;&#49436; &#49884;&#51089;&#54644; &#50628;&#45929;&#51060; &#54924;&#51204;&#51012; &#53685;&#54644; &#51204;&#45804;&#46121;&#45768;&#45796;.'},
-  {q:'&#54532;&#47196; &#48373;&#49436;&#44032; &#46972;&#50868;&#46300;&#50640;&#49436; &#45796;&#50868; &#54980; &#47803; &#51068;&#50612;&#45208;&#47732; KO&#47196; &#44036;&#51452;&#46104;&#45716; &#49884;&#44036;&#51008;?',opts:['8&#52488;','10&#52488;','12&#52488;','15&#52488;'],ans:1,exp:'&#54532;&#47196; &#48373;&#49905;&#50640;&#49436; &#45796;&#50868; &#54980; 10&#52488;&#44620;&#51648; &#51068;&#50612;&#45208;&#51648; &#47803;&#54616;&#47732; TKO/KO&#47196; &#54032;&#51221;&#46121;&#45768;&#45796;.'},
-  {q:'&#48373;&#49905;&#50640;&#49436; &#12300;&#47553;&#49324;&#51060;&#46300;&#12301;(Ringside)&#45716; &#47924;&#50631;&#51012; &#51032;&#48120;&#54616;&#45716;&#44032;?',opts:['&#47553; &#50504; &#52636;&#51204;&#51088;','&#47553; &#48148;&#47196; &#50743; &#44288;&#44061;&#49437;','&#49900;&#54032;&#51032; &#50948;&#52824;','&#53076;&#45320; &#50689;&#50669;'],ans:1,exp:'&#47553;&#49324;&#51060;&#46300;&#45716; &#47553; &#48148;&#47196; &#50743;&#51032; VIP &#44288;&#44061;&#49437;&#51012; &#51032;&#48120;&#54633;&#45768;&#45796;.'},
-  {q:'&#48373;&#49905; &#54984;&#47144;&#50640;&#49436; &#12300;&#54000;&#50740;&#54148;&#50892;&#12301;(Paw)&#45716;?',opts:['&#48156;&#44592;&#49696;','&#54144;&#52824; &#53440;&#44199; &#46308;&#44592;','&#48169;&#50612; &#51088;&#49464;','&#54984;&#47144;&#48373;'],ans:1,exp:'&#54000;&#50740;&#54148;&#50892;&#45716; &#53944;&#47112;&#51060;&#45320;&#44032; &#49552;&#51012; &#45236;&#48128;&#50612; &#53440;&#44199;&#51012; &#51228;&#49884;&#54616;&#45716; &#44163;&#51077;&#45768;&#45796;.'},
-  {q:'&#48373;&#49905;&#50640;&#49436; &#12300;&#53356;&#47196;&#49828; &#44032;&#46300;&#12301;&#45716; &#50612;&#46500; &#48169;&#50612; &#44592;&#49696;&#51064;&#44032;?',opts:['&#50620;&#44404; &#50526;&#51004;&#47196; &#49552;&#51012; &#48736;&#50612; &#48169;&#50612;','&#51204;&#50756;&#51012; &#47564;&#46308;&#45716; &#48169;&#50612;','&#49345;&#52404; &#44368;&#52264;&#54624; &#46412; &#50732;&#47532;&#45716; &#48169;&#50612;','&#49345;&#52404;&#50640;&#44172; &#55192;&#51012; &#49892;&#50612; &#48169;&#50612;'],ans:0,exp:'&#53356;&#47196;&#49828; &#44032;&#46300;&#45716; &#49552;&#51012; &#50620;&#44404; &#50526;&#51004;&#47196; &#48736;&#50612; &#49345;&#45824;&#51032; &#54144;&#52824;&#47484; &#48169;&#50612;&#54616;&#45716; &#44592;&#49696;&#51077;&#45768;&#45796;.'},
-  {q:'&#48373;&#49905; &#44544;&#47084;&#48652;&#51032; &#50728;&#49828;(oz)&#44036; &#53364;&#49688;&#47197; &#50612;&#46500; &#54952;&#44284;&#44032; &#51080;&#45716;&#44032;?',opts:['&#49549;&#46020; &#51613;&#44032;','&#54028;&#50892; &#51613;&#44032;','&#49552; &#48372;&#54840; &#51613;&#44032;','&#47924;&#44172; &#44048;&#49548;'],ans:2,exp:'&#44544;&#47084;&#48652; &#50728;&#49828;&#44032; &#53364;&#49688;&#47197; &#54056;&#46377;&#51060; &#47566;&#50500;&#51256; &#49552;&#44284; &#49345;&#45824;&#47484; &#45908; &#48372;&#54840;&#54633;&#45768;&#45796;.'},
-  {q:'&#48373;&#49905;&#50640;&#49436; &#12300;&#47196;&#54532;&#12301;(Rope) &#50868;&#46041;&#51032; &#51452;&#50836; &#47785;&#51201;&#51008;?',opts:['&#54036;&#55192; &#44053;&#54868;','&#52404;&#47141;+&#47532;&#46316;&#44048;+&#54400;&#53944;&#50892;&#53356;','&#51221;&#49888; &#51665;&#51473;&#47141;','&#48169;&#50612; &#50672;&#49845;'],ans:1,exp:'&#51460;&#45335;&#44592;&#45716; &#52404;&#47141;, &#47532;&#46316;&#44048;, &#54400;&#53944;&#50892;&#53356;&#47484; &#46041;&#49884;&#50640; &#54984;&#47144;&#54616;&#45716; &#52572;&#44256;&#51032; &#48373;&#49905; &#48372;&#51312; &#50868;&#46041;&#51077;&#45768;&#45796;.'},
-  {q:'&#48373;&#49905;&#50640;&#49436; &#54532;&#47196; &#44221;&#44592; 1&#46972;&#50868;&#46300;&#45716; &#47751; &#48516;&#51064;&#44032;?',opts:['2&#48516;','3&#48516;','4&#48516;','5&#48516;'],ans:1,exp:'&#54532;&#47196; &#48373;&#49905;&#51032; 1&#46972;&#50868;&#46300;&#45716; 3&#48516;&#51060;&#47728;, &#46972;&#50868;&#46300; &#49324;&#51060; 1&#48516; &#55092;&#49885;&#51077;&#45768;&#45796;.'},
-  {q:'&#48373;&#49905;&#50640;&#49436; &#12300;&#45765;&#53944;&#47092; &#53076;&#45320;&#12301;(Neutral Corner)&#45716;?',opts:['&#49440;&#49688;&#51032; &#44256;&#54693; &#53076;&#45320;','KO &#49884; &#44032;&#54644;&#51088;&#44032; &#44032;&#45716; &#53076;&#45320;','&#49900;&#54032;&#51032; &#50948;&#52824;','&#53944;&#47112;&#51060;&#45320;&#51032; &#50948;&#52824;'],ans:1,exp:'&#49345;&#45824;&#44032; &#45796;&#50868;&#46104;&#47732; &#44032;&#54644;&#51088;&#45716; &#45765;&#53944;&#47092; &#53076;&#45320;(&#49353;&#51060; &#50630;&#45716; &#53076;&#45320;)&#47196; &#44040;&#50556; &#54633;&#45768;&#45796;.'},
-  {q:'&#48373;&#49905; &#54984;&#47144;&#50640;&#49436; &#45908;&#48660;&#50644;&#46300;&#48177;&#51008; &#47924;&#50631;&#51064;&#44032;?',opts:['&#52380;&#51109;&#50640; &#44256;&#51221;&#46108; &#49464;&#47196;&#54805; &#49368;&#46300;&#48177;','&#48148;&#45797;&#50640; &#45459;&#51064; &#49368;&#46300;&#48177;','&#53944;&#47112;&#51060;&#45320;&#44032; &#46308;&#45716; &#53440;&#44199;','&#48316;&#50640; &#44256;&#51221;&#46108; &#50672;&#49845;&#54032;'],ans:0,exp:'&#45908;&#48660;&#50644;&#46300;&#48177;&#51008; &#52380;&#51109;&#50640;&#49436; &#50732;&#47000;&#50724;&#47532;&#47196; &#50672;&#44208;&#46108; &#50896;&#53685;&#54805; &#48177;&#51077;&#45768;&#45796;.'},
-  {q:'&#48373;&#49905;&#50640;&#49436; &#12300;&#54217;&#51216;&#51228;&#12301;&#45716; &#47924;&#50631;&#51064;&#44032;?',opts:['&#52404;&#44553; &#52769;&#51221;&#48277;','&#49849;&#47532;&#47484; &#51216;&#49688;&#47196; &#54032;&#44032;&#47492;&#54616;&#45716; &#51228;&#46020;','&#48268;&#44552; &#52376;&#48268; &#48169;&#48277;','&#54984;&#47144; &#48169;&#48277;'],ans:1,exp:'&#54217;&#51216;&#51228;&#45716; KO &#50630;&#51060; &#44221;&#44592;&#44032; &#45149;&#45216; &#46412; 3&#47749;&#51032; &#49900;&#54032;&#51060; 10&#51216; &#47564;&#51216;&#51004;&#47196; &#49849;&#47532;&#47484; &#44208;&#51221;&#54633;&#45768;&#45796;.'},
-  {q:'&#48373;&#49905;&#50640;&#49436; &#12300;&#49772;&#48728;&#48660;&#47196;&#50864;&#12301;&#45716; &#50612;&#46500; &#54144;&#52824;&#51064;&#44032;?',opts:['&#53556;&#51012; &#55284;&#46160;&#47476;&#45716; &#54144;&#52824;','&#50612;&#44648;&#47484; &#44048;&#49912;&#45716; &#54144;&#52824;','&#54036;&#44844;&#52824;&#47484; &#50500;&#47000;&#47196; &#46244;&#47196; &#55296;&#46160;&#47476;&#45716; &#54144;&#52824;','&#50868;&#46041;&#54868; &#51060;&#47492;'],ans:2,exp:'&#49772;&#48728;&#48660;&#47196;&#50864;&#45716; &#54036;&#44844;&#52824;&#47484; &#50500;&#47000;&#50640;&#49436; &#50948;&#47196; &#49556;&#50500; &#50732;&#47532;&#45716; &#50612;&#54140;&#52983;&#51032; &#48320;&#54805;&#51077;&#45768;&#45796;.'},
-  {q:'&#48373;&#49905; &#54984;&#47144;&#50640;&#49436; &#12300;&#49100;&#46497;&#12301;(Skipping)&#51060; &#51473;&#50836;&#54620; &#51060;&#50976;&#45716;?',opts:['&#49345;&#52404; &#44540;&#47141; &#44053;&#54868;','&#54616;&#52404; &#47532;&#46316;&#44048;+&#52404;&#47141;+&#48156;&#47785; &#54693;&#49345;','&#54144;&#52824;&#47141; &#54693;&#49345;','&#50976;&#50672;&#49457; &#44053;&#54868;'],ans:1,exp:'&#49100;&#46497;&#51008; &#48373;&#49905;&#50640; &#54596;&#49688;&#51201;&#51064; &#54616;&#52404; &#47532;&#46316;&#44048;, &#52404;&#47141;, &#48156;&#47785;&#51012; &#54693;&#49345;&#49884;&#53413;&#45768;&#45796;.'},
-  {q:'&#48373;&#49905;&#50640;&#49436; &#12300;&#48177;&#49828;&#53485; &#47924;&#48652;&#12301;(Backstep Move)&#45716;?',opts:['&#46244;&#47196; &#48736;&#51648;&#45716; &#48169;&#50612; &#51060;&#46041;','&#50526;&#51004;&#47196; &#51204;&#51652;&#54616;&#45716; &#44277;&#44201; &#51060;&#46041;','&#50743;&#51004;&#47196; &#54588;&#54616;&#45716; &#44592;&#49696;','&#46244;&#47196; &#46028;&#50500; &#48372;&#45716; &#46041;&#51089;'],ans:0,exp:'&#48177;&#49828;&#53485;&#51008; &#46244;&#48156;&#51012; &#47676;&#51200; &#50880;&#44200; &#49345;&#45824;&#51032; &#44277;&#44201; &#49324;&#44144;&#47532; &#48150;&#50640;&#49436; &#48750;&#50612;&#45208;&#45716; &#44592;&#49696;&#51077;&#45768;&#45796;.'},
-  {q:'&#48373;&#49905;&#50640;&#49436; &#12300;&#50500;&#50883;&#48149;&#49436;&#12301;(Outboxer)&#51032; &#53945;&#51669;&#51008;?',opts:['&#44540;&#51217;&#51204;&#50640;&#49436; &#44053;&#47141;&#54620; &#54144;&#52824;','&#51105;&#44284; &#54400;&#53944;&#50892;&#53356;&#47196; &#44144;&#47532;&#47484; &#50976;&#51648;&#54616;&#47728; &#51204;&#53804;','&#52404;&#44553;&#51004;&#47196; &#50517;&#46020;','&#48376;&#45733;&#51201; &#44277;&#44201;'],ans:1,exp:'&#50500;&#50883;&#48149;&#49436;&#45716; &#44596; &#47532;&#52824;&#47484; &#54876;&#50857;&#54644; &#51105;&#44284; &#53356;&#47196;&#49828;&#47196; &#44144;&#47532;&#47484; &#50976;&#51648;&#54616;&#47728; &#49912;&#50864;&#45716; &#49828;&#53440;&#51068;&#51077;&#45768;&#45796;.'}
+  {q:'복싱에서 「판 강도」(Punch Power)는 주로 어디서 나오는가?',opts:['어깨근육','팔근육','하체회전','손목회전'],ans:2,exp:'펀치의 파워는 발에서 시작해 엄덩이 회전을 통해 전달됩니다.'},
+  {q:'프로 복서가 라운드에서 다운 후 못 일어나면 KO로 간주되는 시간은?',opts:['8초','10초','12초','15초'],ans:1,exp:'프로 복싱에서 다운 후 10초까지 일어나지 못하면 TKO/KO로 판정됩니다.'},
+  {q:'복싱에서 「링사이드」(Ringside)는 무엇을 의미하는가?',opts:['링 안 출전자','링 바로 옷 관객석','심판의 위치','코너 영역'],ans:1,exp:'링사이드는 링 바로 옷의 VIP 관객석을 의미합니다.'},
+  {q:'복싱 훈련에서 「티옴펄워」(Paw)는?',opts:['발기술','펀치 타겧 들기','방어 자세','훈련복'],ans:1,exp:'티옴펄워는 트레이너가 손을 내밀어 타겧을 제시하는 것입니다.'},
+  {q:'복싱에서 「크로스 가드」는 어떤 방어 기술인가?',opts:['얼굴 앞으로 손을 빠어 방어','전완을 만들는 방어','상체 교차할 때 올리는 방어','상체에게 힘을 실어 방어'],ans:0,exp:'크로스 가드는 손을 얼굴 앞으로 빠어 상대의 펀치를 방어하는 기술입니다.'},
+  {q:'복싱 글러브의 온스(oz)간 클수록 어떤 효과가 있는가?',opts:['속도 증가','파워 증가','손 보호 증가','무게 감소'],ans:2,exp:'글러브 온스가 클수록 패딩이 많아져 손과 상대를 더 보호합니다.'},
+  {q:'복싱에서 「로프」(Rope) 운동의 주요 목적은?',opts:['팔힘 강화','체력+리듬감+풀트워크','정신 집중력','방어 연습'],ans:1,exp:'줄넗기는 체력, 리듬감, 풀트워크를 동시에 훈련하는 최고의 복싱 보조 운동입니다.'},
+  {q:'복싱에서 프로 경기 1라운드는 몇 분인가?',opts:['2분','3분','4분','5분'],ans:1,exp:'프로 복싱의 1라운드는 3분이며, 라운드 사이 1분 휴식입니다.'},
+  {q:'복싱에서 「닅트럴 코너」(Neutral Corner)는?',opts:['선수의 고향 코너','KO 시 가해자가 가는 코너','심판의 위치','트레이너의 위치'],ans:1,exp:'상대가 다운되면 가해자는 닅트럴 코너(색이 없는 코너)로 갈야 합니다.'},
+  {q:'복싱 훈련에서 더블엔드백은 무엇인가?',opts:['천장에 고정된 세로형 샘드백','바닥에 놓인 샘드백','트레이너가 들는 타겧','벼에 고정된 연습판'],ans:0,exp:'더블엔드백은 천장에서 올래오리로 연결된 원통형 백입니다.'},
+  {q:'복싱에서 「평점제」는 무엇인가?',opts:['체급 측정법','승리를 점수로 판가름하는 제도','벌금 처벌 방법','훈련 방법'],ans:1,exp:'평점제는 KO 없이 경기가 끝날 때 3명의 심판이 10점 만점으로 승리를 결정합니다.'},
+  {q:'복싱에서 「쉬빘블로우」는 어떤 펀치인가?',opts:['턴을 ퟴ두르는 펀치','어깨를 감싸는 펀치','팔꼬치를 아래로 뒤로 &#55296;두르는 펀치','운동화 이름'],ans:2,exp:'쉬빘블로우는 팔꼬치를 아래에서 위로 솔아 올리는 어퍼컷의 변형입니다.'},
+  {q:'복싱 훈련에서 「뿌떡」(Skipping)이 중요한 이유는?',opts:['상체 근력 강화','하체 리듬감+체력+발목 향상','펀치력 향상','유연성 강화'],ans:1,exp:'뿌떡은 복싱에 필수적인 하체 리듬감, 체력, 발목을 향상시킥니다.'},
+  {q:'복싱에서 「백스탭 무브」(Backstep Move)는?',opts:['뒤로 빠지는 방어 이동','앞으로 전진하는 공격 이동','옷으로 피하는 기술','뒤로 돌아 보는 동작'],ans:0,exp:'백스탭은 뒤발을 먼저 움겨 상대의 공격 사거리 밖에서 빮어나는 기술입니다.'},
+  {q:'복싱에서 「아웃박서」(Outboxer)의 특징은?',opts:['근접전에서 강력한 펀치','잡과 풀트워크로 거리를 유지하며 전투','체급으로 압도','본능적 공격'],ans:1,exp:'아웃박서는 긴 리치를 활용해 잡과 크로스로 거리를 유지하며 싸우는 스타일입니다.'}
 ];
 
 var q11Idx = 0, q11Answered = false, q11Correct = 0, q11Done = false;
@@ -1185,7 +1185,7 @@ function renderQuizV11(){
   if(q11Done){
     var pct = Math.round(q11Correct/QUIZ_V11.length*100);
     var grade = pct>=90?'S':pct>=80?'A':pct>=70?'B':pct>=60?'C':'D';
-    el.innerHTML = '<div style="text-align:center;padding:20px"><div style="font-size:36px;font-weight:900;color:var(--accent)">'+q11Correct+' / '+QUIZ_V11.length+'</div><div style="font-size:14px;color:var(--text-dim);margin:8px 0">&#51221;&#45813; ('+pct+'%)</div><div style="font-size:24px;font-weight:900;color:'+(pct>=80?'var(--green)':pct>=60?'var(--orange)':'var(--accent)')+'">'+grade+'</div><div style="margin-top:16px"><button class="hr-log-btn" id="q11Retry">&#45796;&#49884; &#54400;&#44592;</button></div></div>';
+    el.innerHTML = '<div style="text-align:center;padding:20px"><div style="font-size:36px;font-weight:900;color:var(--accent)">'+q11Correct+' / '+QUIZ_V11.length+'</div><div style="font-size:14px;color:var(--text-dim);margin:8px 0">정답 ('+pct+'%)</div><div style="font-size:24px;font-weight:900;color:'+(pct>=80?'var(--green)':pct>=60?'var(--orange)':'var(--accent)')+'">'+grade+'</div><div style="margin-top:16px"><button class="hr-log-btn" id="q11Retry">다시 풀기</button></div></div>';
     document.getElementById('q11Retry').addEventListener('click',function(){q11Idx=0;q11Answered=false;q11Correct=0;q11Done=false;renderQuizV11();});
     return;
   }
@@ -1205,8 +1205,8 @@ function renderQuizV11(){
   });
   html += '</div>';
   if(q11Answered){
-    html += '<div style="margin-top:12px;padding:12px;background:rgba(255,215,0,0.05);border-radius:10px;font-size:12px;color:var(--text-dim);line-height:1.6">&#128161; '+qq.exp+'</div>';
-    html += '<div style="text-align:center;margin-top:12px"><button class="hr-log-btn" id="q11Next">'+(q11Idx<QUIZ_V11.length-1?'&#45796;&#51020; &#47928;&#51228; &#8594;':'&#44208;&#44284; &#48372;&#44592;')+'</button></div>';
+    html += '<div style="margin-top:12px;padding:12px;background:rgba(255,215,0,0.05);border-radius:10px;font-size:12px;color:var(--text-dim);line-height:1.6">💡 '+qq.exp+'</div>';
+    html += '<div style="text-align:center;margin-top:12px"><button class="hr-log-btn" id="q11Next">'+(q11Idx<QUIZ_V11.length-1?'다음 문제 →':'결과 보기')+'</button></div>';
   }
   html += '</div>';
   el.innerHTML = html;
@@ -1235,31 +1235,31 @@ function renderQuizV11(){
 
 // ===== ACHIEVEMENTS V11 (+12) =====
 var ACHV11 = [
-  {id:'a11_hr_first',name:'&#49900;&#48149;&#52769;&#51221;',icon:'&#128147;',desc:'&#49900;&#48149;&#49688; &#52572;&#52488; &#44592;&#47197;',check:function(){return v11.hrSessions.length>=1;}},
-  {id:'a11_class_3',name:'&#53364;&#47000;&#49828; 3&#54924;',icon:'&#127947;&#65039;',desc:'&#50892;&#53356;&#50500;&#50883; &#53364;&#47000;&#49828; 3&#54924; &#52280;&#50668;',check:function(){return (v11.classHistory||[]).length>=3;}},
-  {id:'a11_speed_s',name:'&#48264;&#44060; S&#44553;',icon:'&#9889;',desc:'&#48152;&#51025;&#49549;&#46020; S&#44553; (200ms &#51060;&#54616;)',check:function(){return v11.speedBest > 0 && v11.speedBest <= 200;}},
-  {id:'a11_recovery',name:'&#54924;&#48373; &#47560;&#49828;&#53552;',icon:'&#129470;',desc:'&#47784;&#46304; 8&#51333; &#49828;&#53944;&#47112;&#52845; &#50756;&#47308;',check:function(){return Object.keys(recoveryDone).length>=8;}},
-  {id:'a11_report',name:'&#48516;&#49437;&#44032;',icon:'&#128200;',desc:'&#54140;&#54252;&#47676;&#49828; &#47532;&#54252;&#53944; &#54869;&#51064;',check:function(){return reportTab !== null;}},
-  {id:'a11_leaderboard',name:'TOP 5',icon:'&#127942;',desc:'&#47532;&#45908;&#48372;&#46300; TOP 5 &#51652;&#51077;',check:function(){
+  {id:'a11_hr_first',name:'심박측정',icon:'💓',desc:'심박수 최초 기록',check:function(){return v11.hrSessions.length>=1;}},
+  {id:'a11_class_3',name:'클래스 3회',icon:'🏋️',desc:'워크아웃 클래스 3회 참여',check:function(){return (v11.classHistory||[]).length>=3;}},
+  {id:'a11_speed_s',name:'번개 S급',icon:'⚡',desc:'반응속도 S급 (200ms 이하)',check:function(){return v11.speedBest > 0 && v11.speedBest <= 200;}},
+  {id:'a11_recovery',name:'회복 마스터',icon:'🦾',desc:'모든 8종 스트레칭 완료',check:function(){return Object.keys(recoveryDone).length>=8;}},
+  {id:'a11_report',name:'분석가',icon:'📈',desc:'퍼포먼스 리포트 확인',check:function(){return reportTab !== null;}},
+  {id:'a11_leaderboard',name:'TOP 5',icon:'🏆',desc:'리더보드 TOP 5 진입',check:function(){
     var app=loadAppData();var score=((app&&app.totalPunches)||0)+((app&&app.bestStreak)||0)*100;
     return score>=5000;
   }},
-  {id:'a11_plan_done',name:'&#54540;&#47004; &#50756;&#47308;',icon:'&#128203;',desc:'&#54984;&#47144; &#54540;&#47004; 1&#44060; &#50756;&#47308;',check:function(){
+  {id:'a11_plan_done',name:'플랜 완료',icon:'📋',desc:'훈련 플랜 1개 완료',check:function(){
     if(v11.planActive===null||v11.planActive===undefined)return false;
     var p=PLANS[v11.planActive];if(!p)return false;
     for(var w=1;w<=p.weeks;w++){if(!v11.planProgress[v11.planActive+'_w'+w])return false;}
     return true;
   }},
-  {id:'a11_form_80',name:'&#54268; &#47560;&#49828;&#53552;',icon:'&#127919;',desc:'&#54268; &#48516;&#49437; &#54217;&#44512; 80&#51216; &#51060;&#49345;',check:function(){
+  {id:'a11_form_80',name:'폼 마스터',icon:'🎯',desc:'폼 분석 평균 80점 이상',check:function(){
     if(v11.formScores.length===0)return false;
     var last=v11.formScores[v11.formScores.length-1].scores;
     var avg=last.reduce(function(s,v){return s+v;},0)/last.length;
     return avg>=80;
   }},
-  {id:'a11_music',name:'DJ &#48149;&#49436;',icon:'&#127925;',desc:'&#48373;&#49905; &#48708;&#53944; 3&#44257; &#51060;&#49345; &#51116;&#49373;',check:function(){return musicTrack>=2;}},
-  {id:'a11_breathe_5',name:'&#47749;&#49345; 5&#54924;',icon:'&#127793;',desc:'&#47749;&#49345;/&#54840;&#55137; 5&#54924; &#50756;&#47308;',check:function(){return v11.breathSessions>=5;}},
-  {id:'a11_quiz_v11',name:'v11 &#48149;&#49324;',icon:'&#127891;',desc:'v11 &#53300;&#51592; 12&#47928;&#51228; &#51060;&#49345; &#51221;&#45813;',check:function(){return q11Correct>=12;}},
-  {id:'a11_allrounder',name:'v11 &#50732;&#46972;&#50868;&#45908;',icon:'&#128081;',desc:'v11 &#47784;&#46304; &#44592;&#45733; &#49324;&#50857;',check:function(){
+  {id:'a11_music',name:'DJ 박서',icon:'🎵',desc:'복싱 비트 3곡 이상 재생',check:function(){return musicTrack>=2;}},
+  {id:'a11_breathe_5',name:'명상 5회',icon:'🌱',desc:'명상/호흡 5회 완료',check:function(){return v11.breathSessions>=5;}},
+  {id:'a11_quiz_v11',name:'v11 박사',icon:'🎓',desc:'v11 퀴즈 12문제 이상 정답',check:function(){return q11Correct>=12;}},
+  {id:'a11_allrounder',name:'v11 올라운더',icon:'👑',desc:'v11 모든 기능 사용',check:function(){
     return v11.hrSessions.length>0 && (v11.classHistory||[]).length>0 && (v11.speedTests||[]).length>0 && v11.formScores.length>0 && v11.breathSessions>0;
   }}
 ];
@@ -1275,7 +1275,7 @@ function renderAchievementsV11(){
     html += '<div class="badge'+(ok?' unlocked':' locked')+'" title="'+a.desc+'"><span class="badge-icon" style="font-size:28px">'+a.icon+'</span><span class="badge-name" style="font-size:10px;margin-top:4px;color:'+(ok?'var(--gold)':'var(--text-muted)')+'">'+a.name+'</span></div>';
   });
   html += '</div>';
-  html += '<div style="text-align:center;margin-top:10px;font-size:12px;color:var(--text-dim)">v11 &#50629;&#51201;: '+unlocked+' / '+ACHV11.length+' &#45804;&#49457;</div>';
+  html += '<div style="text-align:center;margin-top:10px;font-size:12px;color:var(--text-dim)">v11 업적: '+unlocked+' / '+ACHV11.length+' 달성</div>';
   el.innerHTML = html;
 }
 
@@ -1320,16 +1320,16 @@ function injectQuickActions(){
   div.id = 'v11QuickActions';
   div.style.cssText = 'display:flex;gap:6px;flex-wrap:wrap;justify-content:center;margin:12px 0;padding:0 12px';
   var btns = [
-    {label:'&#128147;HR',target:'v11HeartRate'},
-    {label:'&#127947;&#65039;Class',target:'v11Classes'},
-    {label:'&#9889;Speed',target:'v11Speed'},
-    {label:'&#129470;Recovery',target:'v11Recovery'},
-    {label:'&#128200;Report',target:'v11Report'},
-    {label:'&#127942;Board',target:'v11Leaderboard'},
-    {label:'&#128203;Plan',target:'v11Plans'},
-    {label:'&#127919;Form',target:'v11FormAnalyzer'},
-    {label:'&#127925;Music',target:'v11Music'},
-    {label:'&#127793;Breathe',target:'v11Breathing'}
+    {label:'💓HR',target:'v11HeartRate'},
+    {label:'🏋️Class',target:'v11Classes'},
+    {label:'⚡Speed',target:'v11Speed'},
+    {label:'🦾Recovery',target:'v11Recovery'},
+    {label:'📈Report',target:'v11Report'},
+    {label:'🏆Board',target:'v11Leaderboard'},
+    {label:'📋Plan',target:'v11Plans'},
+    {label:'🎯Form',target:'v11FormAnalyzer'},
+    {label:'🎵Music',target:'v11Music'},
+    {label:'🌱Breathe',target:'v11Breathing'}
   ];
   btns.forEach(function(b){
     var btn = document.createElement('button');
@@ -1354,18 +1354,18 @@ function injectV11Sections(){
   if(!container) return;
 
   var sections = [
-    {id:'v11HeartRate', title:'&#128147; &#49900;&#48149;&#49688; &#51316; &#54984;&#47144;', card:true},
-    {id:'v11Classes', title:'&#127947;&#65039; &#50892;&#53356;&#50500;&#50883; &#53364;&#47000;&#49828; (8&#51333;)', card:false},
-    {id:'v11Speed', title:'&#9889; &#54144;&#52824; &#49828;&#54588;&#46300; &#48516;&#49437;&#44592;', card:true},
-    {id:'v11Recovery', title:'&#129470; &#55092;&#48373; &#49828;&#53944;&#47112;&#52845; &#44032;&#51060;&#46300; (8&#51333;)', card:false},
-    {id:'v11Report', title:'&#128200; &#54140;&#54252;&#47676;&#49828; &#47532;&#54252;&#53944;', card:true},
-    {id:'v11Leaderboard', title:'&#127942; &#52964;&#48036;&#45768;&#54000; &#47532;&#45908;&#48372;&#46300;', card:true},
-    {id:'v11Plans', title:'&#128203; &#54984;&#47144; &#54540;&#47004; &#48716;&#45908; (5&#51333;)', card:false},
-    {id:'v11FormAnalyzer', title:'&#127919; &#54144;&#52824; &#54268; &#48516;&#49437;&#44592;', card:true},
-    {id:'v11Music', title:'&#127925; &#48373;&#49905; &#48708;&#53944; &#54540;&#47112;&#51060;&#50612; (8&#44257;)', card:true},
-    {id:'v11Breathing', title:'&#127793; &#47749;&#49345;/&#54840;&#55137; &#44032;&#51060;&#46300;', card:true},
-    {id:'v11Quiz', title:'&#129504; &#48373;&#49905; &#49900;&#54868; &#53300;&#51592; v11 (+15)', card:true},
-    {id:'v11Achievements', title:'&#127941; v11 &#50629;&#51201; (+12)', card:true}
+    {id:'v11HeartRate', title:'💓 심박수 존 훈련', card:true},
+    {id:'v11Classes', title:'🏋️ 워크아웃 클래스 (8종)', card:false},
+    {id:'v11Speed', title:'⚡ 펀치 스피드 분석기', card:true},
+    {id:'v11Recovery', title:'🦾 휴복 스트레칭 가이드 (8종)', card:false},
+    {id:'v11Report', title:'📈 퍼포먼스 리포트', card:true},
+    {id:'v11Leaderboard', title:'🏆 커뮤니티 리더보드', card:true},
+    {id:'v11Plans', title:'📋 훈련 플랜 빌더 (5종)', card:false},
+    {id:'v11FormAnalyzer', title:'🎯 펀치 폼 분석기', card:true},
+    {id:'v11Music', title:'🎵 복싱 비트 플레이어 (8곡)', card:true},
+    {id:'v11Breathing', title:'🌱 명상/호흡 가이드', card:true},
+    {id:'v11Quiz', title:'🧠 복싱 심화 퀴즈 v11 (+15)', card:true},
+    {id:'v11Achievements', title:'🏅 v11 업적 (+12)', card:true}
   ];
 
   var tipSection = null;

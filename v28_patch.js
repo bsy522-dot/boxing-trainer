@@ -243,7 +243,7 @@ window._v28ResetHR = function(){
 var sec2 = document.createElement('div');
 sec2.id = 'v28-sec-punchSpeed';
 sec2.style.cssText = 'display:none;max-width:680px;margin:20px auto;padding:0 12px;';
-sec2.innerHTML = '<div class="v28-card"><div class="v28-hdr">⚡ 펜치속도 레이더 분석기</div><div class="v28-sub">7종 펜치 속도(mph) 수평바 + 프로선수 대비 레이더 + 30세션 트렌드</div><canvas id="v28-cv-speed" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto"></canvas><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center"><button class="v28-btn" onclick="window._v28MeasureSpeed()">&#49549;&#46020; &#52769;&#51221;</button><button class="v28-btn-sec" onclick="window._v28ResetSpeed()">&#49549;&#46020; &#47532;&#49483;</button></div></div>';
+sec2.innerHTML = '<div class="v28-card"><div class="v28-hdr">⚡ 펜치속도 레이더 분석기</div><div class="v28-sub">7종 펜치 속도(mph) 수평바 + 프로선수 대비 레이더 + 30세션 트렌드</div><canvas id="v28-cv-speed" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto"></canvas><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center"><button class="v28-btn" onclick="window._v28MeasureSpeed()">속도 측정</button><button class="v28-btn-sec" onclick="window._v28ResetSpeed()">속도 리셋</button></div></div>';
 document.body.appendChild(sec2);
 
 function drawSpeedCanvas(){
@@ -339,7 +339,7 @@ window._v28ResetSpeed = function(){
 var sec3 = document.createElement('div');
 sec3.id = 'v28-sec-choreo';
 sec3.style.cssText = 'display:none;max-width:680px;margin:20px auto;padding:0 12px;';
-sec3.innerHTML = '<div class="v28-card"><div class="v28-hdr">💃 섬도복싱 코레오그래피 빌더</div><div class="v28-sub">8비트 × 8라운드 시퀀스 그리드 + 3난이도 + 콤보 프리셋 + 타이밍 가이드</div><canvas id="v28-cv-choreo" width="640" height="400" style="width:100%;max-width:640px;border-radius:12px;background:#111;display:block;margin:0 auto"></canvas><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center"><button class="v28-btn" onclick="window._v28GenChoreo()">&#47336;&#54004; &#49373;&#49457;</button><button class="v28-btn-sec" onclick="window._v28CompleteChoreo()">&#47336;&#54004; &#50756;&#47308;</button></div></div>';
+sec3.innerHTML = '<div class="v28-card"><div class="v28-hdr">💃 섬도복싱 코레오그래피 빌더</div><div class="v28-sub">8비트 × 8라운드 시퀀스 그리드 + 3난이도 + 콤보 프리셋 + 타이밍 가이드</div><canvas id="v28-cv-choreo" width="640" height="400" style="width:100%;max-width:640px;border-radius:12px;background:#111;display:block;margin:0 auto"></canvas><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center"><button class="v28-btn" onclick="window._v28GenChoreo()">루틴 생성</button><button class="v28-btn-sec" onclick="window._v28CompleteChoreo()">루틴 완료</button></div></div>';
 document.body.appendChild(sec3);
 
 function drawChoreoCanvas(){
@@ -399,7 +399,7 @@ window._v28CompleteChoreo = function(){
 var sec4 = document.createElement('div');
 sec4.id = 'v28-sec-archetype';
 sec4.style.cssText = 'display:none;max-width:680px;margin:20px auto;padding:0 12px;';
-sec4.innerHTML = '<div class="v28-card"><div class="v28-hdr">🥊 파이터 아키타입 프로파일러</div><div class="v28-sub">6아키타입 6축 Radar + 유형 분류 + 강약점 분석</div><canvas id="v28-cv-archetype" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto"></canvas><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center"><button class="v28-btn" onclick="window._v28AnalyzeArchetype()">&#50500;&#53412;&#53440;&#51077; &#48516;&#49437;</button><button class="v28-btn-sec" onclick="window._v28EvolveArchetype()">&#50500;&#53412;&#53440;&#51077; &#51652;&#54868;</button></div></div>';
+sec4.innerHTML = '<div class="v28-card"><div class="v28-hdr">🥊 파이터 아키타입 프로파일러</div><div class="v28-sub">6아키타입 6축 Radar + 유형 분류 + 강약점 분석</div><canvas id="v28-cv-archetype" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto"></canvas><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center"><button class="v28-btn" onclick="window._v28AnalyzeArchetype()">아키타입 분석</button><button class="v28-btn-sec" onclick="window._v28EvolveArchetype()">아키타입 진화</button></div></div>';
 document.body.appendChild(sec4);
 
 function drawArchetypeCanvas(){
@@ -475,7 +475,7 @@ window._v28EvolveArchetype = function(){
 var sec5 = document.createElement('div');
 sec5.id = 'v28-sec-season';
 sec5.style.cssText = 'display:none;max-width:680px;margin:20px auto;padding:0 12px;';
-sec5.innerHTML = '<div class="v28-card"><div class="v28-hdr">📅 트레이닝칠프 시즌플래너</div><div class="v28-sub">12주 4단계(Base/Build/Peak/Recovery) 간트바 + 주간 볼륨 라인 + 강도 히트맵</div><canvas id="v28-cv-season" width="620" height="380" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto"></canvas><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center"><button class="v28-btn" onclick="window._v28AdvanceWeek()">&#51452;&#52264; &#51652;&#54665;</button><button class="v28-btn-sec" onclick="window._v28ResetSeason()">&#49884;&#51596; &#47532;&#49483;</button></div></div>';
+sec5.innerHTML = '<div class="v28-card"><div class="v28-hdr">📅 트레이닝칠프 시즌플래너</div><div class="v28-sub">12주 4단계(Base/Build/Peak/Recovery) 간트바 + 주간 볼륨 라인 + 강도 히트맵</div><canvas id="v28-cv-season" width="620" height="380" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto"></canvas><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center"><button class="v28-btn" onclick="window._v28AdvanceWeek()">주차 진행</button><button class="v28-btn-sec" onclick="window._v28ResetSeason()">시즌 리셋</button></div></div>';
 document.body.appendChild(sec5);
 
 function drawSeasonCanvas(){
@@ -555,7 +555,7 @@ window._v28ResetSeason = function(){
 var sec6 = document.createElement('div');
 sec6.id = 'v28-sec-mindGames';
 sec6.style.cssText = 'display:none;max-width:680px;margin:20px auto;padding:0 12px;';
-sec6.innerHTML = '<div class="v28-card"><div class="v28-hdr">🧠 복싱 심리전 시뮬레이터</div><div class="v28-sub">8전술 6축 Radar + 상대스타일별 최적전술 매트릭스</div><canvas id="v28-cv-mindGames" width="600" height="380" style="width:100%;max-width:600px;border-radius:12px;background:#111;display:block;margin:0 auto"></canvas><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center"><button class="v28-btn" onclick="window._v28MindDrill()">&#49900;&#47532;&#51204; &#46300;&#47540;</button><button class="v28-btn-sec" onclick="window._v28ResetMind()">&#49900;&#47532;&#51204; &#47532;&#49483;</button></div></div>';
+sec6.innerHTML = '<div class="v28-card"><div class="v28-hdr">🧠 복싱 심리전 시뮬레이터</div><div class="v28-sub">8전술 6축 Radar + 상대스타일별 최적전술 매트릭스</div><canvas id="v28-cv-mindGames" width="600" height="380" style="width:100%;max-width:600px;border-radius:12px;background:#111;display:block;margin:0 auto"></canvas><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center"><button class="v28-btn" onclick="window._v28MindDrill()">심리전 드릴</button><button class="v28-btn-sec" onclick="window._v28ResetMind()">심리전 리셋</button></div></div>';
 document.body.appendChild(sec6);
 
 function drawMindCanvas(){
@@ -621,7 +621,7 @@ window._v28ResetMind = function(){
 var sec7 = document.createElement('div');
 sec7.id = 'v28-sec-impactMap';
 sec7.style.cssText = 'display:none;max-width:680px;margin:20px auto;padding:0 12px;';
-sec7.innerHTML = '<div class="v28-card"><div class="v28-hdr">💥 펜치 임팩트 파워맵</div><div class="v28-sub">바디 실루엇 12존 히트맵 + 존별 파워 분포 바차트 + KO존 하이라이트</div><canvas id="v28-cv-impact" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto"></canvas><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center"><button class="v28-btn" onclick="window._v28SimImpact()">&#51076;&#54057;&#53944; &#49884;&#48044;</button><button class="v28-btn-sec" onclick="window._v28ResetImpact()">&#51076;&#54057;&#53944; &#47532;&#49483;</button></div></div>';
+sec7.innerHTML = '<div class="v28-card"><div class="v28-hdr">💥 펜치 임팩트 파워맵</div><div class="v28-sub">바디 실루엇 12존 히트맵 + 존별 파워 분포 바차트 + KO존 하이라이트</div><canvas id="v28-cv-impact" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto"></canvas><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center"><button class="v28-btn" onclick="window._v28SimImpact()">임팩트 시뮬</button><button class="v28-btn-sec" onclick="window._v28ResetImpact()">임팩트 리셋</button></div></div>';
 document.body.appendChild(sec7);
 
 function drawImpactCanvas(){
@@ -694,7 +694,7 @@ window._v28ResetImpact = function(){
 var sec8 = document.createElement('div');
 sec8.id = 'v28-sec-growth';
 sec8.style.cssText = 'display:none;max-width:680px;margin:20px auto;padding:0 12px;';
-sec8.innerHTML = '<div class="v28-card"><div class="v28-hdr">📊 종합 파이터 성장 보고서</div><div class="v28-sub">8 KPI 반원게이지 4x2 + 가중 종합등급 S~D + 20세션 히스토리 라인차트</div><canvas id="v28-cv-growth" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto"></canvas><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center"><button class="v28-btn" onclick="window._v28UpdateGrowth()">&#49457;&#51109; &#44592;&#47197;</button><button class="v28-btn-sec" onclick="window._v28ResetGrowth()">&#49457;&#51109; &#47532;&#49483;</button></div></div>';
+sec8.innerHTML = '<div class="v28-card"><div class="v28-hdr">📊 종합 파이터 성장 보고서</div><div class="v28-sub">8 KPI 반원게이지 4x2 + 가중 종합등급 S~D + 20세션 히스토리 라인차트</div><canvas id="v28-cv-growth" width="620" height="400" style="width:100%;max-width:620px;border-radius:12px;background:#111;display:block;margin:0 auto"></canvas><div style="display:flex;gap:8px;margin-top:10px;flex-wrap:wrap;justify-content:center"><button class="v28-btn" onclick="window._v28UpdateGrowth()">성장 기록</button><button class="v28-btn-sec" onclick="window._v28ResetGrowth()">성장 리셋</button></div></div>';
 document.body.appendChild(sec8);
 
 function drawGrowthCanvas(){
@@ -790,7 +790,7 @@ var quizV28Data = [
 var secQuiz = document.createElement('div');
 secQuiz.id = 'v28-sec-quiz';
 secQuiz.style.cssText = 'display:none;max-width:680px;margin:20px auto;padding:0 12px;';
-var quizHtml = '<div class="v28-card"><div class="v28-hdr">🎯 복싱 퀀즈 v28 (15문)</div>';
+var quizHtml = '<div class="v28-card"><div class="v28-hdr">🎯 복싱 퀴즈 v28 (15문)</div>';
 for(var qi=0;qi<quizV28Data.length;qi++){
   var qq=quizV28Data[qi];
   quizHtml += '<div style="margin:10px 0;padding:10px;background:var(--surface);border-radius:10px"><div style="font-size:12px;font-weight:700;margin-bottom:6px">Q'+(qi+1)+'. '+qq.q+'</div>';
@@ -835,7 +835,7 @@ var achieveV28Defs = [
   {id:'a28_mind_5',name:'심리전사',desc:'심리전 드릴 5회 완료',check:function(){return v28.mindGames.drillsDone>=5}},
   {id:'a28_impact_sim',name:'임팩트 분석가',desc:'임팩트 시뮬 1회 완료',check:function(){return v28.impactMap.sessions>=1}},
   {id:'a28_growth_3',name:'성장 기록가',desc:'성장 보고서 3회 기록',check:function(){return v28.growthReport.sessions>=3}},
-  {id:'a28_quiz_10',name:'퀀즈 도전자 v28',desc:'v28 퀀즈 10문 정답',check:function(){var cnt=0;for(var k in v28.quizV28Scores)if(v28.quizV28Scores[k]===1)cnt++;return cnt>=10}},
+  {id:'a28_quiz_10',name:'퀴즈 도전자 v28',desc:'v28 퀴즈 10문 정답',check:function(){var cnt=0;for(var k in v28.quizV28Scores)if(v28.quizV28Scores[k]===1)cnt++;return cnt>=10}},
   {id:'a28_all_features',name:'v28 마스터',desc:'v28 모든 기능 사용',check:function(){var keys=['hrZone','punchSpeed','choreo','archetype','season','mindGames','impactMap','growth'];for(var i=0;i<keys.length;i++)if(!v28.featureUsage28[keys[i]])return false;return true}}
 ];
 
@@ -863,7 +863,7 @@ function addV28Nav(){
     {id:'mindGames',label:'심리전',sec:sec6},
     {id:'impactMap',label:'임팩트맵',sec:sec7},
     {id:'growth',label:'성장보고',sec:sec8},
-    {id:'quizV28',label:'퀀즈v28',sec:secQuiz}
+    {id:'quizV28',label:'퀴즈v28',sec:secQuiz}
   ];
 
   var existingNav = document.querySelector('.v10-bottom-bar') || document.querySelector('[class*="bottom-bar"]');
