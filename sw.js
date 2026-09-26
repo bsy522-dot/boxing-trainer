@@ -1,128 +1,27 @@
-// Boxing Trainer Pro - Service Worker v13
-const CACHE_NAME = 'boxing-trainer-v31-domfix1-m0924';
-const PRECACHE_URLS = [
-  './',
-  './index.html',
-  './boxing-trainer-v5.html',
-  './v8_patch.js',
-  './v9_patch.js',
-  './v10_patch.js',
-  './v11_patch.js',
-  './v12_patch.js',
-  './v13_patch.js',
-  './v14_patch.js',
-  './v15_patch.js',
-  './v16_patch.js',
-  './v17_patch.js',
-  './v18_patch.js',
-  './v19_patch.js',
-  './v20_patch.js',
-  './v21_patch.js',
-  './v22_patch.js',
-  './v23_patch.js',
-  './v24_patch.js',
-  './v25_patch.js',
-  './v26_patch.js',
-  './v27_patch.js',
-  './v28_patch.js',
-  './v29_patch.js',
-  './v30_patch.js',
-  './v31_patch.js',
-  './manifest.json'
-];
-
-// Install: precache core assets
-self.addEventListener('install', event => {
-  event.waitUntil(
-    caches.open(CACHE_NAME).then(cache => {
-      return cache.addAll(PRECACHE_URLS);
-    }).then(() => {
-      return self.skipWaiting();
-    })
+// 복싱 트레이너는 배움퀘스트(levelplay)로 이사했습니다.
+// 예전 기기에 남은 서비스워커를 스스로 지우는 파일입니다.
+// 방식: NekR/self-destroying-sw (install -> skipWaiting, activate -> unregister -> 열린 창 이동)
+// 추가 1: 이 앱 이름의 캐시(boxing-trainer-v*)만 지웁니다. 같은 주소를 쓰는 다른 앱(배움퀘스트 등)의 캐시는 건드리지 않습니다.
+// 추가 2: 열린 창은 새로고침 대신 배움퀘스트 주소로 바로 보냅니다(안내판을 한 번 더 거치지 않게).
+var OWN = /^boxing-trainer-v\d+(?:-[0-9a-z]+)*$/;
+var TO = 'https://bsy522-dot.github.io/levelplay/games/boxing-trainer-v5.html';
+self.addEventListener('install', function () {
+  self.skipWaiting();
+});
+self.addEventListener('activate', function (e) {
+  e.waitUntil(
+    caches.keys()
+      .then(function (keys) {
+        return Promise.all(keys.filter(function (k) { return OWN.test(k); }).map(function (k) { return caches.delete(k); }));
+      })
+      .catch(function () {})
+      .then(function () { return self.registration.unregister(); })
+      .then(function () { return self.clients.matchAll({ type: 'window' }); })
+      .then(function (clients) {
+        clients.forEach(function (c) {
+          try { if (c.navigate) c.navigate(TO).catch(function () {}); } catch (err) {}
+        });
+      })
+      .catch(function () {})
   );
 });
-
-// Activate: clean old caches + claim clients
-self.addEventListener('activate', event => {
-  event.waitUntil(
-    caches.keys().then(keys => {
-      return Promise.all(
-        keys.filter(key => key !== CACHE_NAME).map(key => caches.delete(key))
-      );
-    }).then(() => {
-      return self.clients.claim();
-    })
-  );
-});
-
-// Fetch: cache-first for HTML/CSS/JS, network-first for JSON data
-self.addEventListener('fetch', event => {
-  const request = event.request;
-  const url = new URL(request.url);
-
-  // Only handle same-origin requests
-  if(url.origin !== location.origin) {
-    event.respondWith(fetch(request));
-    return;
-  }
-
-  // Network-first for JSON data (API responses, dynamic data)
-  if(request.url.endsWith('.json') && !request.url.includes('manifest.json')) {
-    event.respondWith(networkFirst(request));
-    return;
-  }
-
-  // Cache-first for HTML, CSS, JS, and manifest
-  event.respondWith(cacheFirst(request));
-});
-
-// Cache-first strategy
-async function cacheFirst(request) {
-  const cached = await caches.match(request);
-  if(cached) {
-    // Update cache in background
-    fetchAndCache(request).catch(() => {});
-    return cached;
-  }
-  return fetchAndCache(request);
-}
-
-// Network-first strategy
-async function networkFirst(request) {
-  try {
-    const response = await fetch(request);
-    if(response.ok) {
-      const cache = await caches.open(CACHE_NAME);
-      cache.put(request, response.clone());
-    }
-    return response;
-  } catch(e) {
-    const cached = await caches.match(request);
-    if(cached) return cached;
-    return new Response(JSON.stringify({error: 'offline'}), {
-      headers: {'Content-Type': 'application/json'}
-    });
-  }
-}
-
-// Fetch and update cache
-async function fetchAndCache(request) {
-  try {
-    const response = await fetch(request);
-    if(response.ok) {
-      const cache = await caches.open(CACHE_NAME);
-      cache.put(request, response.clone());
-    }
-    return response;
-  } catch(e) {
-    // If network fails and nothing in cache, return offline page
-    const cached = await caches.match(request);
-    if(cached) return cached;
-    // Return a basic offline response for navigation requests
-    if(request.mode === 'navigate') {
-      const offlineCache = await caches.match('./index.html');
-      if(offlineCache) return offlineCache;
-    }
-    return new Response('Offline', {status: 503, statusText: 'Service Unavailable'});
-  }
-}
